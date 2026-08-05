@@ -11,6 +11,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const modal = document.getElementById("itemModal");
 
     // Inputs
+    const consignor = document.getElementById("consignor");
+    const consignee = document.getElementById("consignee");
     const tm = document.getElementById("tm");
     const bags = document.getElementById("bags");
     const particular = document.getElementById("particular");
@@ -69,6 +71,8 @@ document.addEventListener("DOMContentLoaded", () => {
     saveItem.onclick = function(){
 
         if(
+            consignor.value===""||
+            consignee.value===""||
             bags.value==="" ||
             particular.value==="" ||
             weight.value==="" ||
@@ -82,7 +86,8 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         const obj={
-
+             consignor:consignor.value,
+             consignee:consignee.value,
             tm:tm.value,
 
             bags:Number(bags.value),
@@ -142,7 +147,8 @@ document.addEventListener("DOMContentLoaded", () => {
             <tr>
 
                 <td>${index+1}</td>
-
+                <td>${item.consignor}</td>
+                <td>${item.consignee}</td>
                 <td>${item.tm}</td>
 
                 <td>${item.bags}</td>
@@ -198,7 +204,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 const id=this.dataset.id;
 
                 editIndex=id;
-
+                consignor.value=items[id].consignor;
+                consignee.value=items[id].consignee
                 tm.value=items[id].tm;
 
                 bags.value=items[id].bags;
@@ -240,9 +247,10 @@ document.addEventListener("DOMContentLoaded", () => {
     // -----------------------------
 
     function clearForm(){
-
+         consignor.value="";
+        consignee.value="";
         tm.selectedIndex=0;
-
+        
         bags.value="";
 
         particular.value="";
