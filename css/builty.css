@@ -21,7 +21,7 @@ textarea { resize: none; width: 100%; }
 .top-row { display: grid; grid-template-columns: 20% 58% 22%; }
 .meta-left { padding: 5px; }
 .logo-box { border: 0px solid #000; margin-top: 15px; padding: 4px; text-align: center; }
-.logo-tag { font-size: 14px; font-weight: bold; border-bottom: 0px solid #000; padding-bottom: 2px; }
+.logo-tag { font-size: 13px; font-weight: bold; border-bottom: 0px solid #000; padding-bottom: 2px; }
 .truck-graphic { font-size: 24px; margin-top: 3px; }
 
 .meta-center { text-align: center; padding: 2px 5px; }
@@ -31,7 +31,7 @@ textarea { resize: none; width: 100%; }
 
 /* Right Sidebar Inputs */
 .meta-right { display: flex; flex-direction: column; }
-.tpt-id-row { font-size: 11px; padding: 4px; text-align: center; }
+.tpt-id-row { font-size: 13px; padding: 3px; text-align: center; }
 .sidebar-entry { display: grid; grid-template-columns: 80px 1fr; font-size: 12px; align-items: center; min-height: 24px; }
 .sidebar-entry .label { font-weight: bold; padding-left: 4px; }
 
@@ -110,13 +110,13 @@ textarea { resize: none; width: 100%; }
 .column-tax { padding: 5px; font-size: 11px; font-weight: bold; }
 .check-row { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
 
-.column-disclaimer { padding: 5px; font-size: 10px; font-weight: bold; display: flex; flex-direction: column; justify-content: space-between; }
+.column-disclaimer { padding: 5px; font-size: 10px; font-weight: bold; display: flex; flex-direction: column;  }
 .driver-sign-row { display: flex; font-size: 11px; align-items: center; margin-top: 5px; }
 .dotted-input { border-bottom: 1px dotted #000; flex: 1; margin-left: 5px; }
 
 .column-auth { display: flex; flex-direction: column; justify-content: space-between; padding: 5px; text-align: center; }
 .owner-risk-text { font-weight: 900; font-size: 15px; letter-spacing: 0.5px; }
-.signature-gap { height: 40px; }
+.signature-gap { height: 30px; }
 .clerk-sign-line { font-size: 12px; font-weight: bold; }
 
 .bottom-banner-ribbon { display: flex; justify-content: space-between; padding: 4px 8px; font-size: 11px; }
@@ -147,8 +147,8 @@ textarea { resize: none; width: 100%; }
 
 .actual-header,
 .charged-header{
-    font-size:13px;
-    font-weight:700;
+    font-size:10px;
+    font-weight:600;
     text-transform:uppercase;
 }
 
@@ -197,8 +197,9 @@ textarea { resize: none; width: 100%; }
 
 .signature-input{
     font-weight:600;
-    font-size:24px;
+    font-size:20px;
     text-align:center;
+    justify-content:center;
 }
 
 @page{
@@ -245,6 +246,22 @@ textarea { resize: none; width: 100%; }
         box-shadow:none;
         border:2px solid #000;
     }
+    .actual-header,
+.charged-header{
+    font-size:10px;
+    font-weight:600;
+    text-transform:uppercase;
+    justify-content:center;
+    text-align:center;
+}
+    .signature-input{
+    font-weight:500;
+    font-size:13px;
+    text-align:center;
+    justify-content:center;
+}
+.tpt-id-row { font-size: 10px; padding: 2px; text-align: center; }
+.logo-tag { font-size: 10px; font-weight: bold; border-bottom: 0px solid #000; padding-bottom: 2px; }
 }
 
 
