@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transport Challan</title>
+
+    <link rel="stylesheet" href="/css/challan.css">
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+</head>
+
+<body>
+
+<div class="page">
+
+    <!--==================== HEADER ====================-->
+
+    <header class="company-header">
+
+        <div class="logo-box">
+
+            <img src="logo.png" alt="logo">
+
+        </div>
+
+        <div class="company-details">
+
+            <span class="challan-title">
+                GOODS TRANSPORT CHALLAN
+            </span>
+
+            <h1>JAI HARYANA CARGO MOVER</h1>
+
+            <h3>Complete Transport & Logistics Solutions</h3>
+
+            <p>
+                Full Truck Load (FTL) • 22FT • 28FT • 32FT
+            </p>
+
+            <p>
+                Opp. Gali No.2, Mangal Colony,
+                Part-2, Karnal (Haryana)
+            </p>
+
+        </div>
+
+    </header>
+
+    <!--==================== TOOLBAR ====================-->
+
+    <section class="toolbar">
+
+        <button id="addItemBtn">
+
+            <i class="fa-solid fa-plus"></i>
+
+            Add Goods
+
+        </button>
+
+        <button>
+
+            <i class="fa-solid fa-print"></i>
+
+            Print
+
+        </button>
+
+        <button>
+
+            <i class="fa-solid fa-download"></i>
+
+            Download PDF
+
+        </button>
+
+        <button>
+
+            <i class="fa-solid fa-floppy-disk"></i>
+
+            Save
+
+        </button>
+
+    </section>
+
+    <!--==================== CHALLAN DETAILS ====================-->
+
+    <section class="challan-info">
+
+        <div class="field">
+
+            <label>Challan No.</label>
+
+            <input type="text">
+
+        </div>
+
+        <div class="field">
+
+            <label>Date</label>
+
+            <input type="date">
+
+        </div>
+
+        <div class="field">
+
+            <label>Lorry No.</label>
+
+            <input type="text">
+
+        </div>
+
+        <div class="field">
+
+            <label>Driver Name</label>
+
+            <input type="text">
+
+        </div>
+
+        <div class="field">
+
+            <label>Driver Phone</label>
+
+            <input type="tel">
+
+        </div>
+
+        <div class="field">
+
+            <label>From</label>
+
+            <input type="text">
+
+        </div>
+
+        <div class="field">
+
+            <label>To</label>
+
+            <input type="text">
+
+        </div>
+
+        <div class="field">
+
+            <label>Agency</label>
+
+            <input type="text">
+
+        </div>
+
+    </section>
+
+    <!--==================== TABLE ====================-->
+
+    <section class="table-wrapper">
+
+        <table id="goodsTable">
+
+            <thead>
+
+            <tr>
+
+                <th>#</th>
+
+                <th>TM</th>
+
+                <th>Bags</th>
+
+                <th>Particular</th>
+                <th>nag</th>
+                <th>Weight</th>
+
+                <th>Freight</th>
+
+                <th>Action</th>
+
+            </tr>
+
+            </thead>
+
+            <tbody id="goodsBody">
+
+            </tbody>
+
+            <tfoot>
+
+            <tr>
+
+                <td colspan="2">
+
+                    <strong>Total</strong>
+
+                </td>
+
+                <td id="totalBags">
+
+                    0
+
+                </td>
+
+                <td>
+
+                    —
+
+                </td>
+             <td id="totalNag">
+
+                    0
+                </td>
+                <td id="totalWeight">
+
+                    0 KG
+
+                </td>
+                <td id="totalFreight">
+
+                    ₹0
+
+                </td>
+
+                <td></td>
+
+            </tr>
+
+            </tfoot>
+
+        </table>
+
+    </section>
+
+    <!--==================== REMARK ====================-->
+
+    <section class="remarks">
+
+        <label>
+
+            Remarks
+
+        </label>
+
+        <textarea></textarea>
+
+    </section>
+
+    <!--==================== FOOTER ====================-->
+
+    <footer>
+
+        <div>
+
+            Driver Signature
+
+        </div>
+
+        <div>
+
+            Booking Clerk
+
+        </div>
+
+    </footer>
+
+</div>
+
+<!--==================== MODAL ====================-->
+
+<div class="modal" id="itemModal">
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <h2>Add Goods</h2>
+
+            <button id="closeModal">
+
+                <i class="fa-solid fa-xmark"></i>
+
+            </button>
+
+        </div>
+
+        <div class="modal-body">
+
+            <div class="grid">
+
+                <div>
+
+                    <label>Transport Measure</label>
+
+                    <select id="tm">
+
+                        <option>BAG</option>
+                        <option>BOX</option>
+                        <option>PCS</option>
+                        <option>ROLL</option>
+                        <option>MT</option>
+                        <option>KG</option>
+
+                    </select>
+
+                </div>
+
+                <div>
+
+                    <label>Bags</label>
+
+                    <input
+                        type="number"
+                        id="bags">
+
+                </div>
+
+                <div>
+
+                    <label>Particular</label>
+
+                    <input
+                        type="text"
+                        id="particular">
+
+                </div>
+<div>
+
+                    <label>nag</label>
+
+                    <input
+                        type="number"
+                        id="nag">
+
+                </div>
+                <div>
+
+                    <label>Weight</label>
+
+                    <input
+                        type="number"
+                        id="weight">
+
+                </div>
+
+                <div>
+
+                    <label>Freight</label>
+
+                    <input
+                        type="number"
+                        id="freight">
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="modal-footer">
+
+            <button id="cancelBtn">
+
+                Cancel
+
+            </button>
+
+            <button id="saveItem">
+
+                Add Item
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script src="/js/challan.js"></script>
+
+</body>
+</html>

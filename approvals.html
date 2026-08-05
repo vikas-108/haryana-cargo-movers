@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Approvals</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <!-- Sidebar with id and active link -->
+    <div class="sidebar" id="sidebar">
+      <h2>Approvals</h2>
+      <a href="Dashboard.html">🏠 Dashboard</a>
+      <a href="users.html">👥 Users</a>
+      <!--<a href="notify.html">📣 Notify</a>-->
+      <a href="project.html">🏗️ Projects</a>
+      <a href="approvals.html" class="active">📝 Approvals</a>
+      <a href="reports.html">📊 Reports</a>
+      <!-- <a href="settings.html">⚙️ Settings</a> -->
+      <a href="login.html">🚪 Logout</a>
+    </div>
+
+    <!-- Main content with id -->
+    <div class="dashboard-content" id="content">
+      <div class="dashboard-header">
+        <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+        <h1>📝 Approvals</h1>
+      </div>
+
+      <h2>👤 Payments</h2>
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="pendingPaymentsBody">
+            <tr>
+              <td>1</td>
+              <td>Neha Sharma</td>
+              <td>neha@gmail.com</td>
+              <td>Client</td>
+              <td>
+                <button class="btn-approve payment-btn" data-user="neha">
+                  Payment Details
+                </button>
+
+                <!-- <button class="btn-reject">Reject</button> -->
+              </td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td>Vikram Patel</td>
+              <td>vikram@buildhub.com</td>
+              <td>Contractor</td>
+              <td>
+                <button class="btn-approve payment-btn" data-user="vikram">
+                  Payment Details
+                </button>
+                <!-- <button class="btn-reject">Reject</button> -->
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 style="margin-top: 40px">🏗️ Projects</h2>
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Title</th>
+              <th>Client</th>
+              <th>Submitted On</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="pendingPaymentsBody">
+            <tr>
+              <td>1</td>
+              <td>Warehouse Build</td>
+              <td>Ankit Rawat</td>
+              <td>01 July 2025</td>
+              <td>
+                <button class="btn-approve">Approve</button>
+                <!-- <button class="btn-reject">Reject</button> -->
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <!-- 🔐 Password Modal -->
+    <div id="paymentPasswordModal" class="password-modal">
+      <div class="password-modal-content">
+        <h3>Security Check</h3>
+        <p>Enter payment access password</p>
+        <input
+          type="password"
+          id="paymentPasswordInput"
+          placeholder="Enter password"
+        />
+        <div class="password-actions">
+          <button onclick="closePaymentPassword()">Cancel</button>
+          <button onclick="verifyPaymentPassword()">Confirm</button>
+        </div>
+        <p id="paymentPasswordError" class="password-error"></p>
+      </div>
+    </div>
+
+    <!-- 💳 Payment Details Modal -->
+    <div id="paymentDetailsModal" class="modal">
+      <div class="modal-content large-modal">
+        <span class="close-modal" onclick="closePaymentDetails()">×</span>
+        <h2>💳 Payment Details</h2>
+
+        <!-- Previous Bills -->
+        <h3 class="bill-title">📜 Previous Bills</h3>
+        <div class="bill-scroll" id="previousBillsContainer"></div>
+
+        <h3 class="bill-title">🧾 Current Bill</h3>
+        <div class="bill-scroll">
+          <table class="bill-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Description</th>
+                <th>Amount (₹)</th>
+              </tr>
+            </thead>
+            <tbody id="currentBillBody"></tbody>
+          </table>
+        </div>
+
+        <div class="grand-total-box">
+          <div>
+            <div>Subtotal</div>
+            <div>GST (<span id="gstPercent"></span>%)</div>
+            <strong>Total Payable</strong>
+          </div>
+          <div style="text-align: right">
+            <div id="subTotal">₹0</div>
+            <div id="gstAmount">₹0</div>
+            <strong id="grandTotal">₹0</strong>
+          </div>
+        </div>
+        <h4>take screenshots or photos by camera</h4>
+        <button class="btn-download" onclick="downloadBillsPDF()">
+          ⬇ Download Bills (PDF)
+        </button>
+      </div>
+    </div>
+
+    <script>
+      let selectedUserKey = null;
+      const paymentConfig = {
+        neha: {
+          password: "neha@123",
+          previousBills: [
+            {
+              date: "2025-06-10",
+              status: "paid",
+              items: [
+                { desc: "Slab Filling", amount: 45000 },
+                { desc: "Soil Filling", amount: 18000 },
+              ],
+            },
+            {
+              date: "2025-06-25",
+              status: "unpaid",
+              items: [{ desc: "Material Transport", amount: 12000 }],
+            },
+          ],
+          currentBill: [
+            { desc: "Slab Filling", amount: 4000 },
+            { desc: "Soil Filling", amount: 180000 },
+            { desc: "Material Transport", amount: 120000 },
+          ],
+          gstPercent: 18,
+        },
+        vikram: {
+          password: "vikram@456",
+          previousBills: [
+            {
+              date: "2025-06-15",
+              status: "paid",
+              items: [{ desc: "Raw Material Supply", amount: 72000 }],
+            },
+          ],
+          currentBill: [{ desc: "Equipment Rent", amount: 25000 }],
+          gstPercent: 18,
+        },
+      };
+
+      // Open password modal
+      document.querySelectorAll(".payment-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          selectedUserKey = btn.dataset.user;
+          document.getElementById("paymentPasswordInput").value = "";
+          document.getElementById("paymentPasswordError").textContent = "";
+          document.getElementById("paymentPasswordModal").style.display =
+            "flex";
+        });
+      });
+
+      function closePaymentPassword() {
+        selectedUserKey = null;
+        document.getElementById("paymentPasswordModal").style.display = "none";
+      }
+
+      function verifyPaymentPassword() {
+        const entered = document
+          .getElementById("paymentPasswordInput")
+          .value.trim();
+        const errorEl = document.getElementById("paymentPasswordError");
+
+        if (!entered) {
+          errorEl.textContent = "Password required";
+          return;
+        }
+
+        const userData = paymentConfig[selectedUserKey];
+        if (!userData || entered !== userData.password) {
+          errorEl.textContent = "Incorrect password";
+          return;
+        }
+
+        document.getElementById("paymentPasswordModal").style.display = "none";
+        showPaymentDetails(userData);
+      }
+
+      function showPaymentDetails(data) {
+        const prevContainer = document.getElementById("previousBillsContainer");
+        const currBody = document.getElementById("currentBillBody");
+
+        prevContainer.innerHTML = "";
+        currBody.innerHTML = "";
+
+        let subTotal = 0;
+
+        // Previous bills (grouped by date)
+        data.previousBills.forEach((bill) => {
+          let billTotal = 0;
+
+          const itemsHTML = bill.items
+            .map((item, i) => {
+              billTotal += item.amount;
+              return `
+        <tr>
+          <td>${i + 1}</td>
+          <td>${item.desc}</td>
+          <td>₹${item.amount.toLocaleString()}</td>
+        </tr>
+      `;
+            })
+            .join("");
+
+          prevContainer.innerHTML += `
+      <div class="bill-group">
+        <div class="bill-header">
+          <span>📅 ${bill.date}</span>
+          <span class="bill-status ${bill.status}">
+            ${bill.status.toUpperCase()}
+          </span>
+        </div>
+        <table class="bill-table">
+          <tbody>${itemsHTML}</tbody>
+        </table>
+        <strong>Total: ₹${billTotal.toLocaleString()}</strong>
+      </div>
+    `;
+        });
+
+        // Current bill
+        data.currentBill.forEach((item, i) => {
+          subTotal += item.amount;
+          currBody.innerHTML += `
+      <tr>
+        <td>${i + 1}</td>
+        <td>${item.desc}</td>
+        <td>₹${item.amount.toLocaleString()}</td>
+      </tr>
+    `;
+        });
+
+        const gst = (subTotal * data.gstPercent) / 100;
+        const total = subTotal + gst;
+
+        document.getElementById("subTotal").textContent =
+          "₹" + subTotal.toLocaleString();
+        document.getElementById("gstAmount").textContent =
+          "₹" + gst.toLocaleString();
+        document.getElementById("gstPercent").textContent = data.gstPercent;
+        document.getElementById("grandTotal").textContent =
+          "₹" + total.toLocaleString();
+
+        document.getElementById("paymentDetailsModal").style.display = "flex";
+      }
+      function closePaymentDetails() {
+        document.getElementById("paymentDetailsModal").style.display = "none";
+      }
+      function downloadBillsPDF() {
+        alert(
+          "PDF generation will be enabled when backend is connected.\n\n" +
+            "This button is backend-ready."
+        );
+      }
+    </script>
+    <script>
+      function savePendingPaymentsCount() {
+        const count = document.querySelectorAll(
+          "#pendingPaymentsBody tr"
+        ).length;
+
+        // Store count so dashboard can read it
+        localStorage.setItem("pendingApprovalsCount", count);
+      }
+
+      // Run when approvals page loads
+      savePendingPaymentsCount();
+    </script>
+    <script>
+      const observer = new MutationObserver(savePendingPaymentsCount);
+
+      observer.observe(document.getElementById("pendingPaymentsBody"), {
+        childList: true,
+      });
+    </script>
+
+    <!-- Shared sidebar toggle + transitions -->
+    <script src="js/script.js"></script>
+  </body>
+</html>

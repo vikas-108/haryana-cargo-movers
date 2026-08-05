@@ -1,0 +1,251 @@
+/* --- Base Styles --- */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Helvetica Neue', Arial, sans-serif; background-color: #525659; padding: 40px 15px; display: flex; flex-direction: column; align-items: center; }
+
+/* Borders & Wrappers */
+.border-top { border-top: 2px solid #000; }
+.border-right { border-right: 2px solid #000000; }
+.border-bottom { border-bottom: 2px solid #000; }
+
+.bilti-wrapper {
+    background-color: #fff; width: 100%; max-width: 1050px;
+    border: 1px solid #000; padding: 4px; position: relative;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+/* Common Input Resets */
+input, textarea { border: none; outline: none; background: transparent; font-family: inherit; font-size: 13px; color: #000; }
+textarea { resize: none; width: 100%; }
+
+/* --- Top Header --- */
+.top-row { display: grid; grid-template-columns: 20% 58% 22%; }
+.meta-left { padding: 5px; }
+.logo-box { border: 0px solid #000; margin-top: 15px; padding: 4px; text-align: center; }
+.logo-tag { font-size: 14px; font-weight: bold; border-bottom: 0px solid #000; padding-bottom: 2px; }
+.truck-graphic { font-size: 24px; margin-top: 3px; }
+
+.meta-center { text-align: center; padding: 2px 5px; }
+.main-title { font-size: 32px; font-weight: 900; letter-spacing: -0.5px; transform: scaleY(1.1); margin: 2px 0; }
+.solutions { font-size: 12px; font-weight: bold; letter-spacing: 0.5px; }
+.address-pill { font-size: 12px; font-weight: bold; border: 2px solid #000; padding: 2px 6px; display: inline-block; margin-top: 5px; }
+
+/* Right Sidebar Inputs */
+.meta-right { display: flex; flex-direction: column; }
+.tpt-id-row { font-size: 11px; padding: 4px; text-align: center; }
+.sidebar-entry { display: grid; grid-template-columns: 80px 1fr; font-size: 12px; align-items: center; min-height: 24px; }
+.sidebar-entry .label { font-weight: bold; padding-left: 4px; }
+
+/* --- NEW: Party & GSTIN 15-Box Styles --- */
+.parties-wrapper { padding: 0; }
+.party-input-group { padding: 4px 6px; }
+
+.name-row { display: flex; align-items: center; margin-bottom: 4px; }
+.name-row .label { font-weight: bold; font-size: 12px; width: 120px; white-space: nowrap; }
+.party-name-input { border-bottom: 1px dotted #999; width: 100%; font-weight: bold; }
+
+.gst-row { display: flex; align-items: center; }
+.gst-row .label { font-weight: bold; font-size: 12px; width: 120px; }
+.gst-grid { display: flex; gap: 2px; }
+.gst-box {
+    width: 20px; height: 22px;
+    border: 1px solid #000;
+    text-align: center;
+    font-size: 12px; font-weight: bold;
+    padding: 0; border-radius: 0;
+}
+
+/* --- Ledger Table --- */
+.ledger-grid { display: flex; flex-direction: column; }
+.ledger-header { display: grid; grid-template-columns: 8% 50% 12% 7% 13% 10%; text-align: center; font-weight: bold; font-size: 12px; border-bottom: 2px solid #000; }
+.ledger-header > div { padding: 4px 2px; }
+
+.ledger-body { display: grid; grid-template-columns: 70% 20% 10%; min-height: 320px; }
+
+/* Left Pane */
+.ledger-left-pane{
+    display:flex;
+    flex-direction:column;
+}
+.workspace-inputs{
+    display:grid;
+    grid-template-columns:11.4% 71.4% 17.2%;
+    flex:1;
+}
+.workspace-inputs textarea { height: 100%; padding: 5px; }
+
+.invoice-footer-bar{
+    display:grid;
+    grid-template-columns:55% 45%;
+    padding:6px;
+    margin-top:auto;
+}
+.inv-row { display: flex; align-items: center; font-size: 13px; font-weight: bold; margin-bottom: 2px;}
+.inv-row .lbl { width: 100px; }
+.inv-row input { border-bottom: 1px dotted #000; width: 60%; }
+
+.charged-weight-row { display: grid; grid-template-columns: 82.8% 17.2%; font-size: 12px; font-weight: bold; }
+.cw-label { text-align: right; padding: 5px 10px; }
+.cw-input-box input { padding: 4px; text-align: center; width: 100%; font-weight: bold;}
+
+/* Right Pane (Prices) */
+.ledger-right-pane { display: grid; grid-template-columns: 35% 65%; grid-template-rows: repeat(7, 1fr); }
+.charge-item input { width: 100%; height: 100%; text-align: right; padding: 0 5px; font-size: 14px; }
+.charge-label-row { font-size: 12px; font-weight: bold; padding-left: 5px; display: flex; align-items: center; border-bottom: 2px solid #000; }
+.ledger-right-pane .charge-item { border-bottom: 2px solid #000; }
+.bg-gray { background-color: #e1e1e1; }
+
+/* --- UPDATED: Status Sidebar --- */
+.status-sidebar { display: flex; flex-direction: column; text-align: center; }
+.status-cell-block { 
+    flex: 1; display: flex; align-items: center; justify-content: center; 
+}
+.status-check { 
+    width: 25px; height: 25px; cursor: pointer; accent-color: #000; 
+}
+.status-title-strip { font-size: 12px; font-weight: bold; padding: 3px 0; background-color: #fff; }
+
+/* --- Footer --- */
+.footer-matrix { display: flex; flex-direction: column; }
+.footer-columns { display: grid; grid-template-columns: 20% 53% 27%; }
+.column-tax { padding: 5px; font-size: 11px; font-weight: bold; }
+.check-row { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+
+.column-disclaimer { padding: 5px; font-size: 10px; font-weight: bold; display: flex; flex-direction: column; justify-content: space-between; }
+.driver-sign-row { display: flex; font-size: 11px; align-items: center; margin-top: 5px; }
+.dotted-input { border-bottom: 1px dotted #000; flex: 1; margin-left: 5px; }
+
+.column-auth { display: flex; flex-direction: column; justify-content: space-between; padding: 5px; text-align: center; }
+.owner-risk-text { font-weight: 900; font-size: 15px; letter-spacing: 0.5px; }
+.signature-gap { height: 40px; }
+.clerk-sign-line { font-size: 12px; font-weight: bold; }
+
+.bottom-banner-ribbon { display: flex; justify-content: space-between; padding: 4px 8px; font-size: 11px; }
+
+/* Print & Responsive */
+.print-utility-controls { margin-top: 20px; }
+.print-utility-controls button { background-color: #222; color: #fff; padding: 10px 24px; font-weight: bold; border-radius: 4px; cursor: pointer; border: 1px solid #000; }
+
+@media print {
+    body { background: transparent; padding: 0; }
+    .bilti-wrapper { box-shadow: none; width: 100%; max-width: 100%; border: 2px solid #000; }
+    .print-utility-controls { display: none; }
+    input::placeholder { color: transparent; }
+}
+.cell-weight{
+    display:grid;
+    grid-template-rows:70% 35px 30%;
+    height:100%;
+}
+
+.weight-box{
+    display:flex;
+    height: 40px;
+    justify-content:center;
+    align-items:center;
+    border-bottom:2px solid #000;
+}
+
+.actual-header,
+.charged-header{
+    font-size:13px;
+    font-weight:700;
+    text-transform:uppercase;
+}
+
+.actual-value input,
+.charged-value input{
+    width:100%;
+    height:100%;
+    border:none;
+    outline:none;
+    text-align:center;
+    font-size:22px;
+    font-weight:bold;
+    background:transparent;
+}
+
+.actual-value,
+.charged-value{
+    padding:0;
+}
+.cell-weight{
+    display:flex;
+    flex-direction:column;
+    height:100%;
+}
+
+.actual-value{
+    flex:1;
+    border-bottom:2px solid #000;
+}
+
+.charged-header{
+    height:40px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-bottom:2px solid #000;
+    font-weight:bold;
+}
+
+.charged-value{
+    height:95px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.signature-input{
+    font-weight:600;
+    font-size:24px;
+    text-align:center;
+}
+
+@page{
+    size:A4 portrait;
+    margin:6mm;
+}
+
+@media print{
+
+    body{
+        margin:0;
+        padding:0;
+        background:#fff;
+    }
+
+    #downloadA4Btn{
+        display:none;
+    }
+ .print-copy{
+        height:47%;
+        overflow:hidden;
+    }
+    #printArea{
+        display:block !important;
+    }
+
+    .copy-title{
+        text-align:center;
+        font-size:18px;
+        font-weight:bold;
+        margin-bottom:8px;
+    }
+
+   .cut-line{
+        height:8mm;
+        border-top:2px dashed #000;
+        border-bottom:2px dashed #000;
+        margin:2mm 0;
+    }
+
+    .bilti-wrapper{
+        width:100%;
+        max-width:none;
+        box-shadow:none;
+        border:2px solid #000;
+    }
+}
+
+
+

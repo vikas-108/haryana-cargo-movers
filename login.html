@@ -1,0 +1,51 @@
+<!-- login code -->
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Login</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="login-body">
+  <div class="login-container">
+    <h2>🔐 Admin Panel Login</h2>
+
+    <form id="loginForm">
+      <label for="email">📧 Email Address</label>
+     <input type="email" id="email" value="admin@example.com" disabled />
+
+      <label for="password">🔒 Password</label>
+      <input type="password" id="password" value="admin123" disabled />
+
+      <button type="submit">Login</button>
+      <p class="demo-note">Demo Login Enabled: Just press Login</p>
+    </form>
+
+    <p class="footer-text">© 2025 Contractor Admin Portal</p>
+  </div>
+  <script>
+  document.getElementById("loginForm").addEventListener("submit", function (e) {
+    e.preventDefault(); // Stop actual form submit
+
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value.trim();
+
+    // Simple check (replace with real backend validation later)
+    if (!email || !password) {
+      alert("Please enter both email and password.");
+      return;
+    }
+
+    // Optional: simulate login check
+    if (email === "admin@example.com" && password === "admin123") {
+      window.location.href = "Dashboard.html";
+    } else {
+      alert("Invalid credentials. Try admin@example.com / admin123");
+    }
+  });
+</script>
+
+</body>
+</html>
+

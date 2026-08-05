@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Broadcast Notification</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <div class="sidebar" id="sidebar">
+      <h2>Notification</h2>
+      <a href="Dashboard.html">🏠 Dashboard</a>
+      <a href="users.html">👥 Users</a>
+      <a href="project.html">🏗️ Projects</a>
+      <a href="approvals.html">📝 Approvals</a>
+      <a href="documents.html">📁 Documents</a>
+      <a href="reports.html">📊 Reports</a>
+      <a href="notify.html">📣 Notify</a>
+      <a href="settings.html">⚙️ Settings</a>
+      <a href="login.html">🚪 Logout</a>
+    </div>
+
+        <div class="dashboard-content" id="content">
+      <!-- Header with toggle button -->
+      <div class="dashboard-header">
+        <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+              <h1>📣 Broadcast Notification</h1>
+      </div>
+
+      <div class="notify-box">
+        <form id="notifyForm">
+          <label for="target">📍 Target Audience</label>
+          <select id="target">
+            <option value="all">All Users</option>
+            <option value="clients">Clients</option>
+            <option value="contractors">Contractors</option>
+          </select>
+
+          <label for="title">📝 Message Title</label>
+          <input
+            type="text"
+            id="title"
+            placeholder="Enter message title"
+            required
+          />
+
+          <label for="message">💬 Message Body</label>
+          <textarea
+            id="message"
+            rows="6"
+            placeholder="Type your message..."
+            required
+          ></textarea>
+          <label for="media">🖼️ Upload Image or Video</label>
+          <input type="file" id="media" accept="image/*,video/*" />
+
+          <div id="mediaPreview" class="media-preview"></div>
+          <label for="media">🖼️ Upload Image or Video</label>
+          <input type="file" id="media" accept="image/*,video/*" />
+
+          <div id="mediaPreview" class="media-preview"></div>
+
+          <button type="submit" class="btn-send">Send Notification</button>
+        </form>
+      </div>
+    </div>
+    <script>
+      document.getElementById("media").addEventListener("change", function (e) {
+        const file = e.target.files[0];
+        const preview = document.getElementById("mediaPreview");
+        preview.innerHTML = ""; // Clear previous preview
+
+        if (!file) return;
+
+        const url = URL.createObjectURL(file);
+
+        if (file.type.startsWith("image/")) {
+          const img = document.createElement("img");
+          img.src = url;
+          preview.appendChild(img);
+        } else if (file.type.startsWith("video/")) {
+          const video = document.createElement("video");
+          video.src = url;
+          video.controls = true;
+          preview.appendChild(video);
+        }
+      });
+    </script>
+    <script src="js/script.js"></script>
+
+  </body>
+</html>

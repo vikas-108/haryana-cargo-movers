@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Reports & Analytics</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="sidebar" id="sidebar">
+    <h2>Reports</h2>
+    <a href="Dashboard.html">🏠 Dashboard</a>
+    <a href="users.html">👥 Users</a>
+    <!-- <a href="notify.html">📣 Notify</a> -->
+    <a href="project.html">🏗️ Projects</a>
+    <a href="approvals.html">📝 Approvals</a>
+    <!--<a href="documents.html">📁 Documents</a>-->
+    <a href="reports.html" class="active">📊 Reports</a>
+    <!-- <a href="settings.html">⚙️ Settings</a> -->
+    <a href="login.html">🚪 Logout</a>
+  </div>
+
+      <div class="dashboard-content" id="content">
+      <!-- Header with toggle button -->
+      <div class="dashboard-header">
+        <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+        <h1>Reports</h1>
+      </div>
+
+    <div class="dashboard-cards">
+      <div class="card">
+        <h3>New Users (This Month)</h3>
+        <p>134</p>
+      </div>
+      <div class="card">
+        <h3>Projects Completed</h3>
+        <p>87</p>
+      </div>
+      <div class="card">
+        <h3>Pending Approvals</h3>
+        <p>12</p>
+      </div>
+      <div class="card">
+        <h3>Total Revenue</h3>
+        <p>₹5.6L</p>
+      </div>
+    </div>
+
+    <div class="charts-section">
+      <div class="chart-box">
+        <h3>User Growth (Bar Chart)</h3>
+        <div class="chart-placeholder">[ Chart Placeholder ]</div>
+      </div>
+      <div class="chart-box">
+        <h3>Project Type Distribution (Pie Chart)</h3>
+        <div class="chart-placeholder">[ Chart Placeholder ]</div>
+      </div>
+    </div>
+  </div>
+  <script src="js/script.js"></script>
+
+</body>
+</html>
