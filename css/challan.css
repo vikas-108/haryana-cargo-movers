@@ -489,437 +489,1996 @@ footer{
     padding:16px;
 }
 
-/*==================================================
-            ACTION BUTTONS
-==================================================*/
+/* =========================================================
+   GOODS MODAL
+========================================================= */
 
-.editBtn,
-.deleteBtn{
+.modal {
+    position: fixed;
+    inset: 0;
 
-    width:38px;
-    height:38px;
+    display: none;
 
-    border:none;
-    cursor:pointer;
+    align-items: center;
+    justify-content: center;
 
-    border-radius:8px;
+    padding: 20px;
 
-    color:#fff;
+    background: rgba(0, 0, 0, 0.60);
 
-    transition:.25s;
+    z-index: 9999;
 
-    margin:0 2px;
+    overflow: hidden;
+
+    backdrop-filter: blur(3px);
+}
+
+
+/* OPEN */
+
+.modal.show {
+    display: flex;
+
+    animation: modalFadeIn 0.2s ease;
+}
+
+
+/* =========================================================
+   MODAL CONTENT
+========================================================= */
+
+.modal-content {
+
+    width: min(900px, 100%);
+
+    max-height: calc(100dvh - 40px);
+
+    display: flex;
+    flex-direction: column;
+
+    background: #fff;
+
+    border-radius: 16px;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 25px 70px rgba(0, 0, 0, 0.25);
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.modal-header {
+
+    flex: 0 0 auto;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 15px;
+
+    padding: 16px 22px;
+
+    background: #1d4ed8;
+
+    color: #fff;
+}
+
+
+.modal-header h2 {
+
+    margin: 0;
+
+    font-size: 21px;
+
+    line-height: 1.2;
+
+    font-weight: 700;
+}
+
+
+.modal-subtitle {
+
+    display: block;
+
+    margin-top: 3px;
+
+    font-size: 12px;
+
+    opacity: 0.85;
+}
+
+
+/* CLOSE BUTTON */
+
+.modal-header button {
+
+    flex: 0 0 auto;
+
+    width: 40px;
+    height: 40px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border: 0;
+
+    border-radius: 9px;
+
+    background: transparent;
+
+    color: #fff;
+
+    font-size: 22px;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.modal-header button:hover {
+
+    background: rgba(255, 255, 255, 0.16);
+
+    transform: rotate(3deg);
+}
+
+
+/* =========================================================
+   BODY
+========================================================= */
+
+.modal-body {
+
+    flex: 1 1 auto;
+
+    min-height: 0;
+
+    padding: 22px;
+
+    overflow-y: auto;
+
+    overflow-x: hidden;
+
+    -webkit-overflow-scrolling: touch;
+
+    scrollbar-width: thin;
+
+    scrollbar-color: #bdbdbd transparent;
+}
+
+
+/* Chrome / Edge / Safari */
+
+.modal-body::-webkit-scrollbar {
+
+    width: 7px;
+}
+
+
+.modal-body::-webkit-scrollbar-track {
+
+    background: transparent;
+}
+
+
+.modal-body::-webkit-scrollbar-thumb {
+
+    background: #c5c5c5;
+
+    border-radius: 20px;
+}
+
+
+.modal-body::-webkit-scrollbar-thumb:hover {
+
+    background: #999;
+}
+
+
+/* =========================================================
+   FORM GRID
+========================================================= */
+
+.modal-body .grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 17px;
+}
+
+
+/* =========================================================
+   FORM GROUP
+========================================================= */
+
+.form-group {
+
+    min-width: 0;
+
+    display: flex;
+
+    flex-direction: column;
+}
+
+
+/* Description gets more width */
+
+.form-group-wide {
+
+    grid-column: span 2;
+}
+
+
+/* =========================================================
+   LABEL
+========================================================= */
+
+.form-group label {
+
+    margin-bottom: 7px;
+
+    color: #333;
+
+    font-size: 13px;
+
+    line-height: 1.2;
+
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   INPUT
+========================================================= */
+
+.form-group input {
+
+    width: 100%;
+
+    height: 45px;
+
+    min-width: 0;
+
+    padding: 0 12px;
+
+    border: 1px solid #d5d9df;
+
+    border-radius: 8px;
+
+    outline: none;
+
+    background: #fff;
+
+    color: #222;
+
+    font-family: inherit;
+
+    font-size: 14px;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.form-group input::placeholder {
+
+    color: #a3a7ad;
+}
+
+
+.form-group input:hover {
+
+    border-color: #b7bdc7;
+}
+
+
+.form-group input:focus {
+
+    border-color: #2563eb;
+
+    box-shadow:
+        0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+
+/* =========================================================
+   NUMBER INPUT
+========================================================= */
+
+.form-group input[type="number"] {
+
+    appearance: textfield;
+    -moz-appearance: textfield;
+}
+
+
+.form-group input[type="number"]::-webkit-inner-spin-button,
+.form-group input[type="number"]::-webkit-outer-spin-button {
+
+    opacity: 1;
+}
+
+
+/* =========================================================
+   WEIGHT WITH KG
+========================================================= */
+
+.input-with-unit {
+
+    position: relative;
+
+    width: 100%;
+}
+
+
+.input-with-unit input {
+
+    padding-right: 45px;
+}
+
+
+.input-with-unit span {
+
+    position: absolute;
+
+    right: 12px;
+
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    color: #666;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    pointer-events: none;
+}
+
+
+/* =========================================================
+   MODAL FOOTER
+========================================================= */
+
+.modal-footer {
+
+    flex: 0 0 auto;
+
+    display: flex;
+
+    justify-content: flex-end;
+
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 15px 22px;
+
+    border-top: 1px solid #e8e8e8;
+
+    background: #fff;
+}
+
+
+/* =========================================================
+   FOOTER BUTTONS
+========================================================= */
+
+.modal-footer button {
+
+    min-height: 43px;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 7px;
+
+    padding: 10px 20px;
+
+    border: 0;
+
+    border-radius: 8px;
+
+    font-family: inherit;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    white-space: nowrap;
+
+    transition:
+        transform 0.15s ease,
+        opacity 0.15s ease;
+}
+
+
+.modal-footer button:hover {
+
+    transform: translateY(-1px);
+}
+
+
+.modal-footer button:active {
+
+    transform: translateY(0);
+}
+
+
+/* CANCEL */
+
+.modal-cancel-btn {
+
+    background: #e8e8e8;
+
+    color: #222;
+}
+
+
+.modal-cancel-btn:hover {
+
+    background: #ddd;
+}
+
+
+/* SAVE */
+
+.modal-save-btn {
+
+    background: #16a34a;
+
+    color: #fff;
+}
+
+
+.modal-save-btn:hover {
+
+    background: #12843b;
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 850px) {
+
+    .modal {
+
+        padding: 14px;
+    }
+
+
+    .modal-content {
+
+        width: 100%;
+
+        max-height: calc(100dvh - 28px);
+    }
+
+
+    .modal-body {
+
+        padding: 18px;
+    }
+
+
+    .modal-body .grid {
+
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+        gap: 15px;
+    }
+
+
+    .form-group-wide {
+
+        grid-column: span 2;
+    }
 
 }
 
-.editBtn{
 
-    background:#2563eb;
+/* =========================================================
+   MOBILE
+========================================================= */
 
-}
+@media (max-width: 560px) {
 
-.deleteBtn{
+    .modal {
 
-    background:#dc2626;
+        align-items: center;
 
-}
+        padding: 8px;
+    }
 
-.editBtn:hover,
-.deleteBtn:hover{
 
-    transform:scale(1.08);
+    .modal-content {
 
-}
+        width: 100%;
 
-/*==================================================
-                MODAL
-==================================================*/
+        max-height: calc(100dvh - 16px);
 
-.modal{
+        border-radius: 12px;
+    }
 
-    position:fixed;
 
-    inset:0;
+    .modal-header {
 
-    background:rgba(0,0,0,.55);
+        padding: 13px 15px;
+    }
 
-    display:none;
 
-    justify-content:center;
+    .modal-header h2 {
 
-    align-items:center;
+        font-size: 18px;
+    }
 
-    padding:20px;
 
-    z-index:9999;
+    .modal-subtitle {
 
-}
+        font-size: 11px;
+    }
 
-.modal.show{
 
-    display:flex;
+    .modal-header button {
 
-    animation:fadeIn .25s ease;
+        width: 36px;
+        height: 36px;
 
-}
+        font-size: 20px;
+    }
 
-.modal-content{
 
-    width:100%;
+    .modal-body {
 
-    max-width:700px;
+        padding: 15px;
+    }
 
-    background:#fff;
 
-    border-radius:15px;
+    .modal-body .grid {
 
-    overflow:hidden;
+        grid-template-columns: 1fr;
 
-    box-shadow:0 20px 50px rgba(0,0,0,.2);
+        gap: 13px;
+    }
 
-}
 
-.modal-header{
+    .form-group-wide {
 
-    background:#1d4ed8;
+        grid-column: auto;
+    }
 
-    color:#fff;
 
-    display:flex;
+    .form-group label {
 
-    justify-content:space-between;
+        font-size: 13px;
 
-    align-items:center;
+        margin-bottom: 6px;
+    }
 
-    padding:18px 22px;
 
-}
+    .form-group input {
 
-.modal-header h2{
+        height: 44px;
 
-    font-size:22px;
+        font-size: 14px;
+    }
 
-}
 
-.modal-header button{
+    .modal-footer {
 
-    border:none;
+        padding: 12px 15px;
 
-    background:none;
+        gap: 8px;
+    }
 
-    color:#fff;
 
-    font-size:24px;
+    .modal-footer button {
 
-    cursor:pointer;
+        flex: 1;
 
-}
+        min-height: 43px;
 
-.modal-body{
-
-    padding:25px;
+        padding: 10px 12px;
+    }
 
 }
 
-.modal-body .grid{
 
-    display:grid;
+/* =========================================================
+   VERY SMALL PHONES
+========================================================= */
 
-    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+@media (max-width: 360px) {
 
-    gap:18px;
+    .modal {
 
-}
+        padding: 5px;
+    }
 
-.modal-body label{
 
-    display:block;
+    .modal-content {
 
-    font-weight:600;
+        max-height: calc(100dvh - 10px);
 
-    margin-bottom:6px;
+        border-radius: 10px;
+    }
 
-}
 
-.modal-body input,
-.modal-body select{
+    .modal-header {
 
-    width:100%;
+        padding: 11px 12px;
+    }
 
-    height:46px;
 
-    border:1px solid #d9d9d9;
+    .modal-body {
 
-    border-radius:8px;
+        padding: 12px;
+    }
 
-    padding:0 14px;
 
-    font-size:15px;
+    .form-group input {
 
-}
+        height: 42px;
 
-.modal-body input:focus,
-.modal-body select:focus{
+        font-size: 13px;
+    }
 
-    outline:none;
 
-    border-color:#2563eb;
+    .modal-footer {
 
-    box-shadow:0 0 0 3px rgba(37,99,235,.15);
+        padding: 10px 12px;
+    }
 
-}
 
-.modal-footer{
+    .modal-footer button {
 
-    display:flex;
+        font-size: 13px;
 
-    justify-content:flex-end;
-
-    gap:12px;
-
-    padding:20px;
-
-    border-top:1px solid #ececec;
+        min-height: 41px;
+    }
 
 }
 
-.modal-footer button{
 
-    padding:12px 22px;
+/* =========================================================
+   ANIMATION
+========================================================= */
 
-    border:none;
+@keyframes modalFadeIn {
 
-    border-radius:8px;
+    from {
 
-    cursor:pointer;
-
-    font-weight:600;
-
-}
-
-#cancelBtn{
-
-    background:#e5e5e5;
-
-}
-
-#saveItem{
-
-    background:#16a34a;
-
-    color:#fff;
-
-}
-
-/*==================================================
-                ANIMATION
-==================================================*/
-
-@keyframes fadeIn{
-
-    from{
-
-        opacity:0;
-
-        transform:scale(.95);
+        opacity: 0;
 
     }
 
-    to{
+    to {
 
-        opacity:1;
+        opacity: 1;
 
-        transform:scale(1);
+    }
+
+}
+/* =========================================================
+   PRINT VERSION
+   TRANSPORT CHALLAN
+   A4 LANDSCAPE
+========================================================= */
+
+@page {
+    size: A4 landscape;
+    margin: 5mm;
+}
+/* =========================================================
+   REMARKS + DRIVER PAYMENT
+========================================================= */
+
+.remarks-payment-section {
+
+    display: grid;
+
+    grid-template-columns:
+        1fr
+        360px;
+
+    gap: 0;
+
+    border-top: 1px solid #000;
+
+    border-bottom: 1px solid #000;
+
+    background: #fff;
+}
+
+
+/* =========================================================
+   REMARKS
+========================================================= */
+
+.remarks-box {
+
+    min-width: 0;
+
+    padding: 12px;
+
+    border-right: 1px solid #000;
+
+    display: flex;
+
+    flex-direction: column;
+}
+
+
+.remarks-box label {
+
+    display: block;
+
+    margin-bottom: 8px;
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    color: #222;
+}
+
+
+.remarks-box textarea {
+
+    width: 100%;
+
+    flex: 1;
+
+    min-height: 150px;
+
+    padding: 10px;
+
+    border: 1px solid #d5d9df;
+
+    border-radius: 8px;
+
+    outline: none;
+
+    resize: vertical;
+
+    font-family: inherit;
+
+    font-size: 14px;
+
+    color: #222;
+
+    background: #fff;
+}
+
+
+.remarks-box textarea:focus {
+
+    border-color: #2563eb;
+
+    box-shadow:
+        0 0 0 3px rgba(37, 99, 235, 0.10);
+}
+
+
+/* =========================================================
+   DRIVER PAYMENT BOX
+========================================================= */
+
+.driver-payment-box {
+
+    width: 100%;
+
+    background: #fff;
+}
+
+
+/* =========================================================
+   PAYMENT TITLE
+========================================================= */
+
+.payment-title {
+
+    padding: 9px 12px;
+
+    background: #1d4ed8;
+
+    color: #fff;
+
+    font-size: 13px;
+
+    font-weight: 800;
+
+    letter-spacing: .4px;
+
+    text-align: center;
+}
+
+
+/* =========================================================
+   PAYMENT ROW
+========================================================= */
+
+.payment-row {
+
+    min-height: 37px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 12px;
+
+    padding: 6px 12px;
+
+    border-bottom: 1px solid #ddd;
+
+    font-size: 13px;
+}
+
+
+.payment-row > span {
+
+    color: #333;
+
+    font-weight: 600;
+}
+
+
+.payment-row > label {
+
+    flex: 1;
+
+    color: #333;
+
+    font-weight: 600;
+
+    font-size: 13px;
+}
+
+
+.payment-row strong {
+
+    flex: 0 0 auto;
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    color: #111;
+}
+
+
+/* =========================================================
+   LESS VALUES
+========================================================= */
+
+.less-row strong {
+
+    color: #b42318;
+}
+
+
+/* =========================================================
+   SETTLEMENT INPUT
+========================================================= */
+
+.settlement-input {
+
+    width: 120px;
+
+    height: 31px;
+
+    display: flex;
+
+    align-items: center;
+
+    border: 1px solid #cfd3d8;
+
+    border-radius: 6px;
+
+    overflow: hidden;
+
+    background: #fff;
+}
+
+
+.settlement-input span {
+
+    padding-left: 8px;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    color: #555;
+}
+
+
+.settlement-input input {
+
+    width: 100%;
+
+    height: 100%;
+
+    border: none;
+
+    outline: none;
+
+    padding: 0 7px;
+
+    font-family: inherit;
+
+    font-size: 13px;
+
+    text-align: right;
+
+    background: transparent;
+
+    color: #111;
+}
+
+
+.settlement-input input:focus {
+
+    box-shadow:
+        inset 0 0 0 2px #2563eb;
+}
+
+
+/* Remove number arrows */
+
+.settlement-input input[type="number"] {
+
+    appearance: textfield;
+
+    -moz-appearance: textfield;
+}
+
+
+.settlement-input input[type="number"]::-webkit-inner-spin-button,
+.settlement-input input[type="number"]::-webkit-outer-spin-button {
+
+    -webkit-appearance: none;
+
+    margin: 0;
+}
+
+
+/* =========================================================
+   FINAL PAY TO DRIVER
+========================================================= */
+
+/* =========================================================
+   PAY TO DRIVER
+========================================================= */
+
+.pay-driver-row {
+
+    min-height: 55px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 15px;
+
+    padding: 8px 12px;
+
+    background: #f0fdf4;
+
+    border-top: 2px solid #000;
+}
+
+
+.pay-driver-row > span {
+
+    font-size: 14px;
+
+    font-weight: 900;
+
+    color: #111;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   MANUAL PAY TO DRIVER INPUT
+========================================================= */
+
+.pay-driver-input {
+
+    width: 150px;
+
+    height: 38px;
+
+    display: flex;
+
+    align-items: center;
+
+    background: #fff;
+
+    border: 2px solid #15803d;
+
+    border-radius: 7px;
+
+    overflow: hidden;
+}
+
+
+.pay-driver-input > span {
+
+    padding-left: 10px;
+
+    font-size: 14px;
+
+    font-weight: 800;
+
+    color: #15803d;
+}
+
+
+.pay-driver-input input {
+
+    width: 100%;
+
+    height: 100%;
+
+    border: none;
+
+    outline: none;
+
+    padding: 0 10px 0 5px;
+
+    background: transparent;
+
+    color: #15803d;
+
+    font-size: 18px;
+
+    font-weight: 900;
+
+    text-align: right;
+
+    font-family: inherit;
+}
+
+
+/* Remove number arrows */
+
+.pay-driver-input input[type="number"] {
+
+    appearance: textfield;
+
+    -moz-appearance: textfield;
+}
+
+
+.pay-driver-input input[type="number"]::-webkit-inner-spin-button,
+.pay-driver-input input[type="number"]::-webkit-outer-spin-button {
+
+    -webkit-appearance: none;
+
+    margin: 0;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 400px) {
+
+    .pay-driver-row {
+
+        padding: 8px 9px;
+
+    }
+
+    .pay-driver-row > span {
+
+        font-size: 12px;
+
+    }
+
+    .pay-driver-input {
+
+        width: 125px;
+
+        height: 36px;
+
+    }
+
+    .pay-driver-input input {
+
+        font-size: 16px;
 
     }
 
 }
 
-/*==================================================
-            CUSTOM SCROLLBAR
-==================================================*/
 
-::-webkit-scrollbar{
+/* =========================================================
+   TABLET
+========================================================= */
 
-    width:10px;
-    height:10px;
+@media (max-width: 850px) {
 
-}
+    .remarks-payment-section {
 
-::-webkit-scrollbar-thumb{
-
-    background:#c9c9c9;
-
-    border-radius:20px;
-
-}
-
-::-webkit-scrollbar-thumb:hover{
-
-    background:#9c9c9c;
-
-}
-
-/*==================================================
-            MOBILE RESPONSIVE
-==================================================*/
-
-@media(max-width:992px){
-
-    .company-header{
-
-        grid-template-columns:1fr;
-
-        text-align:center;
-
-    }
-
-    .logo-box{
-
-        margin:auto;
-
-    }
-
-    .company-details h1{
-
-        font-size:34px;
+        grid-template-columns: 1fr 320px;
 
     }
 
 }
 
-@media(max-width:768px){
 
-    body{
+/* =========================================================
+   MOBILE
+========================================================= */
 
-        padding:10px;
+@media (max-width: 650px) {
 
-    }
+    .remarks-payment-section {
 
-    .toolbar{
-
-        justify-content:center;
-
-    }
-
-    .toolbar button{
-
-        flex:1 1 100%;
+        grid-template-columns: 1fr;
 
     }
 
-    footer{
 
-        flex-direction:column;
+    .remarks-box {
 
-        gap:25px;
+        border-right: none;
 
-        text-align:center;
-
-    }
-
-    #goodsTable{
-
-        min-width:900px;
+        border-bottom: 1px solid #000;
 
     }
 
-}
 
-@media(max-width:500px){
+    .remarks-box textarea {
 
-    .company-details h1{
-
-        font-size:26px;
+        min-height: 100px;
 
     }
 
-    .company-details h3{
 
-        font-size:17px;
+    .driver-payment-box {
 
-    }
-
-    .challan-title{
-
-        font-size:13px;
-
-    }
-
-    .modal-content{
-
-        border-radius:10px;
-
-    }
-
-}
-
-/*==================================================
-                PRINT
-==================================================*/
-
-@media print{
-
-    body{
-
-        background:#fff;
-
-        padding:0;
-
-    }
-
-    .toolbar{
-
-        display:none;
-
-    }
-
-    .modal{
-
-        display:none !important;
-
-    }
-
-    .page{
-
-        box-shadow:none;
-
-        border:none;
-
-        max-width:100%;
-
-    }
-
-    #goodsTable{
-
-        min-width:100%;
-
-        box-shadow:none;
-
-    }
-
-    #goodsTable th{
-
-        background:#fff !important;
-
-        color:#000 !important;
-
-        border:1px solid #000;
-
-    }
-
-    #goodsTable td{
-
-        border:1px solid #000;
-
-    }
-
-    footer{
-
-        margin-top:40px;
+        width: 100%;
 
     }
 
 }
 
 
+/* =========================================================
+   SMALL MOBILE
+========================================================= */
+
+@media (max-width: 400px) {
+
+    .payment-row {
+
+        padding: 6px 9px;
+
+        font-size: 12px;
+
+    }
+
+
+    .payment-row > label {
+
+        font-size: 12px;
+
+    }
+
+
+    .settlement-input {
+
+        width: 105px;
+
+    }
+
+
+    .pay-driver-row span {
+
+        font-size: 12px;
+
+    }
+
+
+    .pay-driver-row strong {
+
+        font-size: 16px;
+
+    }
+
+}
+
+@media print {
+
+    /* =====================================================
+       PAGE RESET
+    ===================================================== */
+
+    html,
+    body {
+
+        width: 100% !important;
+
+        height: auto !important;
+
+        margin: 0 !important;
+
+        padding: 0 !important;
+
+        background: #fff !important;
+
+        color: #000 !important;
+
+    }
+
+
+    body {
+
+        font-family:
+            Arial,
+            Helvetica,
+            sans-serif;
+
+        font-size: 10px !important;
+
+        overflow: visible !important;
+
+        -webkit-print-color-adjust: exact;
+
+        print-color-adjust: exact;
+
+    }
+
+
+    /* =====================================================
+       HIDE SCREEN ELEMENTS
+    ===================================================== */
+
+    .toolbar,
+    .modal,
+    .editBtn,
+    .deleteBtn,
+    .action-column {
+
+        display: none !important;
+
+    }
+
+
+    /* =====================================================
+       MAIN PAGE
+    ===================================================== */
+
+    .page {
+
+        width: 100% !important;
+
+        max-width: none !important;
+
+        margin: 0 !important;
+
+        padding: 0 !important;
+
+        border: 1px solid #000 !important;
+
+        border-radius: 0 !important;
+
+        background: #fff !important;
+
+        box-shadow: none !important;
+
+        overflow: visible !important;
+
+    }
+
+
+    /* =====================================================
+       COMPANY HEADER
+    ===================================================== */
+
+    .company-header {
+
+        display: grid !important;
+
+        grid-template-columns: 72px 1fr !important;
+
+        gap: 10px !important;
+
+        padding: 6px 8px !important;
+
+        align-items: center !important;
+
+        border-bottom: 1px solid #000 !important;
+
+    }
+
+
+    .logo-box {
+
+        width: 62px !important;
+
+        height: 62px !important;
+
+        padding: 3px !important;
+
+        border: 1px solid #000 !important;
+
+        border-radius: 0 !important;
+
+    }
+
+
+    .logo-box img {
+
+        width: 100% !important;
+
+        height: 100% !important;
+
+        object-fit: contain !important;
+
+    }
+
+
+    .company-details {
+
+        text-align: center !important;
+
+    }
+
+
+    .challan-title {
+
+        display: inline-block !important;
+
+        padding: 2px 9px !important;
+
+        margin-bottom: 3px !important;
+
+        border: 1px solid #000 !important;
+
+        border-radius: 0 !important;
+
+        background: #fff !important;
+
+        color: #000 !important;
+
+        font-size: 10px !important;
+
+        line-height: 12px !important;
+
+        font-weight: 700 !important;
+
+    }
+
+
+    .company-details h1 {
+
+        margin: 0 !important;
+
+        color: #000 !important;
+
+        font-size: 21px !important;
+
+        line-height: 24px !important;
+
+    }
+
+
+    .company-details h3 {
+
+        margin: 2px 0 !important;
+
+        color: #000 !important;
+
+        font-size: 11px !important;
+
+        line-height: 13px !important;
+
+    }
+
+
+    .company-details p {
+
+        margin: 1px 0 !important;
+
+        color: #000 !important;
+
+        font-size: 9px !important;
+
+        line-height: 11px !important;
+
+    }
+
+
+    /* =====================================================
+       CHALLAN INFORMATION
+    ===================================================== */
+
+    .challan-info {
+
+        display: grid !important;
+
+        grid-template-columns:
+            repeat(4, 1fr) !important;
+
+        gap: 0 !important;
+
+        padding: 0 !important;
+
+        border-bottom: 1px solid #000 !important;
+
+    }
+
+
+    .field {
+
+        display: flex !important;
+
+        flex-direction: column !important;
+
+        min-width: 0 !important;
+
+        border-right: 1px solid #000 !important;
+
+        border-bottom: 1px solid #000 !important;
+
+    }
+
+
+    .field:nth-child(4n) {
+
+        border-right: none !important;
+
+    }
+
+
+    .field label {
+
+        padding: 3px 5px !important;
+
+        margin: 0 !important;
+
+        background: #eeeeee !important;
+
+        color: #000 !important;
+
+        border-bottom: 1px solid #000 !important;
+
+        font-size: 10px !important;
+
+        line-height: 12px !important;
+
+        font-weight: 700 !important;
+
+    }
+
+
+    .field input {
+
+        width: 100% !important;
+
+        height: 25px !important;
+
+        min-height: 25px !important;
+
+        padding: 3px 5px !important;
+
+        border: none !important;
+
+        border-radius: 0 !important;
+
+        outline: none !important;
+
+        box-shadow: none !important;
+
+        background: #fff !important;
+
+        color: #000 !important;
+
+        font-size: 10px !important;
+
+        line-height: 12px !important;
+
+    }
+
+
+    /* =====================================================
+       TABLE WRAPPER
+    ===================================================== */
+
+    .table-wrapper {
+
+        width: 100% !important;
+
+        padding: 0 !important;
+
+        margin: 0 !important;
+
+        overflow: visible !important;
+
+    }
+
+
+    /* =====================================================
+       GOODS TABLE
+    ===================================================== */
+
+    #goodsTable {
+
+        width: 100% !important;
+
+        max-width: 100% !important;
+
+        min-width: 0 !important;
+
+        table-layout: fixed !important;
+
+        border-collapse: collapse !important;
+
+        border-spacing: 0 !important;
+
+        margin: 0 !important;
+
+        border: 1px solid #000 !important;
+
+        box-shadow: none !important;
+
+        background: #fff !important;
+
+        font-size: 10px !important;
+
+    }
+
+
+    /* =====================================================
+       TABLE HEADER
+    ===================================================== */
+
+    #goodsTable thead {
+
+        display: table-header-group !important;
+
+    }
+
+
+    #goodsTable th {
+
+        padding: 5px 3px !important;
+
+        height: 32px !important;
+
+        border: 1px solid #000 !important;
+
+        background: #eeeeee !important;
+
+        color: #000 !important;
+
+        font-size: 10px !important;
+
+        line-height: 12px !important;
+
+        font-weight: 700 !important;
+
+        text-align: center !important;
+
+        vertical-align: middle !important;
+
+        white-space: normal !important;
+
+        word-break: normal !important;
+
+        overflow-wrap: break-word !important;
+
+    }
+
+
+    /* =====================================================
+       TABLE BODY
+    ===================================================== */
+
+    #goodsTable td {
+
+        height: 27px !important;
+
+        padding: 4px 3px !important;
+
+        border: 1px solid #000 !important;
+
+        background: #fff !important;
+
+        color: #000 !important;
+
+        font-size: 10px !important;
+
+        line-height: 12px !important;
+
+        font-weight: 500 !important;
+
+        text-align: center !important;
+
+        vertical-align: middle !important;
+
+        white-space: normal !important;
+
+        word-break: normal !important;
+
+        overflow-wrap: break-word !important;
+
+    }
+
+
+    #goodsTable tbody tr {
+
+        page-break-inside: avoid !important;
+
+        break-inside: avoid !important;
+
+    }
+
+
+    /* =====================================================
+       TOTAL
+    ===================================================== */
+
+    #goodsTable tfoot {
+
+        display: table-footer-group !important;
+
+    }
+
+
+    #goodsTable tfoot td {
+
+        height: 29px !important;
+
+        padding: 5px 3px !important;
+
+        border: 1px solid #000 !important;
+
+        background: #eeeeee !important;
+
+        color: #000 !important;
+
+        font-size: 10px !important;
+
+        line-height: 12px !important;
+
+        font-weight: 700 !important;
+
+        text-align: center !important;
+
+        vertical-align: middle !important;
+
+    }
+
+
+    /* =====================================================
+       ACTION COLUMN
+       COMPLETELY REMOVE IT
+    ===================================================== */
+
+    #goodsTable th.action-column,
+    #goodsTable td.action-column {
+
+        display: none !important;
+
+    }
+
+
+    /* =====================================================
+       UPDATED COLUMN WIDTHS
+       
+       CURRENT PRINT STRUCTURE:
+       
+       1  #
+       2  GR No.       <-- if present
+       3  Consignor
+       4  Consignee
+       5  Description
+       6  Nag
+       7  Station
+       8  P.M.
+       9  Weight
+       10 ToPay
+       11 Paid
+       12 DD
+       13 Katt
+       14 LC
+       15 PF
+    ===================================================== */
+
+
+    #goodsTable th:nth-child(1),
+    #goodsTable td:nth-child(1) {
+
+        width: 3%;
+
+    }
+
+
+    #goodsTable th:nth-child(2),
+    #goodsTable td:nth-child(2) {
+
+        width: 7%;
+
+    }
+
+
+    #goodsTable th:nth-child(3),
+    #goodsTable td:nth-child(3) {
+
+        width: 10%;
+
+    }
+
+
+    #goodsTable th:nth-child(4),
+    #goodsTable td:nth-child(4) {
+
+        width: 10%;
+
+    }
+
+
+    #goodsTable th:nth-child(5),
+    #goodsTable td:nth-child(5) {
+
+        width: 17%;
+
+    }
+
+
+    #goodsTable th:nth-child(6),
+    #goodsTable td:nth-child(6) {
+
+        width: 5%;
+
+    }
+
+
+    #goodsTable th:nth-child(7),
+    #goodsTable td:nth-child(7) {
+
+        width: 8%;
+
+    }
+
+
+    #goodsTable th:nth-child(8),
+    #goodsTable td:nth-child(8) {
+
+        width: 6%;
+
+    }
+
+
+    #goodsTable th:nth-child(9),
+    #goodsTable td:nth-child(9) {
+
+        width: 7%;
+
+    }
+
+
+    #goodsTable th:nth-child(10),
+    #goodsTable td:nth-child(10) {
+
+        width: 7%;
+
+    }
+
+
+    #goodsTable th:nth-child(11),
+    #goodsTable td:nth-child(11) {
+
+        width: 6%;
+
+    }
+
+
+    #goodsTable th:nth-child(12),
+    #goodsTable td:nth-child(12) {
+
+        width: 5%;
+
+    }
+
+
+    #goodsTable th:nth-child(13),
+    #goodsTable td:nth-child(13) {
+
+        width: 5%;
+
+    }
+
+
+    #goodsTable th:nth-child(14),
+    #goodsTable td:nth-child(14) {
+
+        width: 5%;
+
+    }
+
+
+    #goodsTable th:nth-child(15),
+    #goodsTable td:nth-child(15) {
+
+        width: 7%;
+
+    }
+
+
+    /* =====================================================
+       REMARKS
+    ===================================================== */
+
+    .remarks {
+
+        display: flex !important;
+
+        align-items: center !important;
+
+        gap: 8px !important;
+
+        padding: 5px 8px !important;
+
+        border-top: 1px solid #000 !important;
+
+        border-bottom: 1px solid #000 !important;
+
+    }
+
+
+    .remarks label {
+
+        flex: 0 0 auto !important;
+
+        margin: 0 !important;
+
+        color: #000 !important;
+
+        font-size: 10px !important;
+
+        line-height: 12px !important;
+
+        font-weight: 700 !important;
+
+    }
+
+
+    .remarks textarea {
+
+        flex: 1 1 auto !important;
+
+        width: auto !important;
+
+        height: 30px !important;
+
+        min-height: 30px !important;
+
+        padding: 3px !important;
+
+        border: none !important;
+
+        outline: none !important;
+
+        resize: none !important;
+
+        background: transparent !important;
+
+        color: #000 !important;
+
+        font-size: 10px !important;
+
+        line-height: 12px !important;
+
+    }
+
+
+    /* =====================================================
+       FOOTER
+    ===================================================== */
+
+    footer {
+
+        display: flex !important;
+
+        justify-content: space-between !important;
+
+        align-items: flex-end !important;
+
+        min-height: 55px !important;
+
+        margin: 0 !important;
+
+        padding: 25px 25px 7px !important;
+
+        border-top: 1px solid #000 !important;
+
+        color: #000 !important;
+
+        font-size: 11px !important;
+
+        line-height: 13px !important;
+
+        font-weight: 700 !important;
+
+    }
+
+
+    /* =====================================================
+       FORM ELEMENTS IN PRINT
+    ===================================================== */
+
+    input,
+    textarea,
+    select {
+
+        color: #000 !important;
+
+        background: transparent !important;
+
+    }
+
+
+    input::placeholder,
+    textarea::placeholder {
+
+        color: transparent !important;
+
+    }
+
+
+    /* =====================================================
+       PREVENT BAD PAGE BREAKS
+    ===================================================== */
+
+    .page,
+    .company-header,
+    .challan-info,
+    .table-wrapper,
+    .remarks,
+    footer {
+
+        page-break-inside: avoid !important;
+
+        break-inside: avoid !important;
+
+    }
+
+}

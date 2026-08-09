@@ -1,44 +1,181 @@
-
 document.addEventListener("DOMContentLoaded", () => {
 
-    // Buttons
+    // =====================================================
+    // BUTTONS
+    // =====================================================
+
     const addItemBtn = document.getElementById("addItemBtn");
     const closeModal = document.getElementById("closeModal");
     const cancelBtn = document.getElementById("cancelBtn");
     const saveItem = document.getElementById("saveItem");
+const settlementTopay =
+    document.getElementById("settlementTopay");
 
-    // Modal
+const settlementDD =
+    document.getElementById("settlementDD");
+
+const settlementLC =
+    document.getElementById("settlementLC");
+
+const settlementPF =
+    document.getElementById("settlementPF");
+
+const settlementKatt =
+    document.getElementById("settlementKatt");
+
+const deliveryCommission =
+    document.getElementById("deliveryCommission");
+
+const payToDriver =
+    document.getElementById("payToDriver");
+    const printChallanBtn =
+        document.getElementById("printChallanBtn");
+
+
+    // =====================================================
+    // MODAL
+    // =====================================================
+
     const modal = document.getElementById("itemModal");
 
-    // Inputs
-    const tm = document.getElementById("tm");
-    const bags = document.getElementById("bags");
-    const particular = document.getElementById("particular");
-    const nag = document.getElementById("nag");
-    const weight = document.getElementById("weight");
-    const freight = document.getElementById("freight");
 
-    // Table
-    const goodsBody = document.getElementById("goodsBody");
+    // =====================================================
+    // INPUTS
+    // =====================================================
 
-    // Totals
-    const totalBags = document.getElementById("totalBags");
-    const totalWeight = document.getElementById("totalWeight");
-    const totalFreight = document.getElementById("totalFreight");
+    const grnumber =
+        document.getElementById("grnumber");
+
+    const consignor =
+        document.getElementById("consignor");
+
+    const consignee =
+        document.getElementById("consignee");
+
+    const description =
+        document.getElementById("description");
+
+    const nag =
+        document.getElementById("nag");
+
+    const station =
+        document.getElementById("station");
+
+    const pm =
+        document.getElementById("pm");
+
+    const weight =
+        document.getElementById("weight");
+
+    const topay =
+        document.getElementById("topay");
+
+    const paid =
+        document.getElementById("paid");
+
+    const dd =
+        document.getElementById("dd");
+
+    const katt =
+        document.getElementById("katt");
+
+    const ctl =
+        document.getElementById("ctl");
+
+    const freight =
+        document.getElementById("freight");
+
+
+    // =====================================================
+    // TABLE
+    // =====================================================
+
+    const goodsBody =
+        document.getElementById("goodsBody");
+
+
+    // =====================================================
+    // TOTALS
+    // =====================================================
+
+    const totalNag =
+        document.getElementById("totalNag");
+
+    const totalWeight =
+        document.getElementById("totalWeight");
+
+    const totalFreight =
+        document.getElementById("totalFreight");
+
+    const totalpaid =
+        document.getElementById("totalpaid");
+
+    const totalctl =
+        document.getElementById("totalctl");
+
+
+    // =====================================================
+    // CHECK REQUIRED ELEMENTS
+    // =====================================================
+
+    if (!addItemBtn) {
+        console.error("addItemBtn not found");
+        return;
+    }
+
+    if (!modal) {
+        console.error("itemModal not found");
+        return;
+    }
+
+    if (!saveItem) {
+        console.error("saveItem not found");
+        return;
+    }
+
+    if (!goodsBody) {
+        console.error("goodsBody not found");
+        return;
+    }
+
+
+    // =====================================================
+    // DATA
+    // =====================================================
 
     let editIndex = -1;
 
     let items = [];
 
-    // -----------------------------
-    // Modal
-    // -----------------------------
 
-    addItemBtn.onclick = () => {
+    // =====================================================
+    // OPEN MODAL
+    // =====================================================
+
+    addItemBtn.addEventListener("click", () => {
+
+        editIndex = -1;
+
+        saveItem.innerHTML =
+            '<i class="fa-solid fa-plus"></i> Add Item';
 
         modal.classList.add("show");
 
-    };
+        // Focus first field
+        setTimeout(() => {
+
+            if (grnumber) {
+                grnumber.focus();
+            }
+
+        }, 100);
+
+    });
+
+
+    // =====================================================
+    // CLOSE MODAL
+    // =====================================================
 
     function closePopup() {
 
@@ -48,214 +185,623 @@ document.addEventListener("DOMContentLoaded", () => {
 
     }
 
-    closeModal.onclick = closePopup;
 
-    cancelBtn.onclick = closePopup;
+    if (closeModal) {
 
-    window.onclick = function(e){
+        closeModal.addEventListener(
+            "click",
+            closePopup
+        );
 
-        if(e.target===modal){
+    }
+
+
+    if (cancelBtn) {
+
+        cancelBtn.addEventListener(
+            "click",
+            closePopup
+        );
+
+    }
+
+
+    // Click outside modal
+
+    window.addEventListener("click", (e) => {
+
+        if (e.target === modal) {
 
             closePopup();
 
         }
 
-    }
+    });
 
-    // -----------------------------
-    // Save Item
-    // -----------------------------
 
-    saveItem.onclick = function(){
+    // =====================================================
+    // SAVE / ADD ITEM
+    // =====================================================
 
-        if(
-            bags.value==="" ||
-            particular.value==="" ||
-            weight.value==="" ||
-            nag.value===""||
-            freight.value===""){
+    saveItem.addEventListener("click", () => {
 
-            alert("Please fill all fields.");
+        /*
+         * ONLY THESE ARE REQUIRED
+         *
+         * Other financial fields can be empty.
+         */
+
+        if (
+            grnumber.value.trim() === "" ||
+            consignor.value.trim() === "" ||
+            consignee.value.trim() === "" ||
+            description.value.trim() === "" ||
+            nag.value.trim() === "" ||
+            station.value.trim() === "" ||
+            weight.value.trim() === ""
+        ) {
+
+            alert(
+                "Please fill GR No., Consignor, Consignee, Description, Nag, Station and Weight."
+            );
 
             return;
 
         }
 
-        const obj={
 
-            tm:tm.value,
+        // =================================================
+        // CREATE OBJECT
+        // Empty numeric fields become 0
+        // =================================================
 
-            bags:Number(bags.value),
+        const obj = {
 
-            particular:particular.value,
-            nag:Number(nag.value),
-            weight:Number(weight.value),
+            grnumber:
+                grnumber.value.trim(),
 
-            freight:Number(freight.value)
+            consignor:
+                consignor.value.trim(),
+
+            consignee:
+                consignee.value.trim(),
+
+            description:
+                description.value.trim(),
+
+            nag:
+                Number(nag.value) || 0,
+
+            station:
+                station.value.trim(),
+
+            pm:
+                Number(pm.value) || 0,
+
+            weight:
+                Number(weight.value) || 0,
+
+            topay:
+                Number(topay.value) || 0,
+
+            paid:
+                Number(paid.value) || 0,
+
+            dd:
+                Number(dd.value) || 0,
+
+            katt:
+                Number(katt.value) || 0,
+
+            ctl:
+                Number(ctl.value) || 0,
+
+            freight:
+                Number(freight.value) || 0
 
         };
 
-        if(editIndex==-1){
+
+        // =================================================
+        // ADD
+        // =================================================
+
+        if (editIndex === -1) {
 
             items.push(obj);
 
-        }else{
+        }
 
-            items[editIndex]=obj;
+        // =================================================
+        // UPDATE
+        // =================================================
 
-            editIndex=-1;
+        else {
 
-            saveItem.innerText="Add Item";
+            items[editIndex] = obj;
 
         }
 
+
+        // Reset edit state
+
+        editIndex = -1;
+
+        saveItem.innerHTML =
+            '<i class="fa-solid fa-plus"></i> Add Item';
+
+
+        // Render
+
         renderTable();
+
+
+        // Close
 
         closePopup();
 
-    }
+    });
 
-    // -----------------------------
-    // Render Table
-    // -----------------------------
 
-    function renderTable(){
+    // =====================================================
+    // RENDER TABLE
+    // =====================================================
 
-        goodsBody.innerHTML="";
+    function renderTable() {
 
-        let bagTotal=0;
-         let nagTotal=0;
-        let weightTotal=0;
-        
-        let freightTotal=0;
+        goodsBody.innerHTML = "";
 
-        items.forEach((item,index)=>{
 
-            bagTotal+=item.bags;
-            nagTotal+=item.nag;
-            weightTotal+=item.weight;
+        let nagTotal = 0;
 
-            freightTotal+=item.freight;
+        let weightTotal = 0;
 
-            goodsBody.innerHTML+=`
+        let paidTotal = 0;
 
-            <tr>
+        let freightTotal = 0;
 
-                <td>${index+1}</td>
+        let ctlTotal = 0;
 
-                <td>${item.tm}</td>
 
-                <td>${item.bags}</td>
+        items.forEach((item, index) => {
 
-                <td>${item.particular}</td>
-                <td>${item.nag}</td>
-                <td>${item.weight}</td>
+            // Totals
 
-                <td>₹ ${item.freight}</td>
+            nagTotal += Number(item.nag) || 0;
 
-                <td>
+            weightTotal += Number(item.weight) || 0;
 
-                    <button class="editBtn" data-id="${index}">
+            paidTotal += Number(item.paid) || 0;
 
-                        ✏
+            ctlTotal += Number(item.ctl) || 0;
 
-                    </button>
+            freightTotal += Number(item.freight) || 0;
 
-                    <button class="deleteBtn" data-id="${index}">
 
-                        🗑
+            // Table row
 
-                    </button>
+            goodsBody.innerHTML += `
 
-                </td>
+                <tr>
 
-            </tr>
+                    <td>
+                        ${index + 1}
+                    </td>
+
+                    <td>
+                        ${escapeHTML(item.grnumber)}
+                    </td>
+
+                    <td>
+                        ${escapeHTML(item.consignor)}
+                    </td>
+
+                    <td>
+                        ${escapeHTML(item.consignee)}
+                    </td>
+
+                    <td>
+                        ${escapeHTML(item.description)}
+                    </td>
+
+                    <td>
+                        ${item.nag}
+                    </td>
+
+                    <td>
+                        ${escapeHTML(item.station)}
+                    </td>
+
+                    <td>
+                        ${item.pm}
+                    </td>
+
+                    <td>
+                        ${item.weight}
+                    </td>
+
+                    <td>
+                        ${item.topay}
+                    </td>
+
+                    <td>
+                        ${item.paid}
+                    </td>
+
+                    <td>
+                        ${item.dd}
+                    </td>
+
+                    <td>
+                        ${item.katt}
+                    </td>
+
+                    <td>
+                        ${item.ctl}
+                    </td>
+
+                    <td>
+                        ₹ ${item.freight}
+                    </td>
+
+                    <td class="action-column">
+
+                        <button
+                            type="button"
+                            class="editBtn"
+                            data-id="${index}">
+
+                            ✏
+
+                        </button>
+
+                        <button
+                            type="button"
+                            class="deleteBtn"
+                            data-id="${index}">
+
+                            🗑
+
+                        </button>
+
+                    </td>
+
+                </tr>
 
             `;
 
         });
 
-        totalBags.innerText=bagTotal;
-        totalNag.innerText=nagTotal;
-        totalWeight.innerText=weightTotal+" KG";
 
-        totalFreight.innerText="₹ "+freightTotal;
+        // =================================================
+        // UPDATE TOTALS
+        // =================================================
+
+        if (totalNag) {
+
+            totalNag.innerText =
+                nagTotal;
+
+        }
+
+
+        if (totalWeight) {
+
+            totalWeight.innerText =
+                weightTotal + " KG";
+
+        }
+
+
+        if (totalpaid) {
+
+            totalpaid.innerText =
+                "₹ " + paidTotal.toFixed(2);
+
+        }
+
+
+        if (totalctl) {
+
+            totalctl.innerText =
+                ctlTotal.toFixed(2);
+
+        }
+
+
+        if (totalFreight) {
+
+            totalFreight.innerText =
+                "₹ " + freightTotal.toFixed(2);
+
+        }
+
+
+        // Attach edit/delete
 
         attachEvents();
+         calculateDriverPayment();
+    }
+
+
+    // =====================================================
+    // EDIT / DELETE
+    // =====================================================
+
+    function attachEvents() {
+
+
+        // -----------------------------
+        // EDIT
+        // -----------------------------
+
+        document
+            .querySelectorAll(".editBtn")
+            .forEach(btn => {
+
+                btn.addEventListener("click", function () {
+
+                    const id =
+                        Number(this.dataset.id);
+
+                    const item =
+                        items[id];
+
+                    if (!item) {
+                        return;
+                    }
+
+
+                    editIndex = id;
+
+
+                    // Fill form
+
+                    grnumber.value =
+                        item.grnumber || "";
+
+                    consignor.value =
+                        item.consignor || "";
+
+                    consignee.value =
+                        item.consignee || "";
+
+                    description.value =
+                        item.description || "";
+
+                    nag.value =
+                        item.nag ?? "";
+
+                    station.value =
+                        item.station || "";
+
+                    pm.value =
+                        item.pm ?? "";
+
+                    weight.value =
+                        item.weight ?? "";
+
+                    topay.value =
+                        item.topay ?? "";
+
+                    paid.value =
+                        item.paid ?? "";
+
+                    dd.value =
+                        item.dd ?? "";
+
+                    katt.value =
+                        item.katt ?? "";
+
+                    ctl.value =
+                        item.ctl ?? "";
+
+                    freight.value =
+                        item.freight ?? "";
+
+
+                    // Change button
+
+                    saveItem.innerHTML =
+                        '<i class="fa-solid fa-pen"></i> Update Item';
+
+
+                    // Open modal
+
+                    modal.classList.add("show");
+
+                });
+
+            });
+
+
+        // -----------------------------
+        // DELETE
+        // -----------------------------
+
+        document
+            .querySelectorAll(".deleteBtn")
+            .forEach(btn => {
+
+                btn.addEventListener("click", function () {
+
+                    const id =
+                        Number(this.dataset.id);
+
+
+                    if (
+                        confirm(
+                            "Delete this item?"
+                        )
+                    ) {
+
+                        items.splice(id, 1);
+
+                        renderTable();
+
+                    }
+
+                });
+
+            });
 
     }
 
-    // -----------------------------
-    // Edit/Delete
-    // -----------------------------
 
-    function attachEvents(){
+    // =====================================================
+    // CLEAR FORM
+    // =====================================================
 
-        document.querySelectorAll(".editBtn").forEach(btn=>{
+    function clearForm() {
 
-            btn.onclick=function(){
+        grnumber.value = "";
 
-                const id=this.dataset.id;
+        consignor.value = "";
 
-                editIndex=id;
+        consignee.value = "";
 
-                tm.value=items[id].tm;
+        description.value = "";
 
-                bags.value=items[id].bags;
+        nag.value = "";
 
-                particular.value=items[id].particular;
-                nag.value=items[id].nag;
-                weight.value=items[id].weight;
+        station.value = "";
 
-                freight.value=items[id].freight;
+        pm.value = "";
 
-                saveItem.innerText="Update Item";
+        weight.value = "";
 
-                modal.classList.add("show");
+        topay.value = "";
 
-            }
+        paid.value = "";
 
-        });
+        dd.value = "";
 
-        document.querySelectorAll(".deleteBtn").forEach(btn=>{
+        katt.value = "";
 
-            btn.onclick=function(){
+        ctl.value = "";
 
-                if(confirm("Delete this item?")){
+        freight.value = "";
 
-                    items.splice(this.dataset.id,1);
 
-                    renderTable();
+        editIndex = -1;
 
-                }
 
-            }
+        saveItem.innerHTML =
+            '<i class="fa-solid fa-plus"></i> Add Item';
 
-        });
+    }
+// =====================================================
+// DRIVER PAYMENT CALCULATION
+// =====================================================
+
+function calculateDriverPayment() {
+
+    let totalToPay = 0;
+    let totalDD = 0;
+    let totalLC = 0;
+    let totalPF = 0;
+    let totalKatt = 0;
+
+    items.forEach(item => {
+
+        totalToPay += Number(item.topay) || 0;
+        totalDD += Number(item.dd) || 0;
+        totalLC += Number(item.ctl) || 0;
+        totalPF += Number(item.freight) || 0;
+        totalKatt += Number(item.katt) || 0;
+
+    });
+
+    const commission =
+        Number(deliveryCommission?.value) || 0;
+
+    const calculatedAmount =
+        totalToPay
+        - totalDD
+        - commission
+        + totalLC
+        + totalPF
+        - totalKatt;
+
+
+    settlementTopay.innerText =
+        "₹ " + totalToPay.toFixed(2);
+
+    settlementDD.innerText =
+        "− ₹ " + totalDD.toFixed(2);
+
+    settlementLC.innerText =
+        "+ ₹ " + totalLC.toFixed(2);
+
+    settlementPF.innerText =
+        "+ ₹ " + totalPF.toFixed(2);
+
+    settlementKatt.innerText =
+        "− ₹ " + totalKatt.toFixed(2);
+
+
+    /*
+       Only automatically set Pay To Driver
+       when the user has not manually changed it.
+    */
+
+    if (
+        payToDriver.dataset.manual !== "true"
+    ) {
+
+        payToDriver.value =
+            calculatedAmount.toFixed(2);
 
     }
 
-    // -----------------------------
-    // Clear Form
-    // -----------------------------
+}
+if (deliveryCommission) {
 
-    function clearForm(){
+    deliveryCommission.addEventListener(
+        "input",
+        calculateDriverPayment
+    );
 
-        tm.selectedIndex=0;
+}
 
-        bags.value="";
+    // =====================================================
+    // ESCAPE HTML
+    // Prevent HTML injection from user input
+    // =====================================================
 
-        particular.value="";
-         nag.value="";
-        weight.value="";
+    function escapeHTML(value) {
 
-        freight.value="";
+        return String(value ?? "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
 
-        editIndex=-1;
+    }
 
-        saveItem.innerText="Add Item";
+
+    // =====================================================
+    // PRINT
+    // =====================================================
+
+    if (printChallanBtn) {
+
+        printChallanBtn.addEventListener(
+            "click",
+            () => {
+
+                renderTable();
+
+                setTimeout(() => {
+
+                    window.print();
+
+                }, 100);
+
+            }
+        );
 
     }
 
 });
-

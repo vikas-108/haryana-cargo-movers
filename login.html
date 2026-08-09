@@ -1,51 +1,436 @@
-<!-- login code -->
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Admin Login</title>
-  <link rel="stylesheet" href="css/style.css" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login | Jai Haryana Cargo Mover</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0a1e3d;
+  --navy-2:#0f2a52;
+  --navy-3:#153868;
+  --orange:#f5900f;
+  --orange-2:#ff9f1c;
+  --paper:#f6f7fb;
+  --ink:#0a1e3d;
+  --muted:#5c6b85;
+  --line:#e4e8f1;
+  --red:#e2434c;
+  --green:#1b8f4c;
+  --shadow:0 20px 45px -20px rgba(10,30,61,.35);
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+body{
+  font-family:'Inter',sans-serif;
+  color:var(--ink);
+  min-height:100vh;
+  background:
+    radial-gradient(ellipse 70% 60% at 85% 10%, rgba(255,159,28,.28), transparent 60%),
+    linear-gradient(180deg,#081633 0%, #0a1e3d 45%, #0d2954 100%);
+  display:flex; align-items:center; justify-content:center;
+  padding:40px 20px;
+  position:relative;
+  overflow-x:hidden;
+}
+h1,h2,h3{font-family:'Poppins',sans-serif;}
+a{text-decoration:none;}
+body::before{
+  content:"";
+  position:absolute; inset:0;
+  background-image:repeating-linear-gradient(90deg, transparent 0 60px, rgba(255,255,255,.03) 60px 62px);
+  pointer-events:none;
+}
+.bg-glow{
+  position:absolute; right:-8%; top:-10%; width:500px; height:500px; border-radius:50%;
+  background:radial-gradient(circle, rgba(255,159,28,.45), transparent 70%);
+  filter:blur(10px); animation:pulseGlow 8s ease-in-out infinite;
+}
+@keyframes pulseGlow{0%,100%{transform:scale(1); opacity:.6;}50%{transform:scale(1.15); opacity:.95;}}
+
+.wrap{
+  position:relative; z-index:2;
+  width:100%; max-width:980px;
+  background:#fff;
+  border-radius:22px;
+  overflow:hidden;
+  box-shadow:0 40px 90px -30px rgba(0,0,0,.55);
+  display:grid; grid-template-columns:1fr 1.05fr;
+}
+
+/* Left brand panel */
+.brand-panel{
+  background:linear-gradient(150deg,#0a1e3d,#153868 60%,#0a1e3d);
+  padding:52px 44px;
+  color:#fff;
+  display:flex; flex-direction:column; justify-content:space-between;
+  position:relative;
+  overflow:hidden;
+}
+.brand-panel::after{
+  content:""; position:absolute; right:-60px; bottom:-60px; width:260px; height:260px; border-radius:50%;
+  background:radial-gradient(circle, rgba(245,144,15,.35), transparent 70%);
+}
+.brand{display:flex; align-items:center; gap:12px; position:relative; z-index:2;}
+.brand-logo{
+  width:50px; height:50px; border-radius:10px;
+  background:linear-gradient(135deg,var(--orange-2),var(--orange));
+  display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  box-shadow:0 8px 18px -6px rgba(245,144,15,.6);
+}
+.brand-logo svg{width:28px; height:28px;}
+.brand-text .top{font-weight:800; font-size:16px; color:var(--orange-2); line-height:1.1;}
+.brand-text .bottom{font-weight:800; font-size:18px; color:#fff; line-height:1.15;}
+
+.brand-copy{position:relative; z-index:2; margin-top:40px;}
+.brand-copy h2{font-size:28px; font-weight:800; line-height:1.25;}
+.brand-copy p{color:#b9c5de; font-size:14.5px; margin-top:14px; line-height:1.7; max-width:340px;}
+
+.perk-list{position:relative; z-index:2; display:flex; flex-direction:column; gap:16px; margin-top:36px;}
+.perk{display:flex; align-items:center; gap:12px;}
+.perk .ic{
+  width:34px; height:34px; border-radius:9px; background:rgba(255,255,255,.1);
+  display:flex; align-items:center; justify-content:center; flex-shrink:0;
+}
+.perk .ic svg{width:17px; height:17px; color:var(--orange-2);}
+.perk span{font-size:13.5px; color:#dbe4f6; font-weight:500;}
+
+.back-home{position:relative; z-index:2; font-size:13px; color:#9fb0cc; font-weight:600; display:inline-flex; align-items:center; gap:6px;}
+.back-home svg{width:15px; height:15px;}
+.back-home:hover{color:#fff;}
+
+/* Right form panel */
+.form-panel{padding:52px 46px;}
+.form-head{margin-bottom:30px;}
+.form-head .eyebrow{
+  display:inline-flex; align-items:center; gap:8px; font-size:12px; font-weight:700;
+  letter-spacing:1.6px; text-transform:uppercase; color:var(--orange);
+}
+.form-head .eyebrow::before{content:""; width:22px; height:2px; background:var(--orange); display:inline-block;}
+.form-head h1{font-size:27px; font-weight:800; margin-top:12px; color:var(--navy);}
+.form-head p{color:var(--muted); font-size:14px; margin-top:8px;}
+
+.field{margin-bottom:20px;}
+.field label{
+  display:block; font-size:13px; font-weight:700; color:var(--navy); margin-bottom:8px;
+}
+.phone-row{display:flex; gap:10px;}
+.select-wrap{position:relative; flex:0 0 150px;}
+.select-wrap select{
+  width:100%; height:100%; padding:14px 30px 14px 12px; border-radius:10px; border:2px solid var(--line);
+  font-size:13.5px; font-family:'Inter',sans-serif; font-weight:600; color:var(--navy);
+  appearance:none; -webkit-appearance:none; background:#fff; cursor:pointer; outline:none; transition:.2s;
+}
+.select-wrap select:focus{border-color:var(--orange);}
+.select-wrap::after{
+  content:""; position:absolute; right:12px; top:50%; width:8px; height:8px;
+  border-right:2px solid var(--muted); border-bottom:2px solid var(--muted);
+  transform:translateY(-65%) rotate(45deg); pointer-events:none;
+}
+input[type=text], input[type=tel], input[type=password]{
+  width:100%; padding:14px 16px; border-radius:10px; border:2px solid var(--line);
+  font-size:14.5px; font-family:'Inter',sans-serif; outline:none; transition:.2s; color:var(--navy);
+}
+input:focus{border-color:var(--orange);}
+.phone-row input{flex:1;}
+
+.pw-wrap{position:relative;}
+.pw-wrap input{padding-right:46px;}
+.pw-toggle{
+  position:absolute; right:12px; top:50%; transform:translateY(-50%);
+  background:none; border:none; cursor:pointer; color:var(--muted); padding:4px;
+}
+.pw-toggle svg{width:19px; height:19px;}
+
+.pw-rules{
+  display:grid; grid-template-columns:1fr 1fr; gap:8px 14px; margin-top:12px;
+  background:var(--paper); border-radius:10px; padding:14px 16px;
+}
+.pw-rules .rule{display:flex; align-items:center; gap:8px; font-size:12.5px; color:var(--muted); transition:.2s;}
+.pw-rules .rule .dot{
+  width:16px; height:16px; border-radius:50%; background:#dfe4ee; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center; transition:.2s;
+}
+.pw-rules .rule .dot svg{width:10px; height:10px; opacity:0; transition:.2s;}
+.pw-rules .rule.ok{color:var(--green); font-weight:600;}
+.pw-rules .rule.ok .dot{background:var(--green);}
+.pw-rules .rule.ok .dot svg{opacity:1; color:#fff;}
+
+.pw-meter{height:6px; border-radius:6px; background:var(--line); margin-top:12px; overflow:hidden;}
+.pw-meter-fill{height:100%; width:0%; border-radius:6px; background:var(--red); transition:.35s ease;}
+
+.field-error{
+  font-size:12.5px; color:var(--red); margin-top:7px; font-weight:600; display:none; align-items:center; gap:6px;
+}
+.field-error.show{display:flex;}
+.field-error svg{width:14px; height:14px; flex-shrink:0;}
+
+.row-between{display:flex; align-items:center; justify-content:space-between; margin:20px 0 24px; flex-wrap:wrap; gap:10px;}
+.remember{display:flex; align-items:center; gap:8px; font-size:13px; color:var(--muted);}
+.remember input{width:16px; height:16px; accent-color:var(--orange);}
+.forgot{font-size:13px; font-weight:700; color:var(--orange);}
+.forgot:hover{text-decoration:underline;}
+
+.btn-submit{
+  width:100%; padding:16px; border-radius:10px; border:none; cursor:pointer;
+  background:linear-gradient(135deg,var(--orange-2),var(--orange)); color:#fff;
+  font-weight:700; font-size:15px; font-family:'Inter',sans-serif;
+  box-shadow:0 14px 30px -12px rgba(245,144,15,.65); transition:.25s;
+  display:flex; align-items:center; justify-content:center; gap:10px;
+}
+.btn-submit:hover{transform:translateY(-2px); box-shadow:0 18px 34px -12px rgba(245,144,15,.75);}
+.btn-submit:disabled{opacity:.55; cursor:not-allowed; transform:none; box-shadow:none;}
+.btn-submit svg{width:18px; height:18px;}
+
+.divider{display:flex; align-items:center; gap:14px; margin:26px 0; color:var(--muted); font-size:12.5px;}
+.divider::before, .divider::after{content:""; flex:1; height:1px; background:var(--line);}
+
+.signup-line{text-align:center; font-size:13.5px; color:var(--muted);}
+.signup-line a{color:var(--orange); font-weight:700;}
+.signup-line a:hover{text-decoration:underline;}
+
+.success-banner{
+  display:none; align-items:center; gap:10px; background:#eafaf0; color:var(--green);
+  padding:14px 16px; border-radius:10px; font-size:13.5px; font-weight:600; margin-bottom:20px;
+}
+.success-banner.show{display:flex;}
+.success-banner svg{width:18px; height:18px; flex-shrink:0;}
+
+@media (max-width:860px){
+  .wrap{grid-template-columns:1fr; max-width:480px;}
+  .brand-panel{padding:40px 32px;}
+  .form-panel{padding:40px 32px;}
+  .brand-copy, .perk-list{display:none;}
+  .back-home{margin-top:24px;}
+}
+</style>
 </head>
-<body class="login-body">
-  <div class="login-container">
-    <h2>🔐 Admin Panel Login</h2>
+<body>
+<div class="bg-glow"></div>
 
-    <form id="loginForm">
-      <label for="email">📧 Email Address</label>
-     <input type="email" id="email" value="admin@example.com" disabled />
+<div class="wrap">
+  <!-- Left brand panel -->
+  <div class="brand-panel">
+    <div>
+      <a href="index.html" class="brand">
+        <div class="brand-logo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 3h13v13H1z"/><path d="M14 8h4l3 3v5h-7V8z"/><circle cx="6" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
+        </div>
+        <div class="brand-text">
+          <div class="top">JAI HARYANA</div>
+          <div class="bottom">CARGO MOVER</div>
+        </div>
+      </a>
+      <div class="brand-copy">
+        <h2>Track. Book.<br>Manage — All in One Place.</h2>
+        <p>Sign in to book a truck, track your consignment in real time, and manage your shipments across our Pan India network.</p>
+      </div>
+      <div class="perk-list">
+        <div class="perk">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>
+          <span>Real-time consignment tracking</span>
+        </div>
+        <div class="perk">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 3 6v6c0 5 4 9 9 10 5-1 9-5 9-10V6l-9-4z"/></svg></div>
+          <span>Secure, verified account access</span>
+        </div>
+        <div class="perk">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4.5 8-11.8A8 8 0 0 0 4 10.2C4 17.5 12 22 12 22z"/><circle cx="12" cy="10" r="3"/></svg></div>
+          <span>Book trucks anywhere in India</span>
+        </div>
+      </div>
+    </div>
+    <a href="index.html" class="back-home">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+      Back to home
+    </a>
+  </div>
 
-      <label for="password">🔒 Password</label>
-      <input type="password" id="password" value="admin123" disabled />
+  <!-- Right form panel -->
+  <div class="form-panel">
+    <div class="form-head">
+      <div class="eyebrow">Welcome Back</div>
+      <h1>Log in to your account</h1>
+      <p>Enter your phone number and password to continue.</p>
+    </div>
 
-      <button type="submit">Login</button>
-      <p class="demo-note">Demo Login Enabled: Just press Login</p>
+    <div class="success-banner" id="successBanner">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+      <span>Login successful — redirecting to your dashboard...</span>
+    </div>
+
+    <form id="loginForm" novalidate>
+      <div class="field">
+        <label for="phoneInput">Phone Number</label>
+        <div class="phone-row">
+          <div class="select-wrap">
+            <select id="countryCode" required></select>
+          </div>
+          <input type="tel" id="phoneInput" placeholder="98765 43210" maxlength="15" required>
+        </div>
+        <div class="field-error" id="phoneError">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v5"/><path d="M12 16h.01"/></svg>
+          <span>Enter a valid phone number (7–12 digits).</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="passwordInput">Password</label>
+        <div class="pw-wrap">
+          <input type="password" id="passwordInput" placeholder="Enter your password" required>
+          <button type="button" class="pw-toggle" id="pwToggle" aria-label="Show password">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+        <div class="pw-meter"><div class="pw-meter-fill" id="pwMeterFill"></div></div>
+        <div class="pw-rules" id="pwRules">
+          <div class="rule" data-rule="length"><div class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>At least 8 characters</div>
+          <div class="rule" data-rule="letter"><div class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>Contains a letter</div>
+          <div class="rule" data-rule="number"><div class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>Contains a number</div>
+          <div class="rule" data-rule="special"><div class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>Contains a special character</div>
+        </div>
+      </div>
+
+      <div class="row-between">
+        <label class="remember"><input type="checkbox"> Remember me</label>
+        <a href="#" class="forgot">Forgot password?</a>
+      </div>
+
+      <button type="submit" class="btn-submit" id="submitBtn">
+        Log In
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      </button>
     </form>
 
-    <p class="footer-text">© 2025 Contractor Admin Portal</p>
+    <div class="divider">or</div>
+    <p class="signup-line">Don't have an account? <a href="#">Create one</a></p>
   </div>
-  <script>
-  document.getElementById("loginForm").addEventListener("submit", function (e) {
-    e.preventDefault(); // Stop actual form submit
+</div>
 
-    const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value.trim();
+<script>
+// ===== Country codes (all countries) =====
+const countries = [
+["Afghanistan","AF","93"],["Albania","AL","355"],["Algeria","DZ","213"],["Andorra","AD","376"],
+["Angola","AO","244"],["Argentina","AR","54"],["Armenia","AM","374"],["Australia","AU","61"],
+["Austria","AT","43"],["Azerbaijan","AZ","994"],["Bahamas","BS","1"],["Bahrain","BH","973"],
+["Bangladesh","BD","880"],["Barbados","BB","1"],["Belarus","BY","375"],["Belgium","BE","32"],
+["Belize","BZ","501"],["Benin","BJ","229"],["Bhutan","BT","975"],["Bolivia","BO","591"],
+["Bosnia and Herzegovina","BA","387"],["Botswana","BW","267"],["Brazil","BR","55"],["Brunei","BN","673"],
+["Bulgaria","BG","359"],["Burkina Faso","BF","226"],["Burundi","BI","257"],["Cambodia","KH","855"],
+["Cameroon","CM","237"],["Canada","CA","1"],["Chad","TD","235"],["Chile","CL","56"],
+["China","CN","86"],["Colombia","CO","57"],["Congo","CG","242"],["Costa Rica","CR","506"],
+["Croatia","HR","385"],["Cuba","CU","53"],["Cyprus","CY","357"],["Czech Republic","CZ","420"],
+["Denmark","DK","45"],["Djibouti","DJ","253"],["Dominican Republic","DO","1"],["Ecuador","EC","593"],
+["Egypt","EG","20"],["El Salvador","SV","503"],["Estonia","EE","372"],["Ethiopia","ET","251"],
+["Fiji","FJ","679"],["Finland","FI","358"],["France","FR","33"],["Gabon","GA","241"],
+["Gambia","GM","220"],["Georgia","GE","995"],["Germany","DE","49"],["Ghana","GH","233"],
+["Greece","GR","30"],["Guatemala","GT","502"],["Guinea","GN","224"],["Guyana","GY","592"],
+["Haiti","HT","509"],["Honduras","HN","504"],["Hong Kong","HK","852"],["Hungary","HU","36"],
+["Iceland","IS","354"],["India","IN","91"],["Indonesia","ID","62"],["Iran","IR","98"],
+["Iraq","IQ","964"],["Ireland","IE","353"],["Israel","IL","972"],["Italy","IT","39"],
+["Jamaica","JM","1"],["Japan","JP","81"],["Jordan","JO","962"],["Kazakhstan","KZ","7"],
+["Kenya","KE","254"],["Kuwait","KW","965"],["Kyrgyzstan","KG","996"],["Laos","LA","856"],
+["Latvia","LV","371"],["Lebanon","LB","961"],["Lesotho","LS","266"],["Liberia","LR","231"],
+["Libya","LY","218"],["Liechtenstein","LI","423"],["Lithuania","LT","370"],["Luxembourg","LU","352"],
+["Macau","MO","853"],["Madagascar","MG","261"],["Malawi","MW","265"],["Malaysia","MY","60"],
+["Maldives","MV","960"],["Mali","ML","223"],["Malta","MT","356"],["Mauritania","MR","222"],
+["Mauritius","MU","230"],["Mexico","MX","52"],["Moldova","MD","373"],["Monaco","MC","377"],
+["Mongolia","MN","976"],["Montenegro","ME","382"],["Morocco","MA","212"],["Mozambique","MZ","258"],
+["Myanmar","MM","95"],["Namibia","NA","264"],["Nepal","NP","977"],["Netherlands","NL","31"],
+["New Zealand","NZ","64"],["Nicaragua","NI","505"],["Niger","NE","227"],["Nigeria","NG","234"],
+["North Korea","KP","850"],["North Macedonia","MK","389"],["Norway","NO","47"],["Oman","OM","968"],
+["Pakistan","PK","92"],["Panama","PA","507"],["Papua New Guinea","PG","675"],["Paraguay","PY","595"],
+["Peru","PE","51"],["Philippines","PH","63"],["Poland","PL","48"],["Portugal","PT","351"],
+["Qatar","QA","974"],["Romania","RO","40"],["Russia","RU","7"],["Rwanda","RW","250"],
+["Saudi Arabia","SA","966"],["Senegal","SN","221"],["Serbia","RS","381"],["Sierra Leone","SL","232"],
+["Singapore","SG","65"],["Slovakia","SK","421"],["Slovenia","SI","386"],["Somalia","SO","252"],
+["South Africa","ZA","27"],["South Korea","KR","82"],["South Sudan","SS","211"],["Spain","ES","34"],
+["Sri Lanka","LK","94"],["Sudan","SD","249"],["Suriname","SR","597"],["Sweden","SE","46"],
+["Switzerland","CH","41"],["Syria","SY","963"],["Taiwan","TW","886"],["Tajikistan","TJ","992"],
+["Tanzania","TZ","255"],["Thailand","TH","66"],["Togo","TG","228"],["Trinidad and Tobago","TT","1"],
+["Tunisia","TN","216"],["Turkey","TR","90"],["Turkmenistan","TM","993"],["Uganda","UG","256"],
+["Ukraine","UA","380"],["United Arab Emirates","AE","971"],["United Kingdom","GB","44"],
+["United States","US","1"],["Uruguay","UY","598"],["Uzbekistan","UZ","998"],["Vanuatu","VU","678"],
+["Venezuela","VE","58"],["Vietnam","VN","84"],["Yemen","YE","967"],["Zambia","ZM","260"],
+["Zimbabwe","ZW","263"]
+];
 
-    // Simple check (replace with real backend validation later)
-    if (!email || !password) {
-      alert("Please enter both email and password.");
-      return;
-    }
+const select = document.getElementById('countryCode');
+countries.forEach(([name, iso, dial]) => {
+  const opt = document.createElement('option');
+  opt.value = dial;
+  opt.textContent = `${iso} +${dial}`;
+  opt.setAttribute('data-name', name);
+  if (iso === 'IN') opt.selected = true;
+  select.appendChild(opt);
+});
 
-    // Optional: simulate login check
-    if (email === "admin@example.com" && password === "admin123") {
-      window.location.href = "Dashboard.html";
-    } else {
-      alert("Invalid credentials. Try admin@example.com / admin123");
-    }
+// ===== Phone validation =====
+const phoneInput = document.getElementById('phoneInput');
+const phoneError = document.getElementById('phoneError');
+phoneInput.addEventListener('input', () => {
+  phoneInput.value = phoneInput.value.replace(/[^0-9]/g, '');
+});
+
+function phoneValid(){
+  const digits = phoneInput.value.trim();
+  return digits.length >= 7 && digits.length <= 12;
+}
+
+// ===== Password validation =====
+const pwInput = document.getElementById('passwordInput');
+const pwToggle = document.getElementById('pwToggle');
+const pwMeterFill = document.getElementById('pwMeterFill');
+const rules = document.querySelectorAll('.pw-rules .rule');
+
+pwToggle.addEventListener('click', () => {
+  const isPw = pwInput.type === 'password';
+  pwInput.type = isPw ? 'text' : 'password';
+});
+
+function evaluatePassword(val){
+  const checks = {
+    length: val.length >= 8,
+    letter: /[A-Za-z]/.test(val),
+    number: /[0-9]/.test(val),
+    special: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~`]/.test(val)
+  };
+  rules.forEach(r => {
+    const key = r.getAttribute('data-rule');
+    r.classList.toggle('ok', checks[key]);
   });
+  const passed = Object.values(checks).filter(Boolean).length;
+  const pct = (passed / 4) * 100;
+  pwMeterFill.style.width = pct + '%';
+  pwMeterFill.style.background = pct < 50 ? '#e2434c' : pct < 100 ? '#f5900f' : '#1b8f4c';
+  return Object.values(checks).every(Boolean);
+}
+
+pwInput.addEventListener('input', () => evaluatePassword(pwInput.value));
+
+// ===== Submit =====
+const form = document.getElementById('loginForm');
+const successBanner = document.getElementById('successBanner');
+const submitBtn = document.getElementById('submitBtn');
+
+form.addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const phoneOk = phoneValid();
+    phoneError.classList.toggle("show", !phoneOk);
+
+    const pwOk = evaluatePassword(pwInput.value);
+
+    if (!phoneOk || !pwOk) return;
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Logging in...";
+    successBanner.classList.add("show");
+
+    setTimeout(() => {
+        window.location.href = "./Dashboard.html";
+    }, 1800);
+});
 </script>
-
 </body>
-</html>
-
