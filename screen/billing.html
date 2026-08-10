@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Balaji Transport Company - Bill</title>
+<style>
+  :root{
+    --ink:#111;
+    --line:#000;
+    --muted:#555;
+    --accent:#0b4f8a;
+    --paper:#ffffff;
+    --bg:#e9edf1;
+    --shadow: 0 10px 34px rgba(0,0,0,.14);
+    --head-bg:#eef0f2;
+    --zebra:#fafafa;
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:"Segoe UI", Arial, Helvetica, sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    padding:30px 12px 60px;
+  }
+
+  /* ===== Toolbar (screen only) ===== */
+  .toolbar{
+    max-width:850px;
+    margin:0 auto 18px;
+    display:flex;
+    gap:10px;
+    justify-content:flex-end;
+    flex-wrap:wrap;
+  }
+  .btn{
+    border:none;
+    padding:10px 18px;
+    border-radius:8px;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    transition:transform .12s ease, box-shadow .12s ease;
+    box-shadow:0 2px 6px rgba(0,0,0,.15);
+  }
+  .btn:hover{transform:translateY(-1px);}
+  .btn:active{transform:translateY(0);}
+  .btn-primary{background:var(--accent); color:#fff;}
+  .btn-add{background:#1a9e5c; color:#fff;}
+  .btn-ghost{background:#fff; color:#333; border:1px solid #ccc;}
+
+  /* ===== Sheet — sized to real A4 so screen preview = print output ===== */
+  .sheet{
+    width:210mm;
+    min-height:297mm;
+    margin:0 auto;
+    background:var(--paper);
+    box-shadow:var(--shadow);
+    border:1px solid #000;
+    padding:10mm 9mm;
+    position:relative;
+  }
+  .orig-tag{
+    position:absolute;
+    top:6mm; right:9mm;
+    font-size:9.5px;
+    font-weight:600;
+    color:#333;
+  }
+
+  /* ---- Letterhead ---- */
+  .head{
+    text-align:center;
+    border-bottom:2px solid var(--line);
+    padding-bottom:6px;
+    margin-bottom:4px;
+  }
+  .company-name{
+    font-size:16px;
+    font-weight:800;
+    letter-spacing:1.2px;
+    color:#111;
+    margin:2px 0 3px;
+    text-transform:uppercase;
+  }
+  .company-sub{
+    font-size:12px;
+    font-weight:700;
+    margin:2px 0;
+    letter-spacing:.3px;
+  }
+  .company-contact{
+    font-size:12px;
+    margin:2px 0 3px;
+    color:#222;
+  }
+  .head [contenteditable]{ display:inline-block; }
+
+  .reg-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    font-size:12px;
+    font-weight:700;
+    padding:5px 0;
+    border-bottom:1px solid var(--line);
+    gap:8px;
+  }
+  .reg-row .center-tag{
+    background:#dcdcdc;
+    padding:3px 14px;
+    font-weight:800;
+    letter-spacing:.5px;
+    font-size:12px;
+    border:1px solid #999;
+  }
+
+  /* ---- Party / bill meta ---- */
+  .party-block{
+    padding:6px 0 5px;
+    border-bottom:1px solid var(--line);
+    font-size:12px;
+    position:relative;
+  }
+  .party-block .bill-meta{
+    position:absolute;
+    right:0; top:5px;
+    text-align:right;
+    font-size:12px;
+    font-weight:700;
+    line-height:1.5;
+  }
+  .party-line{ margin:2.5px 0; max-width:70%; line-height:1.45; }
+  .party-line b{ margin-right:4px; }
+
+  [contenteditable]:hover{ background:#f4f8fc; outline:1px dashed #cfe0ee; }
+  [contenteditable]:focus{ outline:1px dashed var(--accent); background:#f4f8fc; }
+
+  /* ===== Bill table ===== */
+  table.bill-table{
+    width:100%;
+    table-layout:fixed;
+    border-collapse:collapse;
+    margin-top:8px;
+    font-variant-numeric:tabular-nums;
+  }
+  table.bill-table th, table.bill-table td{
+    border:1px solid #333;
+    padding:4px 4px;
+    font-size:10px;
+    line-height:1.25;
+    overflow-wrap:break-word;
+    word-break:break-word;
+  }
+  table.bill-table thead th{
+    background:var(--head-bg);
+    font-weight:700;
+    font-size:9.5px;
+    text-transform:uppercase;
+    letter-spacing:.2px;
+    text-align:center;
+  }
+  table.bill-table tbody tr:nth-child(even){ background:var(--zebra); }
+  table.bill-table tbody td{ text-align:right; }
+  table.bill-table tbody td.al-left{ text-align:left; }
+  table.bill-table tbody td.al-center{ text-align:center; }
+  table.bill-table tfoot td{
+    font-weight:800;
+    background:#eef0f2;
+    font-size:10px;
+    text-align:right;
+  }
+  table.bill-table tfoot td.al-left{ text-align:left; }
+
+  table.bill-table tbody td input{
+    width:100%;
+    min-width:0;
+    max-width:100%;
+    border:none;
+    background:transparent;
+    text-align:inherit;
+    font-size:10px;
+    font-family:inherit;
+    font-variant-numeric:tabular-nums;
+    white-space:normal;
+    overflow-wrap:break-word;
+    word-break:break-word;
+    padding:0;
+    color:inherit;
+  }
+  table.bill-table tbody td input:focus{
+    outline:1px dashed var(--accent);
+    background:#f4f8fc;
+  }
+
+  .row-actions{ white-space:nowrap; text-align:center !important; }
+  .icon-btn{
+    border:none;
+    background:none;
+    cursor:pointer;
+    color:#c0392b;
+    font-size:14px;
+    padding:2px 4px;
+  }
+
+  /* ===== Amount summary ===== */
+  .below-table{
+    margin-top:9px;
+    font-size:12px;
+  }
+  .below-table .row{
+    margin:3px 0;
+    display:flex;
+    gap:6px;
+    align-items:baseline;
+  }
+  .below-table b{ min-width:130px; display:inline-block; }
+  .below-table .amt{ font-weight:800; }
+
+  /* ===== Footer ===== */
+  .footer-grid{
+    display:flex;
+    justify-content:space-between;
+    margin-top:14px;
+    gap:20px;
+    flex-wrap:wrap;
+  }
+  .bank-block{ font-size:12px; line-height:1.6; }
+  .bank-block .heading{ font-weight:700; margin-bottom:4px; }
+  .bank-block .row{ display:flex; gap:6px; }
+  .bank-block b{ min-width:120px; display:inline-block; }
+
+  .sign-block{
+    text-align:right;
+    font-size:12px;
+    min-width:200px;
+  }
+  .sign-block .for-line{
+    margin-top:30px;
+    font-weight:700;
+  }
+  .sign-block .sign-line{
+    margin-top:22px;
+  }
+
+  .note{
+    margin-top:12px;
+    font-size:10px;
+    font-weight:700;
+    border-top:1px solid #ccc;
+    padding-top:6px;
+  }
+
+  .page-no{
+    text-align:right;
+    font-size:10px;
+    margin-top:14px;
+    color:#333;
+  }
+
+  /* ===== Modal ===== */
+  .modal-overlay{
+    display:none;
+    position:fixed; inset:0;
+    background:rgba(0,0,0,.5);
+    align-items:center; justify-content:center;
+    z-index:100;
+    padding:16px;
+  }
+  .modal-overlay.active{ display:flex; }
+  .modal{
+    background:#fff;
+    width:100%; max-width:640px;
+    border-radius:12px;
+    padding:22px 26px 20px;
+    box-shadow:0 20px 60px rgba(0,0,0,.35);
+    max-height:90vh;
+    overflow-y:auto;
+  }
+  .modal h2{ margin:0 0 4px; font-size:19px; color:var(--accent); }
+  .modal p.hint{ margin:0 0 16px; font-size:12.5px; color:var(--muted); }
+  .form-grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px 16px; }
+  .form-grid .full{ grid-column:1 / -1; }
+  .field label{ display:block; font-size:12px; font-weight:700; margin-bottom:4px; color:#333; }
+  .field input{
+    width:100%; padding:8px 10px; border:1px solid #ccc; border-radius:6px;
+    font-size:13.5px; font-family:inherit;
+  }
+  .field input:focus{ outline:none; border-color:var(--accent); box-shadow:0 0 0 3px rgba(11,79,138,.15); }
+  .modal-actions{ display:flex; justify-content:flex-end; gap:10px; margin-top:20px; }
+  .auto-hint{ font-size:11px; color:var(--accent); font-weight:600; margin-top:14px; }
+
+  @media (max-width:900px){
+    .sheet{ width:100%; min-height:auto; padding:14px; }
+    .party-block .bill-meta{ position:static; text-align:left; margin-top:6px; }
+    .party-line{ max-width:100%; }
+    .form-grid{ grid-template-columns:1fr; }
+  }
+
+  /* ===== Print ===== */
+  @media print{
+    @page{ size:A4 portrait; margin:8mm; }
+    html, body{ background:#fff; padding:0; margin:0; }
+    .toolbar, .modal-overlay, .row-actions, .no-print{ display:none !important; }
+
+    .sheet{
+      box-shadow:none;
+      border:1px solid #000;
+      width:100%;
+      min-height:0;
+      margin:0;
+      padding:0 2mm;
+    }
+
+    table.bill-table th:last-child,
+    table.bill-table td:last-child{
+      width:0 !important; padding:0 !important; border:none !important;
+    }
+
+    table.bill-table tbody tr:nth-child(even){ background:#fafafa !important; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    table.bill-table thead th{ background:#eef0f2 !important; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    .reg-row .center-tag{ background:#dcdcdc !important; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+
+    input{ border:none !important; background:transparent !important; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="toolbar no-print">
+    <button class="btn btn-add" id="addBtn">＋ Add Entry</button>
+    <button class="btn btn-primary" id="printBtn">🖨 Print Bill</button>
+  </div>
+
+  <div class="sheet" id="sheet">
+    <div class="orig-tag">Original For Recipient</div>
+
+    <div class="head">
+      <div class="company-name" contenteditable="true">BALAJI TRANSPORT COMPANY</div>
+      <div class="company-sub" contenteditable="true">PYARE LAL BUILDING, NEAR NAMASTEY CHOWK</div>
+      <div class="company-contact" contenteditable="true">Ph. No. : 9728075443 &nbsp;&nbsp;|&nbsp;&nbsp; email : KARNAL@BALAJITRANSPORT.ORG</div>
+    </div>
+
+    <div class="reg-row">
+      <div>GSTIN : <span contenteditable="true">06BHFPR0032L1ZF</span></div>
+      <div class="center-tag">TRANSPORTATION BILL</div>
+      <div>PAN : <span contenteditable="true">BHFPR0032L</span></div>
+    </div>
+
+    <div class="party-block">
+      <div class="bill-meta">
+        <div>Bill No. : <span contenteditable="true">1021338</span></div>
+        <div>Bill Date : <span contenteditable="true" id="billDate">02/06/2026</span></div>
+      </div>
+      <div class="party-line"><b>Party Name :</b><span contenteditable="true">RALLISON PAINTS PRIVATE LIMITED</span></div>
+      <div class="party-line"><b>Address :</b><span contenteditable="true">MUGHAL MAZRA ROAD, VILLAGE KUNJPURA, KARNAL 132001, UDYAM REGISTRATION NUMBER-HR-10</span></div>
+      <div class="party-line"><b>GSTIN :</b><span contenteditable="true">06AALCR4716J1Z4</span></div>
+      <div class="party-line"><b>Taxes Paid By :</b><span contenteditable="true">Transporter</span></div>
+    </div>
+
+    <table class="bill-table" id="billTable">
+      <colgroup>
+        <col style="width:6%">
+        <col style="width:6.5%">
+        <col style="width:14.5%">
+        <col style="width:6%">
+        <col style="width:4%">
+        <col style="width:5%">
+        <col style="width:5%">
+        <col style="width:7%">
+        <col style="width:4.5%">
+        <col style="width:4.5%">
+        <col style="width:4.5%">
+        <col style="width:6.5%">
+        <col style="width:5.5%">
+        <col style="width:6.5%">
+        <col style="width:14%">
+        <col class="no-print" style="width:6%">
+      </colgroup>
+      <thead>
+        <tr>
+          <th>GR Date</th>
+          <th>GR No</th>
+          <th>Destination</th>
+          <th>Item</th>
+          <th>Qty</th>
+          <th>Wgt.</th>
+          <th>Rate</th>
+          <th>Freight</th>
+          <th>B.C.</th>
+          <th>D.D.</th>
+          <th>L.C.</th>
+          <th>Total</th>
+          <th>PF/O.CH.</th>
+          <th>G.Total</th>
+          <th>Inv No</th>
+          <th class="no-print">Action</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody">
+        <!-- rows injected by JS -->
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="4" class="al-left">Grand Total :</td>
+          <td id="sumQty">0</td>
+          <td id="sumWgt">0</td>
+          <td class="al-center">-</td>
+          <td id="sumFreight">0</td>
+          <td id="sumBC">0</td>
+          <td id="sumDD">0</td>
+          <td id="sumLC">0</td>
+          <td id="sumTotal">0</td>
+          <td id="sumPF">0</td>
+          <td id="sumGTotal">0</td>
+          <td class="al-center">-</td>
+          <td class="no-print"></td>
+        </tr>
+      </tfoot>
+    </table>
+
+    <div class="below-table">
+      <div class="row"><b>Bill Amount :</b><span class="amt" id="billAmountDisplay">0</span></div>
+      <div class="row"><b>Amount In Words :</b><span id="amountInWords">Rupees Zero Only /-</span></div>
+    </div>
+
+    <div class="footer-grid">
+      <div class="bank-block">
+        <div class="heading">Company Bank Account Detail :</div>
+        <div class="row"><b>Bank Name :</b><span contenteditable="true">IDFC FIRST BANK LTD</span></div>
+        <div class="row"><b>A/C No :</b><span contenteditable="true">82954960056</span></div>
+        <div class="row"><b>IFSC Code :</b><span contenteditable="true">IDFB0021472</span></div>
+        <div class="row"><b>Branch Name :</b><span contenteditable="true">&nbsp;</span></div>
+      </div>
+      <div class="sign-block">
+        <div class="for-line">For BALAJI TRANSPORT COMPANY</div>
+        <div class="sign-line">Sign ______________________</div>
+      </div>
+    </div>
+
+    <div class="note">
+      Note:- It is Certified that no credit of Input Tax charged on goods and Services used in supplying the Services has been taken.
+    </div>
+
+    <div class="page-no">Page 1 of 1</div>
+  </div>
+
+  <!-- ===== Modal ===== -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <h2>Add GR Entry</h2>
+      <p class="hint">Fill in the shipment details below. Total and G.Total auto-calculate but you can adjust them manually before saving.</p>
+      <form id="entryForm">
+        <div class="form-grid">
+          <div class="field">
+            <label>GR Date</label>
+            <input type="text" name="grdate" placeholder="DD/MM/YY" required>
+          </div>
+          <div class="field">
+            <label>GR No</label>
+            <input type="text" name="grno" placeholder="e.g. 10224306" required>
+          </div>
+          <div class="field">
+            <label>Destination</label>
+            <input type="text" name="destination" placeholder="e.g. BHARATPUR" required>
+          </div>
+          <div class="field">
+            <label>Item</label>
+            <input type="text" name="item" placeholder="e.g. PAINT" required>
+          </div>
+          <div class="field">
+            <label>Qty</label>
+            <input type="number" step="any" name="qty" placeholder="0">
+          </div>
+          <div class="field">
+            <label>Weight (Wgt.)</label>
+            <input type="number" step="any" name="wgt" placeholder="0">
+          </div>
+          <div class="field">
+            <label>Rate</label>
+            <input type="number" step="any" name="rate" placeholder="0">
+          </div>
+          <div class="field">
+            <label>Freight</label>
+            <input type="number" step="any" name="freight" placeholder="0">
+          </div>
+          <div class="field">
+            <label>B.C.</label>
+            <input type="number" step="any" name="bc" placeholder="0" value="0">
+          </div>
+          <div class="field">
+            <label>D.D.</label>
+            <input type="number" step="any" name="dd" placeholder="0" value="0">
+          </div>
+          <div class="field">
+            <label>L.C.</label>
+            <input type="number" step="any" name="lc" placeholder="0" value="0">
+          </div>
+          <div class="field">
+            <label>PF/O.CH.</label>
+            <input type="number" step="any" name="pf" placeholder="0" value="20">
+          </div>
+          <div class="field">
+            <label>Total</label>
+            <input type="number" step="any" name="total" placeholder="auto">
+          </div>
+          <div class="field">
+            <label>G.Total</label>
+            <input type="number" step="any" name="gtotal" placeholder="auto">
+          </div>
+          <div class="field full">
+            <label>Inv No</label>
+            <input type="text" name="invno" placeholder="e.g. PNT/26-27/0061">
+          </div>
+        </div>
+        <div class="auto-hint">Tip: Total = Freight + B.C. + D.D. + L.C. — recalculated automatically as you type (editable).</div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-ghost" id="cancelBtn">Cancel</button>
+          <button type="submit" class="btn btn-add">Add Row</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+<script>
+(function(){
+  const tableBody = document.getElementById('tableBody');
+  const addBtn = document.getElementById('addBtn');
+  const printBtn = document.getElementById('printBtn');
+  const modalOverlay = document.getElementById('modalOverlay');
+  const cancelBtn = document.getElementById('cancelBtn');
+  const entryForm = document.getElementById('entryForm');
+
+  let rows = [];
+  let rowIdCounter = 0;
+
+  // seed with the original bill's data so the layout looks right immediately
+  const seedData = [
+    {grdate:"08/05/26", grno:"10224306", destination:"BHARATPUR", item:"PAINT", qty:11, wgt:165, rate:3.5, freight:577.5, bc:50, dd:0, lc:44, pf:20, invno:"PNT/26-27/0061"},
+    {grdate:"14/05/26", grno:"10224529", destination:"SIKAR", item:"PAINT", qty:66, wgt:1335, rate:3, freight:4005, bc:50, dd:1000, lc:264, pf:20, invno:"PNT/26-"},
+    {grdate:"14/05/26", grno:"10224531", destination:"LUNKARANS", item:"PAINT", qty:1, wgt:20, rate:4, freight:80, bc:50, dd:0, lc:4, pf:20, invno:"PNT/26-27/0110"},
+    {grdate:"18/05/26", grno:"10224680", destination:"RAWATSAR", item:"PAINT", qty:5, wgt:62, rate:4.5, freight:279, bc:50, dd:0, lc:20, pf:20, invno:"PNT/26-27/0158"},
+    {grdate:"27/05/26", grno:"10224977", destination:"HANUMANGARH", item:"PAINT", qty:8, wgt:123, rate:3.5, freight:430.5, bc:50, dd:0, lc:32, pf:20, invno:"PNT/26-"},
+    {grdate:"28/05/26", grno:"10224999", destination:"SARDAR", item:"PAINT", qty:10, wgt:220, rate:3.5, freight:770, bc:50, dd:0, lc:40, pf:20, invno:"PNT/26-27/0280"},
+  ];
+
+  seedData.forEach(d=>{
+    const total = num(d.freight)+num(d.bc)+num(d.dd)+num(d.lc);
+    const gtotal = total; // matches original bill pattern (G.Total = Total, PF shown separately)
+    addRow({...d, total, gtotal});
+  });
+
+  function num(v){ const n=parseFloat(v); return isNaN(n)?0:n; }
+  function fmt(n){
+    if (Number.isInteger(n)) return String(n);
+    return (Math.round(n*100)/100).toString();
+  }
+
+  function addRow(data){
+    const id = 'r' + (++rowIdCounter);
+    rows.push({id, ...data});
+    renderTable();
+  }
+
+  function removeRow(id){
+    rows = rows.filter(r=>r.id!==id);
+    renderTable();
+  }
+
+  function renderTable(){
+    tableBody.innerHTML = '';
+    rows.forEach(r=>{
+      const tr = document.createElement('tr');
+      tr.dataset.id = r.id;
+      tr.innerHTML = `
+        <td class="al-left"><input value="${esc(r.grdate)}" data-field="grdate" style="text-align:left"></td>
+        <td class="al-left"><input value="${esc(r.grno)}" data-field="grno" style="text-align:left"></td>
+        <td class="al-left"><input value="${esc(r.destination)}" data-field="destination" style="text-align:left"></td>
+        <td class="al-left"><input value="${esc(r.item)}" data-field="item" style="text-align:left"></td>
+        <td><input value="${esc(r.qty)}" data-field="qty" style="text-align:right"></td>
+        <td><input value="${esc(r.wgt)}" data-field="wgt" style="text-align:right"></td>
+        <td><input value="${esc(r.rate)}" data-field="rate" style="text-align:right"></td>
+        <td><input value="${esc(r.freight)}" data-field="freight" style="text-align:right"></td>
+        <td><input value="${esc(r.bc)}" data-field="bc" style="text-align:right"></td>
+        <td><input value="${esc(r.dd)}" data-field="dd" style="text-align:right"></td>
+        <td><input value="${esc(r.lc)}" data-field="lc" style="text-align:right"></td>
+        <td><input value="${esc(r.total)}" data-field="total" style="text-align:right"></td>
+        <td><input value="${esc(r.pf)}" data-field="pf" style="text-align:right"></td>
+        <td><input value="${esc(r.gtotal)}" data-field="gtotal" style="text-align:right"></td>
+        <td class="al-left"><input value="${esc(r.invno)}" data-field="invno" style="text-align:left"></td>
+        <td class="row-actions no-print"><button class="icon-btn" title="Delete row">✕</button></td>
+      `;
+      tr.querySelector('.icon-btn').addEventListener('click', ()=>removeRow(r.id));
+      tr.querySelectorAll('input').forEach(inp=>{
+        inp.addEventListener('input', ()=>{
+          const row = rows.find(x=>x.id===r.id);
+          const field = inp.dataset.field;
+          row[field] = inp.value;
+          recalcTotals();
+        });
+      });
+      tableBody.appendChild(tr);
+    });
+    recalcTotals();
+  }
+
+  function esc(v){
+    if (v===undefined||v===null) return '';
+    return String(v).replace(/"/g,'&quot;');
+  }
+
+  function recalcTotals(){
+    let sumQty=0, sumWgt=0, sumFreight=0, sumBC=0, sumDD=0, sumLC=0, sumTotal=0, sumPF=0, sumGTotal=0;
+    rows.forEach(r=>{
+      sumQty+=num(r.qty); sumWgt+=num(r.wgt); sumFreight+=num(r.freight);
+      sumBC+=num(r.bc); sumDD+=num(r.dd); sumLC+=num(r.lc);
+      sumTotal+=num(r.total); sumPF+=num(r.pf); sumGTotal+=num(r.gtotal);
+    });
+    document.getElementById('sumQty').textContent = fmt(sumQty);
+    document.getElementById('sumWgt').textContent = fmt(sumWgt);
+    document.getElementById('sumFreight').textContent = fmt(sumFreight);
+    document.getElementById('sumBC').textContent = fmt(sumBC);
+    document.getElementById('sumDD').textContent = fmt(sumDD);
+    document.getElementById('sumLC').textContent = fmt(sumLC);
+    document.getElementById('sumTotal').textContent = fmt(sumTotal);
+    document.getElementById('sumPF').textContent = fmt(sumPF);
+    document.getElementById('sumGTotal').textContent = fmt(sumGTotal);
+
+    const billAmount = sumGTotal + sumPF; // Grand total = G.Total column + PF/O.CH as on original bill
+    document.getElementById('billAmountDisplay').textContent = fmt(billAmount);
+    document.getElementById('amountInWords').textContent = 'Rupees ' + numberToWords(Math.round(billAmount)) + ' Only /-';
+  }
+
+  // ===== Modal handling =====
+  addBtn.addEventListener('click', ()=>{
+    entryForm.reset();
+    entryForm.bc.value = 0; entryForm.dd.value = 0; entryForm.lc.value = 0; entryForm.pf.value = 20;
+    modalOverlay.classList.add('active');
+  });
+  cancelBtn.addEventListener('click', closeModal);
+  modalOverlay.addEventListener('click', (e)=>{ if(e.target===modalOverlay) closeModal(); });
+  function closeModal(){ modalOverlay.classList.remove('active'); }
+
+  // live auto-calc of Total inside modal
+  ['freight','bc','dd','lc'].forEach(name=>{
+    entryForm[name].addEventListener('input', autoCalcModalTotal);
+  });
+  function autoCalcModalTotal(){
+    const total = num(entryForm.freight.value)+num(entryForm.bc.value)+num(entryForm.dd.value)+num(entryForm.lc.value);
+    entryForm.total.value = total;
+    entryForm.gtotal.value = total;
+  }
+
+  entryForm.addEventListener('submit', (e)=>{
+    e.preventDefault();
+    const fd = new FormData(entryForm);
+    const data = {};
+    fd.forEach((v,k)=>data[k]=v);
+    if(!data.total) data.total = num(data.freight)+num(data.bc)+num(data.dd)+num(data.lc);
+    if(!data.gtotal) data.gtotal = data.total;
+    addRow(data);
+    closeModal();
+  });
+
+  printBtn.addEventListener('click', ()=>{ window.print(); });
+
+  // ===== Number to words (Indian numbering system) =====
+  function numberToWords(num){
+    if (num===0) return 'Zero';
+    const a = ['','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten',
+      'Eleven','Twelve','Thirteen','Fourteen','Fifteen','Sixteen','Seventeen','Eighteen','Nineteen'];
+    const b = ['','','Twenty','Thirty','Forty','Fifty','Sixty','Seventy','Eighty','Ninety'];
+
+    function two(n){
+      if(n<20) return a[n];
+      return b[Math.floor(n/10)] + (n%10? ' ' + a[n%10] : '');
+    }
+    function three(n){
+      if(n>99) return a[Math.floor(n/100)] + ' Hundred' + (n%100? ' ' + two(n%100) : '');
+      return two(n);
+    }
+
+    let str = '';
+    const crore = Math.floor(num / 10000000); num %= 10000000;
+    const lakh = Math.floor(num / 100000); num %= 100000;
+    const thousand = Math.floor(num / 1000); num %= 1000;
+    const hundred = num;
+
+    if(crore) str += three(crore) + ' Crore ';
+    if(lakh) str += three(lakh) + ' Lakh ';
+    if(thousand) str += three(thousand) + ' Thousand ';
+    if(hundred) str += three(hundred);
+
+    return str.trim();
+  }
+})();
+</script>
+</body>
+</html>
