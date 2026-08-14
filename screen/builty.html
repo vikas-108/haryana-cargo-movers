@@ -1,317 +1,209 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Jai Haryana Cargo Mover - Goods Receipt</title>
-    <link rel="stylesheet" href="../css/builty.css" />
-  </head>
-  <body>
-    <div class="bilti-wrapper">
-      <!-- Top Section Grid -->
-      <header class="top-row">
-        <div class="meta-left ">
-          
-          
-        </div>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jai Haryana Cargo Mover - Goods Receipt</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/builty.css">
+</head>
+<body>
 
-        <div class="meta-center border-right">
-          <p class="devotional">|| जय पीर बाबा पक्के पुल वाले की ||</p>
-          <p class="jurisdiction">Subject to Karnal Jurisdiction</p>
-          <h1 class="main-title">JAI HARYANA CARGO MOVERS </h1>
-          <p class="solutions">COMPLETE TRANSPORT & LOGISTICS SOLUTIONS</p>
-          
-          <p class="sizes">(M) 81687-47069 | 06KKTPK7769F1Z7</p>
-          <div class="address-pill">
-            OPP. GALI NO. 2, MANGAL COLONY, PART-2, KARNAL (HARYANA)
+  <div class="toolbar">
+    <button class="btn btn-calc" id="calcBtn">🧮 Auto Calculate</button>
+    <button class="btn btn-primary" id="printBtn">🖨 Print Goods Receipt</button>
+  </div>
+
+  <div class="print-page-slot slot-original">
+  <div class="sheet" id="sheet">
+
+    <!-- ===== Letterhead ===== -->
+    <div class="letterhead">
+      <div class="brand-row">
+        <div class="brand-left">
+          <div class="brand-logo">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 3h13v13H1z"/><path d="M14 8h4l3 3v5h-7V8z"/><circle cx="6" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
+          </div>
+          <div class="brand-text">
+            <div class="company-tag">जय पीर बाबा पक्के पुल वाले की </div>
+            <div class="company-name">JAI HARYANA CARGO MOVER</div>
+            <div class="company-tag">COMPLETE TRANSPORT &amp; LOGISTICS SOLUTIONS</div>
           </div>
         </div>
-
-        <div class="meta-right">
-          <div class="tpt-id-row">
-            
-          </div>
-          <div class="sidebar-entry border-top">
-            <span class="label">G.R. No.</span><input type="text" />
-          </div>
-          <div class="sidebar-entry border-top">
-            <span class="label">Date</span><input type="text" />
-          </div>
-          <div class="sidebar-entry border-top">
-            <span class="label">From</span><input type="text" />
-          </div>
-          <div class="sidebar-entry border-top">
-            <span class="label">To</span><input type="text" />
-          </div>
-          <div class="sidebar-entry border-top">
-            <span class="label">Delivery at</span><input type="text" />
-          </div>
-          <div class="sidebar-entry border-top">
-            <span class="label">Pvt. Mark</span><input type="text" />
-          </div>
+        <div class="brand-right">
+          <span class="gr-pill">GOODS RECEIPT</span>
+          <div class="jurisdiction">Subject to Karnal Jurisdiction</div>
+          <div class="copy-tag">ORIGINAL FOR RECIPIENT</div>
         </div>
-      </header>
+      </div>
 
-      <!-- UPDATED: Consignor / Consignee Rows with 15-Box GSTIN -->
-      <section class="parties-wrapper border-top">
-        <!-- Consignor -->
-        <div class="party-input-group">
-          <div class="name-row">
-            <span class="label">Consignor's Name:</span>
-            <input
-              type="text"
-              class="party-name-input"
-              placeholder="Enter Name..."
-            />
-          </div>
-          <div class="gst-row">
-            <span class="label">GSTIN :</span>
-            <div class="gst-grid">
-              <!-- 15 Inputs generated via JS or manual -->
-              <input type="text" maxlength="1" class="gst-box" /><input
-                type="text"
-                maxlength="1"
-                class="gst-box"
-              /><input type="text" maxlength="1" class="gst-box" /><input
-                type="text"
-                maxlength="1"
-                class="gst-box"
-              /><input type="text" maxlength="1" class="gst-box" />
-              <input type="text" maxlength="1" class="gst-box" /><input
-                type="text"
-                maxlength="1"
-                class="gst-box"
-              /><input type="text" maxlength="1" class="gst-box" /><input
-                type="text"
-                maxlength="1"
-                class="gst-box"
-              /><input type="text" maxlength="1" class="gst-box" />
-              <input type="text" maxlength="1" class="gst-box" /><input
-                type="text"
-                maxlength="1"
-                class="gst-box"
-              /><input type="text" maxlength="1" class="gst-box" /><input
-                type="text"
-                maxlength="1"
-                class="gst-box"
-              /><input type="text" maxlength="1" class="gst-box" />
-            </div>
-          </div>
+      <div class="contact-row">
+        <div class="item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 22s8-4.5 8-11.8A8 8 0 0 0 4 10.2C4 17.5 12 22 12 22z"/></svg>
+          <span>Opp. Gali No. 2, Mangal Colony, Part-2, Karnal (Haryana)</span>
         </div>
-
-        <!-- Consignee -->
-        <div class="party-input-group border-top">
-          <div class="name-row">
-            <span class="label">Consignee's Name:</span>
-            <input
-              type="text"
-              class="party-name-input"
-              placeholder="Enter Name..."
-            />
-          </div>
-          <div class="gst-row">
-            <span class="label">GSTIN :</span>
-            <div class="gst-grid">
-              <input type="text" maxlength="1" class="gst-box" /><input
-                type="text"
-                maxlength="1"
-                class="gst-box"
-              /><input type="text" maxlength="1" class="gst-box" /><input
-                type="text"
-                maxlength="1"
-                class="gst-box"
-              /><input type="text" maxlength="1" class="gst-box" />
-              <input type="text" maxlength="1" class="gst-box" /><input
-                type="text"
-                maxlength="1"
-                class="gst-box"
-              /><input type="text" maxlength="1" class="gst-box" /><input
-                type="text"
-                maxlength="1"
-                class="gst-box"
-              /><input type="text" maxlength="1" class="gst-box" />
-              <input type="text" maxlength="1" class="gst-box" /><input
-                type="text"
-                maxlength="1"
-                class="gst-box"
-              /><input type="text" maxlength="1" class="gst-box" /><input
-                type="text"
-                maxlength="1"
-                class="gst-box"
-              /><input type="text" maxlength="1" class="gst-box" />
-            </div>
-          </div>
+        <div class="item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.5.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.6 21 3 13.4 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.2.2 2.4.6 3.5.1.4 0 .8-.2 1.1L6.6 10.8z"/></svg>
+          <span><b>Ashok</b> (Owner) — +91 81687-47069</span>
         </div>
-      </section>
-
-      <!-- Main Cargo Ledger -->
-      <main class="ledger-grid border-top">
-        <div class="ledger-header">
-          <div class="th-pkgs border-right">No. of Pkgs.</div>
-          <div class="th-desc border-right">Description (Said to contain)</div>
-          <div class="th-weight border-right"> WEIGHT</div>
-          <div class="th-rate border-right">Rate</div>
-          <div class="th-freight border-right">Total Freight</div>
-          <div class="th-status">PAID</div>
+        <div class="item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 6 10 7 10-7"/></svg>
+          <span>jaiharyanacargomover@gmail.com</span>
         </div>
-
-        <div class="ledger-body">
-          <!-- Left Workspace -->
-          <div class="ledger-left-pane border-right">
-            <div class="workspace-inputs">
-              <div class="cell-pkgs border-right"><textarea></textarea></div>
-              <div class="cell-desc border-right"><textarea></textarea></div>
-              <div class="cell-weight">
-                <div class="weight-box actual-header">ACTUAL WEIGHT</div>
-
-                <div class="weight-box actual-value">
-                  <input type="number" id="actual-weight" />
-                </div>
-
-                <div class="weight-box charged-header">CHARGED WEIGHT</div>
-
-                <div class="weight-box charged-value">
-                  <input
-                    type="number"
-                    id="charged-weight-val"
-                   
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div class="invoice-footer-bar border-top">
-              <div class="inv-col">
-                <div class="inv-row">
-                  <span class="lbl">Invoice No.</span><input type="text" />
-                </div>
-                <div class="inv-row">
-                  <span class="lbl">E-Way Bill No.</span><input type="text" />
-                </div>
-              </div>
-              <div class="inv-col">
-                <div class="inv-row">
-                  <span class="lbl">Value of bill</span><input type="text" />
-                </div>
-              </div>
-            </div>
-
-            <!---- <div class="charged-weight-row border-top">
-                        <div class="cw-label border-right">CHARGED WEIGHT</div>
-                        <div class="cw-input-box"><input type="number" id="charged-weight-val"></div>
-                    </div> -->
-          </div>
-
-          <!-- Right Sidebar: Calculations -->
-          <div class="ledger-right-pane">
-            <div class="charge-item border-right">
-              <input type="number" id="rate-val" />
-            </div>
-            <div class="charge-item border-right">
-              <input
-                type="number"
-                id="freight-val"
-                readonly
-                class="calculated-field"
-              />
-            </div>
-            <div class="charge-label-row border-right">G.R.</div>
-            <div class="charge-item border-right">
-              <input type="number" class="cost-calc" />
-            </div>
-            <div class="charge-label-row border-right">L/C</div>
-            <div class="charge-item border-right">
-              <input type="number" class="cost-calc" />
-            </div>
-            <div class="charge-label-row border-right">Labour</div>
-            <div class="charge-item border-right">
-              <input type="number" class="cost-calc" />
-            </div>
-            <div class="charge-label-row border-right">Toll</div>
-            <div class="charge-item border-right">
-              <input type="number" class="cost-calc" />
-            </div>
-            <div class="charge-label-row border-right">D.D.</div>
-            <div class="charge-item border-right">
-              <input type="number" class="cost-calc" />
-            </div>
-            <div class="charge-label-row bg-gray border-right">Total</div>
-            <div class="charge-item border-right bg-gray">
-              <input type="number" id="grand-total" readonly />
-            </div>
-          </div>
-
-          <!-- UPDATED: Status Sidebar with Checkboxes -->
-          <div class="status-sidebar">
-            <div class="status-cell-block border-bottom">
-              <input type="checkbox" name="pay-status" class="status-check" />
-            </div>
-            <div class="status-title-strip border-bottom">TO PAY</div>
-            <div class="status-cell-block border-bottom">
-              <input type="checkbox" name="pay-status" class="status-check" />
-            </div>
-            <div class="status-title-strip border-bottom">T.B.B</div>
-            <div class="status-cell-block">
-              <input type="checkbox" name="pay-status" class="status-check" />
-            </div>
-          </div>
+        <div class="item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+          <span><b>TPT ID:</b> 06KTPRK7769F1Z7</span>
         </div>
-      </main>
-
-      <!-- Footer Grid -->
-      <footer class="footer-matrix border-top">
-        <div class="footer-columns">
-          <div class="column-tax border-right">
-            <div class="tax-header border-bottom">SERVICE TAX PAYABLE BY</div>
-            <label class="check-row"><input type="checkbox" /> CONSIGNOR</label>
-            <label class="check-row"><input type="checkbox" /> CONSIGNEE</label>
-            <label class="check-row"
-              ><input type="checkbox" /> TRANSPORTER</label
-            >
-          </div>
-
-          <div class="column-disclaimer border-right">
-            <p>Company is not responsible for illegal goods & octroi</p>
-            <p
-              class="border-bottom"
-              style="padding-bottom: 5px; margin-bottom: 5px"
-            >
-              Company is not responsible for Breaking, Damage, Leakage,
-              Shortage, Fire and Accident
-            </p>
-            <div class="driver-sign-row">
-              <span>Signature of Driver:</span>
-              <input type="text" class="dotted-input" />
-            </div>
-          </div>
-
-          <div class="column-auth">
-            <div class="owner-risk-text">AT OWNER'S RISK</div>
-            <div class="signature-block">
-              <p class="company-heading">For JAI HARYANA CARGO MOVER</p>
-              <div class="signature-gap"></div>
-              <input type="text" class="signature-input">
-              <p class="clerk-sign-line">Sign Booking Clerk</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="bottom-banner-ribbon border-top">
-          <span><strong>NOTE : GOODS LOADED AT OWNER RISK</strong></span>
-          <span
-            >👉 नाम की बिल्टी होने पर माल पार्टी को डिलीवरी कर दिया जाएगा।</span
-          >
-          <span>👉 कृपया अपने माल का बीमा कर बुकिंग करें।</span>
-        </div>
-      </footer>
-    </div>
-    
-
-    <div class="print-utility-controls" id="print-sheet">
-        
-      <button onclick="printBilty()">Print</button>
+      </div>
     </div>
 
-    <script src="../js/builty.js"></script>
-  </body>
+    <!-- ===== Meta strip ===== -->
+    <div class="meta-strip">
+      <div class="meta-box"><label>G.R. No.</label><input type="text" id="grNo" placeholder="—"></div>
+      <div class="meta-box"><label>G.R. Date</label><input type="text" id="grDate" placeholder="DD/MM/YYYY"></div>
+      <div class="meta-box"><label>From</label><input type="text" id="fromCity" placeholder="Karnal"></div>
+      <div class="meta-box"><label>To</label><input type="text" id="toCity" placeholder="—"></div>
+      <div class="meta-box"><label>Delivery At</label><input type="text" id="deliveryAt" placeholder="—"></div>
+      <div class="meta-box"><label>Pvt. Mark</label><input type="text" id="pvtMark" placeholder="—"></div>
+    </div>
+
+    <!-- ===== Consignor / Consignee (center) ===== -->
+    <div class="party-grid">
+      <div class="party-card">
+        <span class="ptag">Consignor</span>
+        <div class="party-field">
+          <label>Consignor's Name</label>
+          <input type="text" id="consignorName" placeholder="Enter consignor's name...">
+        </div>
+        <div class="party-field gst">
+          <label>GSTIN</label>
+          <input type="text" id="consignorGSTIN" maxlength="15" placeholder="e.g. 06AAAPT1234C1Z9">
+        </div>
+      </div>
+      <div class="party-card">
+        <span class="ptag">Consignee</span>
+        <div class="party-field">
+          <label>Consignee's Name</label>
+          <input type="text" id="consigneeName" placeholder="Enter consignee's name...">
+        </div>
+        <div class="party-field gst">
+          <label>GSTIN</label>
+          <input type="text" id="consigneeGSTIN" maxlength="15" placeholder="e.g. 06AAAPT1234C1Z9">
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== Cargo ledger ===== -->
+    <div class="ledger-head">
+      <div>No. of Pkgs</div>
+      <div>Description (Said to contain)</div>
+      <div>Weight</div>
+      <div>Charges</div>
+      <div>Status</div>
+    </div>
+
+    <div class="ledger-body">
+      <div class="col-pkgs"><textarea id="pkgs" placeholder="Qty"></textarea></div>
+
+      <div class="col-desc">
+        <textarea id="description" placeholder="Description of goods (said to contain)..."></textarea>
+        <div class="desc-extra">
+          <div class="row"><label>Invoice No.</label><input type="text" id="invoiceNo"></div>
+          <div class="row"><label>Value of Bill</label><input type="text" id="valueOfBill"></div>
+          <div class="row"><label>E-Way Bill No.</label><input type="text" id="ewayBillNo"></div>
+        </div>
+      </div>
+
+      <div class="col-weight">
+        <div class="weight-block">
+          <div class="wlabel">Actual Weight</div>
+          <input type="number" id="actualWeight" placeholder="0">
+        </div>
+        <div class="weight-block">
+          <div class="wlabel">Charged Weight</div>
+          <input type="number" id="chargedWeight" placeholder="0">
+        </div>
+      </div>
+
+      <div class="col-charges">
+        <div class="charge-label">Rate</div>
+        <div class="charge-input-wrap"><input type="number" id="rate" placeholder="0"></div>
+
+        <div class="charge-label">Total Freight</div>
+        <div class="charge-input-wrap"><input type="number" id="totalFreight" placeholder="0"></div>
+
+        <div class="charge-label">G.R.</div>
+        <div class="charge-input-wrap"><input type="number" id="grCharge" placeholder="0"></div>
+
+        <div class="charge-label">L/C</div>
+        <div class="charge-input-wrap"><input type="number" id="lcCharge" placeholder="0"></div>
+
+        <div class="charge-label">Labour</div>
+        <div class="charge-input-wrap"><input type="number" id="labourCharge" placeholder="0"></div>
+
+        <div class="charge-label">Toll</div>
+        <div class="charge-input-wrap"><input type="number" id="tollCharge" placeholder="0"></div>
+
+        <div class="charge-label">D.D.</div>
+        <div class="charge-input-wrap"><input type="number" id="ddCharge" placeholder="0"></div>
+
+        <div class="charge-label charge-row-total">Total</div>
+        <div class="charge-input-wrap charge-row-total"><input type="number" id="grandTotal" placeholder="0" readonly></div>
+      </div>
+
+      <div class="col-status">
+        <label class="status-opt"><input type="radio" name="payStatus" value="Paid"><span>PAID</span></label>
+        <label class="status-opt"><input type="radio" name="payStatus" value="To Pay"><span>TO PAY</span></label>
+        <label class="status-opt"><input type="radio" name="payStatus" value="T.B.B."><span>T.B.B.</span></label>
+      </div>
+    </div>
+
+    <!-- ===== Service tax payable by ===== -->
+    <div class="tax-row">
+      <span class="tlabel">Service Tax Payable By :</span>
+      <div class="segmented">
+        <input type="radio" name="taxPayableBy" id="taxConsignor" value="Consignor">
+        <label for="taxConsignor">Consignor</label>
+        <input type="radio" name="taxPayableBy" id="taxConsignee" value="Consignee">
+        <label for="taxConsignee">Consignee</label>
+        <input type="radio" name="taxPayableBy" id="taxTransporter" value="Transporter" checked>
+        <label for="taxTransporter">Transporter</label>
+      </div>
+    </div>
+
+    <!-- ===== Disclaimer / risk ===== -->
+    <div class="disclaimer-block">
+      <div class="disclaimer-text">
+        <b>Note :</b> Company is not responsible for illegal goods &amp; octroi.<br>
+        Company is not responsible for Breaking, Damage, Leakage, Shortage, Fire and Accident.
+      </div>
+      <div class="risk-tag">AT OWNER'S RISK</div>
+    </div>
+
+    <!-- ===== Signatures ===== -->
+    <div class="signature-row">
+      <div class="sig-block">
+        <div class="sig-title">Signature of Driver</div>
+        <input type="text" id="driverSign">
+      </div>
+      <div class="sig-block right">
+        <div class="for-line">For JAI HARYANA CARGO MOVER</div>
+        <input type="text" id="clerkSign">
+        <div class="sig-caption">Sign Booking Clerk / Transporter</div>
+      </div>
+    </div>
+
+  </div>
+  </div>
+
+  <div class="cut-line no-print-onscreen">
+    <span class="dash"></span>✂ CUT HERE<span class="dash"></span>
+  </div>
+
+  <div class="print-page-slot slot-copy">
+    <div id="sheetCloneContainer"></div>
+  </div>
+<script src="../js/builty.js"></script>
+</body>
 </html>

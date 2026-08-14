@@ -1,68 +1,71 @@
-document.addEventListener("DOMContentLoaded", () => {
-    // --- Calculation Logic ---
-    const chargedWeightElement = document.getElementById("charged-weight-val");
-    const rateElement = document.getElementById("rate-val");
-    const totalFreightElement = document.getElementById("freight-val");
-    const operationalCostInputs = document.querySelectorAll(".cost-calc");
-    const totalOutputField = document.getElementById("grand-total");
 
-    function processInvoiceSheetMath() {
-        const chargedWeight = parseFloat(chargedWeightElement.value) || 0;
-        const rateCharge = parseFloat(rateElement.value) || 0;
-        
-        // 1. Calculate Base Freight (Charged Weight * Rate)
-        const calculatedFreight = chargedWeight * rateCharge;
-        
-        // 2. Display Freight
-        totalFreightElement.value = calculatedFreight > 0 ? calculatedFreight.toFixed(2) : "";
+(function(){
+  function num(v){ const n = parseFloat(v); return isNaN(n) ? 0 : n; }
+  function round2(n){ return Math.round(n * 100) / 100; }
 
-        // 3. Sum All Costs (Freight + Labor + Toll + etc)
-        let subtotalAccumulator = calculatedFreight;
-        operationalCostInputs.forEach(inputNode => {
-            subtotalAccumulator += parseFloat(inputNode.value) || 0;
-        });
+  const actualWeight = document.getElementById('actualWeight');
+  const chargedWeight = document.getElementById('chargedWeight');
+  const rate = document.getElementById('rate');
+  const totalFreight = document.getElementById('totalFreight');
+  const grCharge = document.getElementById('grCharge');
+  const lcCharge = document.getElementById('lcCharge');
+  const labourCharge = document.getElementById('labourCharge');
+  const tollCharge = document.getElementById('tollCharge');
+  const ddCharge = document.getElementById('ddCharge');
+  const grandTotal = document.getElementById('grandTotal');
 
-        // 4. Update Grand Total
-        totalOutputField.value = subtotalAccumulator > 0 ? subtotalAccumulator.toFixed(2) : "";
+  function sumTotal(){
+    const total = num(totalFreight.value) + num(grCharge.value) + num(lcCharge.value) +
+                  num(labourCharge.value) + num(tollCharge.value) + num(ddCharge.value);
+    grandTotal.value = total ? round2(total) : '';
+  }
+
+  function autoCalculate(){
+    const weight = num(chargedWeight.value) || num(actualWeight.value);
+    const r = num(rate.value);
+    if(weight && r){
+      totalFreight.value = round2(weight * r);
     }
+    sumTotal();
+  }
 
-    // Attach Math Listeners
-    chargedWeightElement.addEventListener("input", processInvoiceSheetMath);
-    rateElement.addEventListener("input", processInvoiceSheetMath);
-    operationalCostInputs.forEach(inputBox => inputBox.addEventListener("input", processInvoiceSheetMath));
+  document.getElementById('calcBtn').addEventListener('click', autoCalculate);
+  document.getElementById('printBtn').addEventListener('click', ()=> window.print());
 
-    // --- GSTIN 15-Box Auto-Step Logic ---
-    const gstBoxes = document.querySelectorAll(".gst-box");
-    
-    gstBoxes.forEach((box, index) => {
-        box.addEventListener("input", (e) => {
-            // If user types a char, move to next box
-            if (box.value.length === 1) {
-                if (index < gstBoxes.length - 1) {
-                    gstBoxes[index + 1].focus();
-                }
-            }
-        });
+  [totalFreight, grCharge, lcCharge, labourCharge, tollCharge, ddCharge].forEach(el=>{
+    el.addEventListener('input', sumTotal);
+  });
 
-        box.addEventListener("keydown", (e) => {
-            // If user hits Backspace on empty box, move to previous
-            if (e.key === "Backspace" && box.value === "") {
-                if (index > 0) {
-                    gstBoxes[index - 1].focus();
-                }
-            }
-        });
+  // ===== Build the Driver's Copy as a live-synced clone of the Original, right before printing =====
+  function syncDriverCopy(){
+    const original = document.getElementById('sheet');
+    const clone = original.cloneNode(true);
+
+    // strip every id from the clone so we never end up with duplicate DOM ids
+    if(clone.id) clone.removeAttribute('id');
+    clone.querySelectorAll('[id]').forEach(el => el.removeAttribute('id'));
+
+    // copy the live values (cloneNode only copies default attributes, not typed-in values)
+    const originalFields = original.querySelectorAll('input, textarea, select');
+    const cloneFields = clone.querySelectorAll('input, textarea, select');
+    originalFields.forEach((el, i)=>{
+      const c = cloneFields[i];
+      if(!c) return;
+      if(el.type === 'radio' || el.type === 'checkbox'){ c.checked = el.checked; }
+      else { c.value = el.value; }
     });
-});
 
+    // give the clone's radio groups their own name so they never interact with the original's
+    clone.querySelectorAll('input[type=radio]').forEach(r=>{ r.name = r.name + '-copy'; });
 
-function printBilty() {
+    // relabel this copy
+    const tag = clone.querySelector('.copy-tag');
+    if(tag) tag.textContent = "DRIVER'S COPY";
 
-    const printSheet = document.getElementById("print-sheet");
+    const container = document.getElementById('sheetCloneContainer');
+    container.innerHTML = '';
+    container.appendChild(clone);
+  }
 
-    printSheet.innerHTML = `
-        <!-- Your print HTML -->
-    `;
-
-    window.print();
-}
+  window.addEventListener('beforeprint', syncDriverCopy);
+})();
