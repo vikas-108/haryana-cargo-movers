@@ -36,7 +36,7 @@
   .btn:hover{transform:translateY(-1px);}
   .btn-primary{background:var(--navy); color:#fff;}
   .btn-calc{background:var(--orange); color:#fff;}
-
+  .btn-save{background:#1a9e5c; color:#fff;}
   /* ===== Sheet ===== */
   .sheet{
     width:100%; max-width:1000px; margin:0 auto;
@@ -44,7 +44,25 @@
     border:1px solid #000; border-radius:14px; overflow:hidden;
     position:relative;
   }
-
+/* ===== Toast ===== */
+  .toast{
+    position:fixed; bottom:22px; left:50%; transform:translateX(-50%) translateY(16px);
+    background:#111; color:#fff; padding:12px 22px; border-radius:8px; font-size:13.5px; font-weight:600;
+    opacity:0; pointer-events:none; transition:opacity .25s ease, transform .25s ease; z-index:300;
+    box-shadow:0 10px 30px rgba(0,0,0,.3); max-width:90vw; text-align:center;
+  }
+  .toast.error{ background:#c0392b; }
+  .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+  .btn-save{background:#1a9e5c; color:#fff;}
+ 
+  .toast{
+    position:fixed; bottom:22px; left:50%; transform:translateX(-50%) translateY(16px);
+    background:#111; color:#fff; padding:12px 22px; border-radius:8px; font-size:13.5px; font-weight:600;
+    opacity:0; pointer-events:none; transition:opacity .25s ease, transform .25s ease; z-index:300;
+    box-shadow:0 10px 30px rgba(0,0,0,.3); max-width:90vw; text-align:center;
+  }
+  .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+ 
   /* ---- Letterhead ---- */
   .letterhead{
     background:linear-gradient(120deg,var(--navy),var(--navy-2) 70%);
@@ -91,6 +109,7 @@
   .meta-box{
     padding:9px 12px; border-right:1px solid var(--soft-line);
   }
+  
   .meta-box:last-child{ border-right:none; }
   .meta-box label{
     display:block; font-size:9.5px; font-weight:800; letter-spacing:.6px; text-transform:uppercase;
@@ -309,7 +328,7 @@
     .brand-logo svg{ width:18px; height:18px; }
     .brand-text .company-name{ font-size:13px; letter-spacing:.3px; }
     .brand-text .company-tag{ font-size:7px; letter-spacing:.6px; margin-top:1px; }
-    .gr-pill{ padding:3px 10px; font-size:8.5px; letter-spacing:.6px; }
+    .gr-pill{ padding:3px 10px; font-size:10.5px; letter-spacing:.6px; }
     .jurisdiction{ font-size:7px; margin-top:3px; }
     .copy-tag{ font-size:7.5px; font-weight:800; letter-spacing:.8px; color:#ffdca3; margin-top:3px; }
     .contact-row{ margin-top:7px; padding-top:6px; gap:4px 14px; font-size:7.5px; }

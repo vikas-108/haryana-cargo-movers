@@ -3,14 +3,420 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Jai Haryana Cargo Movers</title>
-<link rel="stylesheet" href="../css/billing.css">
+<title>Balaji Transport Company - Bill</title>
+<style>
+  :root{
+    --ink:#111;
+    --line:#000;
+    --muted:#555;
+    --accent:#0b4f8a;
+    --paper:#ffffff;
+    --bg:#e9edf1;
+    --shadow: 0 10px 34px rgba(0,0,0,.14);
+    --head-bg:#eef0f2;
+    --zebra:#fafafa;
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:"Segoe UI", Arial, Helvetica, sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    padding:30px 12px 60px;
+  }
+
+  /* ===== Toolbar (screen only) ===== */
+  .toolbar{
+    max-width:1050px;
+    margin:0 auto 18px;
+    display:flex;
+    gap:10px;
+    justify-content:flex-end;
+    flex-wrap:wrap;
+  }
+  .btn{
+    border:none;
+    padding:10px 18px;
+    border-radius:8px;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    transition:transform .12s ease, box-shadow .12s ease;
+    box-shadow:0 2px 6px rgba(0,0,0,.15);
+    white-space:nowrap;
+  }
+  .btn:hover{transform:translateY(-1px);}
+  .btn:active{transform:translateY(0);}
+  .btn-primary{background:var(--accent); color:#fff;}
+  .btn-add{background:#1a9e5c; color:#fff;}
+  .btn-ghost{background:#fff; color:#333; border:1px solid #ccc;}
+
+  /* ===== Sheet — flexible on screen, exact A4 only when printed ===== */
+  .sheet{
+    width:100%;
+    max-width:1050px;
+    margin:0 auto;
+    background:var(--paper);
+    box-shadow:var(--shadow);
+    border:1px solid #000;
+    padding:22px 22px 26px;
+    position:relative;
+  }
+  .orig-tag{
+    position:absolute;
+    top:12px; right:16px;
+    font-size:9.5px;
+    font-weight:600;
+    color:#333;
+  }
+
+  /* ---- Letterhead ---- */
+  .head{
+    text-align:center;
+    border-bottom:2px solid var(--line);
+    padding-bottom:6px;
+    margin-bottom:4px;
+  }
+  .company-name{
+    font-size:16px;
+    font-weight:800;
+    letter-spacing:1.2px;
+    color:#111;
+    margin:2px 0 3px;
+    text-transform:uppercase;
+  }
+  .company-sub{
+    font-size:12px;
+    font-weight:700;
+    margin:2px 0;
+    letter-spacing:.3px;
+  }
+  .company-contact{
+    font-size:12px;
+    margin:2px 0 3px;
+    color:#222;
+  }
+  .head [contenteditable]{ display:inline-block; }
+
+  .reg-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    font-size:12px;
+    font-weight:700;
+    padding:5px 0;
+    border-bottom:1px solid var(--line);
+    gap:8px;
+    flex-wrap:wrap;
+  }
+  .reg-row .center-tag{
+    background:#dcdcdc;
+    padding:3px 14px;
+    font-weight:800;
+    letter-spacing:.5px;
+    font-size:12px;
+    border:1px solid #999;
+  }
+
+  /* ---- Party / bill meta ---- */
+  .party-block{
+    padding:6px 0 5px;
+    border-bottom:1px solid var(--line);
+    font-size:12px;
+    position:relative;
+  }
+  .party-block .bill-meta{
+    position:absolute;
+    right:0; top:5px;
+    text-align:right;
+    font-size:12px;
+    font-weight:700;
+    line-height:1.7;
+  }
+  .party-line{ margin:2.5px 0; max-width:66%; line-height:1.45; }
+  .party-line b{ margin-right:4px; }
+
+  [contenteditable]:hover{ background:#f4f8fc; outline:1px dashed #cfe0ee; }
+  [contenteditable]:focus{ outline:1px dashed var(--accent); background:#f4f8fc; }
+
+  /* Party-block form controls styled to look like the surrounding text */
+  .party-line input,
+  .bill-meta input,
+  .inline-select{
+    border:none;
+    background:transparent;
+    font:inherit;
+    color:inherit;
+    padding:1px 2px;
+    border-radius:2px;
+  }
+  .party-line input{ width:60%; min-width:180px; }
+  .bill-meta input{ width:120px; text-align:left; }
+  .party-line input:hover, .bill-meta input:hover, .inline-select:hover{ background:#f4f8fc; outline:1px dashed #cfe0ee; }
+  .party-line input:focus, .bill-meta input:focus, .inline-select:focus{ outline:1px dashed var(--accent); background:#f4f8fc; }
+  .inline-select{ appearance:none; -webkit-appearance:none; cursor:pointer; }
+
+  .history-badge{
+    display:inline-block;
+    margin-left:8px;
+    font-size:10.5px;
+    font-weight:700;
+    color:var(--accent);
+    background:#e7f0fa;
+    border:1px solid #cfe0ee;
+    padding:2px 9px;
+    border-radius:20px;
+    vertical-align:middle;
+  }
+  .history-badge:empty{ display:none; }
+
+  /* ===== Bill table ===== */
+  .table-scroll{
+    width:100%;
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+    margin-top:8px;
+    border:1px solid #d8d8d8;
+  }
+  table.bill-table{
+    width:100%;
+    min-width:900px;
+    table-layout:fixed;
+    border-collapse:collapse;
+    font-variant-numeric:tabular-nums;
+  }
+  table.bill-table th, table.bill-table td{
+    border:1px solid #333;
+    padding:4px 4px;
+    font-size:10px;
+    line-height:1.25;
+    overflow-wrap:break-word;
+    word-break:break-word;
+    vertical-align:middle;
+  }
+  table.bill-table thead th{
+    background:var(--head-bg);
+    font-weight:700;
+    font-size:9.5px;
+    text-transform:uppercase;
+    letter-spacing:.2px;
+    text-align:center;
+    position:sticky;
+    top:0;
+  }
+  table.bill-table tbody tr:nth-child(even){ background:var(--zebra); }
+  table.bill-table tbody td{ text-align:right; }
+  table.bill-table tbody td.al-left{ text-align:left; }
+  table.bill-table tbody td.al-center{ text-align:center; }
+  table.bill-table tfoot td{
+    font-weight:800;
+    background:#eef0f2;
+    font-size:10px;
+    text-align:right;
+  }
+  table.bill-table tfoot td.al-left{ text-align:left; }
+
+  /* Editable cell content — a wrapping contenteditable block instead of a single-line input,
+     so long destination names / addresses stay fully visible on screen AND in print. */
+  table.bill-table tbody td .cell-input{
+    width:100%;
+    min-height:14px;
+    outline:none;
+    white-space:normal;
+    overflow-wrap:break-word;
+    word-break:break-word;
+    font-size:10px;
+    line-height:1.3;
+    padding:1px 2px;
+    border-radius:2px;
+    text-align:inherit;
+  }
+  table.bill-table tbody td .cell-input:hover{ background:#f4f8fc; }
+  table.bill-table tbody td .cell-input:focus{ background:#f4f8fc; outline:1px dashed var(--accent); }
+
+  .row-actions{ white-space:nowrap; text-align:center !important; }
+  .icon-btn{
+    border:none;
+    background:none;
+    cursor:pointer;
+    color:#c0392b;
+    font-size:14px;
+    padding:2px 4px;
+  }
+
+  /* ===== Amount summary ===== */
+  .below-table{
+    margin-top:9px;
+    font-size:12px;
+  }
+  .below-table .row{
+    margin:3px 0;
+    display:flex;
+    gap:6px;
+    align-items:baseline;
+    flex-wrap:wrap;
+  }
+  .below-table b{ min-width:130px; display:inline-block; }
+  .below-table .amt{ font-weight:800; }
+
+  /* ===== Footer ===== */
+  .footer-grid{
+    display:flex;
+    justify-content:space-between;
+    margin-top:14px;
+    gap:20px;
+    flex-wrap:wrap;
+  }
+  .bank-block{ font-size:12px; line-height:1.6; }
+  .bank-block .heading{ font-weight:700; margin-bottom:4px; }
+  .bank-block .row{ display:flex; gap:6px; flex-wrap:wrap; }
+  .bank-block b{ min-width:120px; display:inline-block; }
+
+  .sign-block{
+    text-align:right;
+    font-size:12px;
+    min-width:200px;
+  }
+  .sign-block .for-line{
+    margin-top:30px;
+    font-weight:700;
+  }
+  .sign-block .sign-line{
+    margin-top:22px;
+  }
+
+  .note{
+    margin-top:12px;
+    font-size:10px;
+    font-weight:700;
+    border-top:1px solid #ccc;
+    padding-top:6px;
+  }
+
+  .page-no{
+    text-align:right;
+    font-size:10px;
+    margin-top:14px;
+    color:#333;
+  }
+
+  /* ===== Toast ===== */
+  .toast{
+    position:fixed;
+    bottom:22px; left:50%;
+    transform:translateX(-50%) translateY(16px);
+    background:#111; color:#fff;
+    padding:12px 22px;
+    border-radius:8px;
+    font-size:13.5px;
+    font-weight:600;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .25s ease, transform .25s ease;
+    z-index:300;
+    box-shadow:0 10px 30px rgba(0,0,0,.3);
+    max-width:90vw;
+    text-align:center;
+  }
+  .toast.error{ background:#c0392b; }
+  .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+
+  /* ===== Modal ===== */
+  .modal-overlay{
+    display:none;
+    position:fixed; inset:0;
+    background:rgba(0,0,0,.5);
+    align-items:center; justify-content:center;
+    z-index:100;
+    padding:16px;
+  }
+  .modal-overlay.active{ display:flex; }
+  .modal{
+    background:#fff;
+    width:100%; max-width:640px;
+    border-radius:12px;
+    padding:22px 26px 20px;
+    box-shadow:0 20px 60px rgba(0,0,0,.35);
+    max-height:90vh;
+    overflow-y:auto;
+  }
+  .modal h2{ margin:0 0 4px; font-size:19px; color:var(--accent); }
+  .modal p.hint{ margin:0 0 16px; font-size:12.5px; color:var(--muted); }
+  .form-grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px 16px; }
+  .form-grid .full{ grid-column:1 / -1; }
+  .field label{ display:block; font-size:12px; font-weight:700; margin-bottom:4px; color:#333; }
+  .field input{
+    width:100%; padding:8px 10px; border:1px solid #ccc; border-radius:6px;
+    font-size:13.5px; font-family:inherit;
+  }
+  .field input:focus{ outline:none; border-color:var(--accent); box-shadow:0 0 0 3px rgba(11,79,138,.15); }
+  .modal-actions{ display:flex; justify-content:flex-end; gap:10px; margin-top:20px; }
+  .auto-hint{ font-size:11px; color:var(--accent); font-weight:600; margin-top:14px; }
+
+  @media (max-width:900px){
+    .sheet{ padding:16px; }
+    .party-block .bill-meta{ position:static; text-align:left; margin-top:8px; }
+    .party-line{ max-width:100%; }
+    .party-line input{ width:100%; }
+    .form-grid{ grid-template-columns:1fr; }
+  }
+
+  /* ===== Print — exact A4 output, table always fully visible, no scrollbars ===== */
+  @media print{
+    @page{ size:A4 portrait; margin:8mm; }
+    html, body{ background:#fff; padding:0; margin:0; }
+    .toolbar, .modal-overlay, .row-actions, .no-print, .toast, .history-badge{ display:none !important; }
+
+    .sheet{
+      box-shadow:none;
+      border:1px solid #000;
+      width:210mm;
+      min-height:0;
+      max-width:none;
+      margin:0;
+      padding:10mm 9mm;
+    }
+
+    .table-scroll{ overflow:visible !important; border:none; }
+    table.bill-table{ min-width:0 !important; width:100% !important; }
+
+    table.bill-table th:last-child,
+    table.bill-table td:last-child{
+      width:0 !important; padding:0 !important; border:none !important;
+    }
+
+    /* Repeat the header row on every printed page if the bill runs long */
+    table.bill-table thead{ display:table-header-group; }
+    table.bill-table tfoot{ display:table-row-group; }
+
+    /* Never split a single row, or a key block, across two pages */
+    table.bill-table tr{ page-break-inside:avoid; break-inside:avoid; }
+    .head, .reg-row, .party-block, .below-table, .footer-grid, .note, .page-no{
+      page-break-inside:avoid; break-inside:avoid;
+    }
+
+    /* Slightly larger, clearer type for print than the compact screen size */
+    table.bill-table th, table.bill-table td{ font-size:9.5pt; padding:3px 4px; }
+    table.bill-table thead th{ font-size:8.5pt; }
+    .cell-input{ font-size:9.5pt; }
+
+    table.bill-table tbody tr:nth-child(even){ background:#fafafa !important; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    table.bill-table thead th{ background:#eef0f2 !important; -webkit-print-color-adjust:exact; print-color-adjust:exact; position:static; }
+    .reg-row .center-tag{ background:#dcdcdc !important; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+
+    input, select{ border:none !important; background:transparent !important; }
+    .cell-input{ outline:none !important; background:transparent !important; }
+  }
+</style>
 </head>
 <body>
 
   <div class="toolbar no-print">
     <button class="btn btn-add" id="addBtn">＋ Add Entry</button>
-    <button class="btn btn-save" id="saveBtn">💾 Save Bill</button>
     <button class="btn btn-primary" id="printBtn">🖨 Print Bill</button>
   </div>
 
@@ -18,7 +424,7 @@
     <div class="orig-tag">Original For Recipient</div>
 
     <div class="head">
-      <div class="company-name" contenteditable="true">J.H.C.M.</div>
+      <div class="company-name" contenteditable="true">BALAJI TRANSPORT COMPANY</div>
       <div class="company-sub" contenteditable="true">PYARE LAL BUILDING, NEAR NAMASTEY CHOWK</div>
       <div class="company-contact" contenteditable="true">Ph. No. : 9728075443 &nbsp;&nbsp;|&nbsp;&nbsp; email : KARNAL@BALAJITRANSPORT.ORG</div>
     </div>
@@ -146,23 +552,324 @@
   <!-- ===== Modal ===== -->
   <div class="modal-overlay" id="modalOverlay">
     <div class="modal">
-      <h2>Add Entries by Party</h2>
-      <p class="hint">Type a party name and hit Add — every saved bill entry for that party will be pulled straight into the table below.</p>
+      <h2>Search Party Bills</h2>
+      <p class="hint">Enter a party name and hit Search — every saved bill entry for that party will be pulled straight into the table below.</p>
       <form id="entryForm">
         <div class="field">
           <label>Party Name</label>
           <input type="text" id="modalPartyName" list="partyNamesList" placeholder="Type or select a saved party name..." required>
         </div>
-        <div class="auto-hint">Only parties you've saved with the 💾 Save Bill button will have entries to fetch.</div>
+        <div class="auto-hint">Try one of the sample parties from the dropdown to see it in action.</div>
         <div class="modal-actions">
           <button type="button" class="btn btn-ghost" id="cancelBtn">Cancel</button>
-          <button type="submit" class="btn btn-add">Add</button>
+          <button type="submit" class="btn btn-primary">🔍 Search</button>
         </div>
       </form>
     </div>
   </div>
 
   <div class="toast" id="toast"></div>
-<script src="../js/billing.js"></script>
+
+<script>
+(function(){
+  const tableBody = document.getElementById('tableBody');
+  const addBtn = document.getElementById('addBtn');
+  const printBtn = document.getElementById('printBtn');
+  const modalOverlay = document.getElementById('modalOverlay');
+  const cancelBtn = document.getElementById('cancelBtn');
+  const entryForm = document.getElementById('entryForm');
+
+  const partyNameInput = document.getElementById('partyName');
+  const partyAddressEl = document.getElementById('partyAddress');
+  const partyGSTINInput = document.getElementById('partyGSTIN');
+  const taxesPaidByInput = document.getElementById('taxesPaidBy');
+  const historyBadge = document.getElementById('historyBadge');
+  const partyNamesList = document.getElementById('partyNamesList');
+  const toastEl = document.getElementById('toast');
+
+  let rows = [];
+  let rowIdCounter = 0;
+
+  function num(v){ const n=parseFloat(v); return isNaN(n)?0:n; }
+  function withTotals(d){
+    const total = num(d.freight)+num(d.bc)+num(d.dd)+num(d.lc);
+    return {...d, total, gtotal: total};
+  }
+
+  // ===== Dummy party database — several distinct parties, each with their own saved bill(s) =====
+  const PARTY_DB = {
+    "rallison paints private limited": {
+      displayName: "RALLISON PAINTS PRIVATE LIMITED",
+      address: "MUGHAL MAZRA ROAD, VILLAGE KUNJPURA, KARNAL 132001, UDYAM REGISTRATION NUMBER-HR-10",
+      gstin: "06AALCR4716J1Z4",
+      taxesPaidBy: "Transporter",
+      bills: [
+        { billNo:"1021338", billDate:"02/06/2026", rows:[
+          withTotals({grdate:"08/05/26", grno:"10224306", destination:"BHARATPUR", item:"PAINT", qty:11, wgt:165, rate:3.5, freight:577.5, bc:50, dd:0, lc:44, pf:20, invno:"PNT/26-27/0061"}),
+          withTotals({grdate:"14/05/26", grno:"10224529", destination:"SIKAR", item:"PAINT", qty:66, wgt:1335, rate:3, freight:4005, bc:50, dd:1000, lc:264, pf:20, invno:"PNT/26-27/0088"}),
+          withTotals({grdate:"14/05/26", grno:"10224531", destination:"LUNKARANSAR", item:"PAINT", qty:1, wgt:20, rate:4, freight:80, bc:50, dd:0, lc:4, pf:20, invno:"PNT/26-27/0110"}),
+          withTotals({grdate:"18/05/26", grno:"10224680", destination:"RAWATSAR", item:"PAINT", qty:5, wgt:62, rate:4.5, freight:279, bc:50, dd:0, lc:20, pf:20, invno:"PNT/26-27/0158"}),
+          withTotals({grdate:"27/05/26", grno:"10224977", destination:"HANUMANGARH", item:"PAINT", qty:8, wgt:123, rate:3.5, freight:430.5, bc:50, dd:0, lc:32, pf:20, invno:"PNT/26-27/0201"}),
+          withTotals({grdate:"28/05/26", grno:"10224999", destination:"SARDARSHAHAR", item:"PAINT", qty:10, wgt:220, rate:3.5, freight:770, bc:50, dd:0, lc:40, pf:20, invno:"PNT/26-27/0280"}),
+        ]},
+        { billNo:"1021512", billDate:"13/06/2026", rows:[
+          withTotals({grdate:"12/06/26", grno:"10225102", destination:"ALWAR", item:"PAINT", qty:6, wgt:95, rate:4, freight:380, bc:50, dd:0, lc:24, pf:20, invno:"PNT/26-27/0301"}),
+          withTotals({grdate:"13/06/26", grno:"10225144", destination:"JAIPUR", item:"PAINT", qty:14, wgt:210, rate:3.5, freight:735, bc:50, dd:0, lc:56, pf:20, invno:"PNT/26-27/0302"}),
+        ]},
+      ]
+    },
+    "shree balaji traders": {
+      displayName: "SHREE BALAJI TRADERS",
+      address: "SHOP NO. 12, GRAIN MARKET, NEAR ANAJ MANDI, KARNAL 132001",
+      gstin: "06AAAPT4589C1Z9",
+      taxesPaidBy: "Consignor",
+      bills: [
+        { billNo:"1021401", billDate:"05/06/2026", rows:[
+          withTotals({grdate:"01/06/26", grno:"20334101", destination:"AMBALA", item:"CEMENT", qty:40, wgt:2000, rate:2.5, freight:5000, bc:50, dd:0, lc:200, pf:20, invno:"CEM/26-27/0011"}),
+          withTotals({grdate:"03/06/26", grno:"20334145", destination:"HISAR", item:"CEMENT", qty:20, wgt:1000, rate:2.5, freight:2500, bc:50, dd:0, lc:100, pf:20, invno:"CEM/26-27/0012"}),
+          withTotals({grdate:"04/06/26", grno:"20334190", destination:"ROHTAK", item:"CEMENT", qty:15, wgt:750, rate:2.75, freight:2062.5, bc:50, dd:0, lc:75, pf:20, invno:"CEM/26-27/0013"}),
+        ]},
+      ]
+    },
+    "ganpati agro industries": {
+      displayName: "GANPATI AGRO INDUSTRIES",
+      address: "NEAR GRAIN MANDI, ASSANDH ROAD, KARNAL 132001",
+      gstin: "06AACFG7241D1Z2",
+      taxesPaidBy: "Consignee",
+      bills: [
+        { billNo:"1021455", billDate:"09/06/2026", rows:[
+          withTotals({grdate:"06/06/26", grno:"30556210", destination:"PANIPAT", item:"FERTILIZER", qty:30, wgt:1500, rate:3, freight:4500, bc:50, dd:0, lc:150, pf:20, invno:"FRT/26-27/0027"}),
+          withTotals({grdate:"07/06/26", grno:"30556255", destination:"SONEPAT", item:"FERTILIZER", qty:25, wgt:1250, rate:3, freight:3750, bc:50, dd:0, lc:125, pf:20, invno:"FRT/26-27/0028"}),
+        ]},
+      ]
+    },
+    "vikas enterprises": {
+      displayName: "VIKAS ENTERPRISES",
+      address: "PLOT NO. 7, INDUSTRIAL AREA, SECTOR 3, KARNAL 132001",
+      gstin: "06AABCV9087E1Z6",
+      taxesPaidBy: "Transporter",
+      bills: [
+        { billNo:"1021488", billDate:"11/06/2026", rows:[
+          withTotals({grdate:"09/06/26", grno:"40778312", destination:"CHANDIGARH", item:"STEEL PIPES", qty:12, wgt:3200, rate:1.8, freight:5760, bc:50, dd:500, lc:230, pf:20, invno:"STL/26-27/0044"}),
+          withTotals({grdate:"10/06/26", grno:"40778355", destination:"JALANDHAR", item:"STEEL PIPES", qty:8, wgt:2100, rate:1.8, freight:3780, bc:50, dd:0, lc:150, pf:20, invno:"STL/26-27/0045"}),
+        ]},
+      ]
+    }
+  };
+
+  // seed the table with the first party's most recent bill, so the layout looks right immediately
+  PARTY_DB["rallison paints private limited"].bills[0].rows.forEach(r=> addRow({...r}));
+  function fmt(n){
+    if (Number.isInteger(n)) return String(n);
+    return (Math.round(n*100)/100).toString();
+  }
+  function escHtml(v){
+    if (v===undefined||v===null) return '';
+    return String(v)
+      .replace(/&/g,'&amp;')
+      .replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;');
+  }
+
+  function addRow(data){
+    const id = 'r' + (++rowIdCounter);
+    rows.push({id, ...data});
+    renderTable();
+  }
+
+  function removeRow(id){
+    rows = rows.filter(r=>r.id!==id);
+    renderTable();
+  }
+
+  function renderTable(){
+    tableBody.innerHTML = '';
+    rows.forEach(r=>{
+      const tr = document.createElement('tr');
+      tr.dataset.id = r.id;
+      tr.innerHTML = `
+        <td class="al-left"><div class="cell-input" contenteditable="true" data-field="grdate">${escHtml(r.grdate)}</div></td>
+        <td class="al-left"><div class="cell-input" contenteditable="true" data-field="grno">${escHtml(r.grno)}</div></td>
+        <td class="al-left"><div class="cell-input" contenteditable="true" data-field="destination">${escHtml(r.destination)}</div></td>
+        <td class="al-left"><div class="cell-input" contenteditable="true" data-field="item">${escHtml(r.item)}</div></td>
+        <td><div class="cell-input" contenteditable="true" data-field="qty">${escHtml(r.qty)}</div></td>
+        <td><div class="cell-input" contenteditable="true" data-field="wgt">${escHtml(r.wgt)}</div></td>
+        <td><div class="cell-input" contenteditable="true" data-field="rate">${escHtml(r.rate)}</div></td>
+        <td><div class="cell-input" contenteditable="true" data-field="freight">${escHtml(r.freight)}</div></td>
+        <td><div class="cell-input" contenteditable="true" data-field="bc">${escHtml(r.bc)}</div></td>
+        <td><div class="cell-input" contenteditable="true" data-field="dd">${escHtml(r.dd)}</div></td>
+        <td><div class="cell-input" contenteditable="true" data-field="lc">${escHtml(r.lc)}</div></td>
+        <td><div class="cell-input" contenteditable="true" data-field="total">${escHtml(r.total)}</div></td>
+        <td><div class="cell-input" contenteditable="true" data-field="pf">${escHtml(r.pf)}</div></td>
+        <td><div class="cell-input" contenteditable="true" data-field="gtotal">${escHtml(r.gtotal)}</div></td>
+        <td class="al-left"><div class="cell-input" contenteditable="true" data-field="invno">${escHtml(r.invno)}</div></td>
+        <td class="row-actions no-print"><button class="icon-btn" title="Delete row">✕</button></td>
+      `;
+      tr.querySelector('.icon-btn').addEventListener('click', ()=>removeRow(r.id));
+      tr.querySelectorAll('.cell-input').forEach(el=>{
+        el.addEventListener('input', ()=>{
+          const row = rows.find(x=>x.id===r.id);
+          const field = el.dataset.field;
+          row[field] = el.textContent;
+          recalcTotals();
+        });
+        el.addEventListener('keydown', (e)=>{
+          if (e.key === 'Enter'){ e.preventDefault(); el.blur(); }
+        });
+      });
+      tableBody.appendChild(tr);
+    });
+    recalcTotals();
+  }
+
+  function recalcTotals(){
+    let sumQty=0, sumWgt=0, sumFreight=0, sumBC=0, sumDD=0, sumLC=0, sumTotal=0, sumPF=0, sumGTotal=0;
+    rows.forEach(r=>{
+      sumQty+=num(r.qty); sumWgt+=num(r.wgt); sumFreight+=num(r.freight);
+      sumBC+=num(r.bc); sumDD+=num(r.dd); sumLC+=num(r.lc);
+      sumTotal+=num(r.total); sumPF+=num(r.pf); sumGTotal+=num(r.gtotal);
+    });
+    document.getElementById('sumQty').textContent = fmt(sumQty);
+    document.getElementById('sumWgt').textContent = fmt(sumWgt);
+    document.getElementById('sumFreight').textContent = fmt(sumFreight);
+    document.getElementById('sumBC').textContent = fmt(sumBC);
+    document.getElementById('sumDD').textContent = fmt(sumDD);
+    document.getElementById('sumLC').textContent = fmt(sumLC);
+    document.getElementById('sumTotal').textContent = fmt(sumTotal);
+    document.getElementById('sumPF').textContent = fmt(sumPF);
+    document.getElementById('sumGTotal').textContent = fmt(sumGTotal);
+
+    const billAmount = sumGTotal + sumPF; // Grand total = G.Total column + PF/O.CH as on original bill
+    document.getElementById('billAmountDisplay').textContent = fmt(billAmount);
+    document.getElementById('amountInWords').textContent = 'Rupees ' + numberToWords(Math.round(billAmount)) + ' Only /-';
+  }
+
+  // ===== Modal handling =====
+  const modalPartyName = document.getElementById('modalPartyName');
+
+  addBtn.addEventListener('click', ()=>{
+    entryForm.reset();
+    modalOverlay.classList.add('active');
+    modalPartyName.focus();
+  });
+  cancelBtn.addEventListener('click', closeModal);
+  modalOverlay.addEventListener('click', (e)=>{ if(e.target===modalOverlay) closeModal(); });
+  function closeModal(){ modalOverlay.classList.remove('active'); }
+
+  entryForm.addEventListener('submit', (e)=>{
+    e.preventDefault();
+    const partyName = modalPartyName.value.trim();
+    if(!partyName) return;
+    const ok = searchPartyBills(partyName);
+    if(ok) closeModal();
+  });
+
+  printBtn.addEventListener('click', ()=>{ window.print(); });
+
+  // ===== Toast =====
+  let toastTimer;
+  function showToast(msg, isError){
+    toastEl.textContent = msg;
+    toastEl.classList.toggle('error', !!isError);
+    toastEl.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(()=> toastEl.classList.remove('show'), 2800);
+  }
+
+  // ===== Party lookup: datalist + header auto-fill + Search-triggered table fetch =====
+  function normalizeName(name){ return (name||'').trim().toLowerCase(); }
+  function getPartyData(name){ return PARTY_DB[normalizeName(name)] || null; }
+
+  function refreshPartyDatalist(){
+    partyNamesList.innerHTML = '';
+    Object.values(PARTY_DB).forEach(p=>{
+      const opt = document.createElement('option');
+      opt.value = p.displayName;
+      partyNamesList.appendChild(opt);
+    });
+  }
+
+  function setHistoryBadge(partyData){
+    historyBadge.textContent = partyData
+      ? partyData.bills.length + (partyData.bills.length===1 ? ' bill on file' : ' bills on file')
+      : '';
+  }
+
+  // Typing/selecting a known party in the header just auto-fills their details — it does not touch the table.
+  function handlePartyNameCheck(){
+    const partyData = getPartyData(partyNameInput.value);
+    setHistoryBadge(partyData);
+    if(partyData){
+      if(partyData.address) partyAddressEl.textContent = partyData.address;
+      if(partyData.gstin) partyGSTINInput.value = partyData.gstin;
+      if(partyData.taxesPaidBy) taxesPaidByInput.value = partyData.taxesPaidBy;
+    }
+  }
+  partyNameInput.addEventListener('change', handlePartyNameCheck);
+  partyNameInput.addEventListener('input', ()=>{
+    clearTimeout(partyNameInput._t);
+    partyNameInput._t = setTimeout(handlePartyNameCheck, 400);
+  });
+
+  // The explicit Search action: looks the party up and replaces the table with every bill on file for them.
+  function searchPartyBills(partyName){
+    const partyData = getPartyData(partyName);
+    if(!partyData){
+      showToast('No bills found for "' + partyName + '".', true);
+      return false;
+    }
+
+    partyNameInput.value = partyData.displayName;
+    if(partyData.address) partyAddressEl.textContent = partyData.address;
+    if(partyData.gstin) partyGSTINInput.value = partyData.gstin;
+    if(partyData.taxesPaidBy) taxesPaidByInput.value = partyData.taxesPaidBy;
+    setHistoryBadge(partyData);
+
+    rows = [];
+    let count = 0;
+    partyData.bills.forEach(b=>{
+      b.rows.forEach(r=>{ addRow({...r}); count++; });
+    });
+    if(count === 0) renderTable();
+
+    showToast('Found ' + count + ' entrie(s) across ' + partyData.bills.length +
+      (partyData.bills.length===1 ? ' bill' : ' bills') + ' for ' + partyData.displayName + '.');
+    return true;
+  }
+
+  refreshPartyDatalist();
+  handlePartyNameCheck();
+
+  // ===== Number to words (Indian numbering system) =====
+  function numberToWords(num){
+    if (num===0) return 'Zero';
+    const a = ['','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten',
+      'Eleven','Twelve','Thirteen','Fourteen','Fifteen','Sixteen','Seventeen','Eighteen','Nineteen'];
+    const b = ['','','Twenty','Thirty','Forty','Fifty','Sixty','Seventy','Eighty','Ninety'];
+
+    function two(n){
+      if(n<20) return a[n];
+      return b[Math.floor(n/10)] + (n%10? ' ' + a[n%10] : '');
+    }
+    function three(n){
+      if(n>99) return a[Math.floor(n/100)] + ' Hundred' + (n%100? ' ' + two(n%100) : '');
+      return two(n);
+    }
+
+    let str = '';
+    const crore = Math.floor(num / 10000000); num %= 10000000;
+    const lakh = Math.floor(num / 100000); num %= 100000;
+    const thousand = Math.floor(num / 1000); num %= 1000;
+    const hundred = num;
+
+    if(crore) str += three(crore) + ' Crore ';
+    if(lakh) str += three(lakh) + ' Lakh ';
+    if(thousand) str += three(thousand) + ' Thousand ';
+    if(hundred) str += three(hundred);
+
+    return str.trim();
+  }
+})();
+</script>
 </body>
 </html>
