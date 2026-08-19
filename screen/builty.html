@@ -6,35 +6,488 @@
 <title>Jai Haryana Cargo Mover - Goods Receipt</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../css/builty.css">
+<style>
+  :root{
+    --navy:#0a1e3d;
+    --navy-2:#123163;
+    --orange:#f5900f;
+    --orange-2:#ff9f1c;
+    --ink:#111;
+    --muted:#5c6b85;
+    --line:#000;
+    --soft-line:#d7dce6;
+    --paper:#ffffff;
+    --bg:#e9edf1;
+    --zebra:#f7f9fc;
+    --shadow:0 10px 34px rgba(10,30,61,.16);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:'Inter',Arial,Helvetica,sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    padding:30px 12px 60px;
+  }
+  h1,h2,h3{font-family:'Poppins',sans-serif;}
+
+  /* ===== Toolbar (screen only) ===== */
+  .toolbar{
+    max-width:1000px; margin:0 auto 18px;
+    display:flex; gap:10px; justify-content:flex-end; flex-wrap:wrap;
+  }
+  .btn{
+    border:none; padding:10px 18px; border-radius:8px; font-size:14px; font-weight:700;
+    cursor:pointer; display:inline-flex; align-items:center; gap:8px;
+    transition:transform .12s ease, box-shadow .12s ease;
+    box-shadow:0 2px 6px rgba(0,0,0,.15); white-space:nowrap; font-family:inherit;
+  }
+  .btn:hover{transform:translateY(-1px);}
+  .btn-primary{background:var(--navy); color:#fff;}
+  .btn-calc{background:var(--orange); color:#fff;}
+  .btn-save{background:#0e8f6f; color:#fff;}
+
+  /* ===== Toast ===== */
+  .toast{
+    position:fixed; bottom:22px; left:50%; transform:translateX(-50%) translateY(16px);
+    background:#111; color:#fff; padding:12px 22px; border-radius:8px; font-size:13.5px; font-weight:600;
+    opacity:0; pointer-events:none; transition:opacity .25s ease, transform .25s ease; z-index:300;
+    box-shadow:0 10px 30px rgba(0,0,0,.3); max-width:90vw; text-align:center;
+  }
+  .toast.error{ background:#c0392b; }
+  .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+  .btn-save{background:#1a9e5c; color:#fff;}
+
+  .toast{
+    position:fixed; bottom:22px; left:50%; transform:translateX(-50%) translateY(16px);
+    background:#111; color:#fff; padding:12px 22px; border-radius:8px; font-size:13.5px; font-weight:600;
+    opacity:0; pointer-events:none; transition:opacity .25s ease, transform .25s ease; z-index:300;
+    box-shadow:0 10px 30px rgba(0,0,0,.3); max-width:90vw; text-align:center;
+  }
+  .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+
+  /* ===== Sheet ===== */
+  .sheet{
+    width:100%; max-width:1000px; margin:0 auto;
+    background:var(--paper); box-shadow:var(--shadow);
+    border:1px solid #000; border-radius:14px; overflow:hidden;
+    position:relative;
+  }
+
+  /* ---- Letterhead ---- */
+  .letterhead{
+    background:linear-gradient(120deg,var(--navy),var(--navy-2) 70%);
+    color:#fff;
+    padding:20px 24px 16px;
+  }
+  .devotional{
+    text-align:center; font-size:12px; font-weight:700; color:var(--orange-2);
+    letter-spacing:.4px; margin-bottom:10px;
+  }
+  .brand-row{
+    display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;
+  }
+  .brand-left{ display:flex; align-items:center; gap:14px; }
+  .brand-logo{
+    width:54px; height:54px; border-radius:12px; flex-shrink:0;
+    background:linear-gradient(135deg,var(--orange-2),var(--orange));
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 8px 18px -6px rgba(245,144,15,.7);
+  }
+  .brand-logo svg{ width:30px; height:30px; }
+  .brand-text .company-name{
+    font-size:20px; font-weight:800; letter-spacing:.6px; line-height:1.15;
+  }
+  .brand-text .company-tag{
+    font-size:11px; font-weight:600; letter-spacing:1.2px; color:#c7d3ec; margin-top:2px;
+  }
+  .brand-right{ text-align:right; }
+  .gr-pill{
+    display:inline-block; background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.35);
+    padding:6px 16px; border-radius:20px; font-size:12px; font-weight:800; letter-spacing:1px;
+  }
+  .jurisdiction{ font-size:10.5px; color:#b9c5de; margin-top:6px; }
+
+  .contact-row{
+    margin-top:16px; padding-top:12px; border-top:1px solid rgba(255,255,255,.18);
+    display:flex; flex-wrap:wrap; gap:16px 26px; font-size:11.5px; color:#e3e9f7;
+  }
+  .contact-row .item{ display:flex; align-items:center; gap:7px; }
+  .contact-row svg{ width:14px; height:14px; color:var(--orange-2); flex-shrink:0; }
+  .contact-row b{ color:#fff; font-weight:700; }
+
+  /* ---- Meta strip ---- */
+  .meta-strip{
+    display:grid;
+    grid-template-columns: 92px 92px 1fr 1fr 2.4fr 110px;
+    grid-template-areas: "grno grdate from to delivery pvt";
+    gap:0;
+    border-bottom:2px solid var(--line);
+    align-items:start;
+  }
+  .meta-box{
+    padding:9px 12px; border-right:1px solid var(--soft-line); border-bottom:1px solid transparent;
+    min-width:0;
+  }
+  .meta-box:last-child{ border-right:none; }
+  .meta-box.mb-grno{ grid-area:grno; }
+  .meta-box.mb-grdate{ grid-area:grdate; }
+  .meta-box.mb-from{ grid-area:from; }
+  .meta-box.mb-to{ grid-area:to; }
+  .meta-box.mb-delivery{ grid-area:delivery; }
+  .meta-box.mb-pvt{ grid-area:pvt; }
+  .meta-box label{
+    display:block; font-size:9.5px; font-weight:800; letter-spacing:.6px; text-transform:uppercase;
+    color:var(--muted); margin-bottom:4px;
+  }
+  .meta-box input, .meta-box textarea{
+    width:100%; border:none; background:transparent; font:inherit; font-size:11px; font-weight:700;
+    color:var(--ink); border-bottom:1px dotted #aab3c4; padding-bottom:2px; outline:none;
+  }
+  .meta-box textarea{
+    resize:none; overflow:hidden; min-height:18px; line-height:1.4; display:block;
+  }
+  .meta-box input:focus, .meta-box textarea:focus{ border-color:var(--orange); }
+  .grno-label-wrap{ position:relative; display:inline-block; }
+  .grno-label-trigger{
+    cursor:pointer; display:inline-flex; align-items:center; gap:3px; user-select:none;
+  }
+  .grno-label-trigger .chevron{ width:8px; height:8px; color:var(--orange); transition:transform .15s ease; flex-shrink:0; }
+  .grno-label-trigger.open .chevron{ transform:rotate(180deg); }
+  .grno-dropdown{
+    display:none; position:absolute; top:100%; left:0; margin-top:5px; z-index:60;
+    background:#fff; border:1px solid var(--soft-line); border-radius:8px;
+    box-shadow:0 10px 26px rgba(10,30,61,.2); min-width:210px; overflow:hidden;
+  }
+  .grno-dropdown.show{ display:block; }
+  .grno-option{
+    display:block; width:100%; text-align:left; padding:9px 13px; font-size:11px; font-weight:700;
+    color:var(--navy); background:#fff; border:none; cursor:pointer; font-family:inherit;
+    text-transform:none; letter-spacing:0;
+  }
+  .grno-option:hover{ background:#f4f7fb; }
+  .grno-option + .grno-option{ border-top:1px solid var(--soft-line); }
+  .gr-status-badge{
+    display:inline-block; margin-left:5px; font-size:7.5px; font-weight:800; text-transform:none;
+    letter-spacing:0; padding:1px 6px; border-radius:8px; background:#eef2f8; color:var(--muted);
+    vertical-align:middle;
+  }
+  .gr-status-badge.existing{ background:#fff3e2; color:var(--orange); }
+  .gr-status-badge:empty{ display:none; }
+
+  /* ---- Party section (center) ---- */
+  .party-grid{
+    display:grid; grid-template-columns:1fr 1fr;
+    border-bottom:2px solid var(--line);
+  }
+  .party-card{ padding:14px 20px; }
+  .party-card + .party-card{ border-left:1px solid var(--soft-line); }
+  .party-card .ptag{
+    display:inline-block; font-size:10px; font-weight:800; letter-spacing:1px; text-transform:uppercase;
+    color:var(--orange); margin-bottom:8px;
+  }
+  .party-field{ margin-bottom:8px; }
+  .party-field label{
+    display:block; font-size:9.5px; font-weight:700; color:var(--muted); text-transform:uppercase;
+    letter-spacing:.4px; margin-bottom:3px;
+  }
+  .party-field input{
+    width:100%; border:none; border-bottom:1.5px solid var(--soft-line); background:transparent;
+    font:inherit; font-size:13.5px; font-weight:700; color:var(--ink); padding:4px 2px; outline:none;
+  }
+  .party-field input:focus{ border-color:var(--orange); }
+  .party-field.gst input{ font-family:'Poppins',sans-serif; letter-spacing:1.5px; }
+
+  /* ---- Cargo ledger ---- */
+  .ledger-head{
+    display:grid; grid-template-columns:74px 1fr 140px 190px 96px;
+    background:var(--navy); color:#fff;
+    font-size:10px; font-weight:800; letter-spacing:.4px; text-transform:uppercase;
+    text-align:center;
+  }
+  .ledger-head > div{ padding:8px 6px; border-right:1px solid rgba(255,255,255,.18); }
+  .ledger-head > div:last-child{ border-right:none; }
+
+  .ledger-body{
+    display:grid; grid-template-columns:74px 1fr 140px 190px 96px;
+    border-bottom:2px solid var(--line);
+  }
+  .ledger-body > div{ border-right:1px solid var(--soft-line); }
+  .ledger-body > div:last-child{ border-right:none; }
+
+  .col-pkgs{ padding:10px 8px; display:flex; }
+  .col-pkgs textarea{
+    width:100%; border:none; background:transparent; resize:none; font:inherit; font-size:13px;
+    text-align:center; outline:none; font-weight:700;
+  }
+
+  .col-desc{ display:flex; flex-direction:column; }
+  .col-desc textarea{
+    flex:1; min-height:90px; border:none; background:transparent; resize:none; font:inherit;
+    font-size:12.5px; padding:10px 12px; outline:none; line-height:1.5;
+  }
+  .desc-extra{
+    border-top:1px solid var(--soft-line); background:var(--zebra); padding:8px 12px;
+    display:flex; flex-direction:column; gap:6px;
+  }
+  .desc-extra .row{ display:flex; align-items:center; gap:8px; }
+  .desc-extra .row label{ font-size:10px; font-weight:700; color:var(--muted); width:98px; flex-shrink:0; }
+  .desc-extra .row input{
+    flex:1; border:none; border-bottom:1px dotted #aab3c4; background:transparent; font:inherit;
+    font-size:12px; font-weight:600; padding:2px 2px; outline:none;
+  }
+  .desc-extra .row input:focus{ border-color:var(--orange); }
+
+  .col-weight{ display:flex; flex-direction:column; }
+  .weight-block{ flex:1; display:flex; flex-direction:column; }
+  .weight-block + .weight-block{ border-top:1px solid var(--soft-line); }
+  .weight-block .wlabel{
+    font-size:9px; font-weight:800; text-transform:uppercase; letter-spacing:.5px; color:var(--muted);
+    text-align:center; padding:6px 4px 0;
+  }
+  .weight-block input{
+    flex:1; border:none; background:transparent; text-align:center; font-family:'Poppins',sans-serif;
+    font-weight:800; font-size:19px; color:var(--navy); outline:none; width:100%;
+  }
+
+  .col-charges{ display:grid; grid-template-columns:1fr 1fr; }
+  .charge-label{
+    font-size:10.5px; font-weight:700; color:var(--muted); display:flex; align-items:center;
+    padding:0 8px; border-bottom:1px solid var(--soft-line); border-right:1px solid var(--soft-line);
+  }
+  .charge-input-wrap{ border-bottom:1px solid var(--soft-line); display:flex; align-items:center; }
+  .charge-input-wrap input{
+    width:100%; border:none; background:transparent; text-align:right; font:inherit;
+    font-size:12.5px; font-weight:700; padding:6px 8px; outline:none;
+  }
+  .charge-row-total .charge-label,
+  .charge-row-total .charge-input-wrap{
+    background:#eef2f8; font-weight:800; border-bottom:none;
+  }
+  .charge-row-total .charge-input-wrap input{ font-weight:900; color:var(--navy); font-size:13.5px; }
+
+  .col-status{ display:flex; flex-direction:column; justify-content:space-evenly; align-items:center; padding:10px 6px; gap:6px; }
+  .status-opt{ display:flex; flex-direction:column; align-items:center; gap:5px; }
+  .status-opt input{ width:20px; height:20px; accent-color:var(--navy); cursor:pointer; }
+  .status-opt span{ font-size:9.5px; font-weight:800; letter-spacing:.4px; color:var(--navy); }
+
+  /* ---- Segmented controls ---- */
+  .tax-row{
+    display:flex; align-items:center; gap:16px; flex-wrap:wrap;
+    padding:12px 20px; border-bottom:1px solid var(--soft-line);
+  }
+  .tax-row .tlabel{ font-size:11.5px; font-weight:800; color:var(--navy); text-transform:uppercase; letter-spacing:.4px; }
+  .segmented{ display:inline-flex; border:1.5px solid var(--navy); border-radius:8px; overflow:hidden; }
+  .segmented input{ display:none; }
+  .segmented label{
+    padding:7px 16px; font-size:11.5px; font-weight:700; cursor:pointer; background:#fff; color:var(--navy);
+    border-right:1.5px solid var(--navy); transition:.15s;
+  }
+  .segmented label:last-of-type{ border-right:none; }
+  .segmented input:checked + label{ background:var(--navy); color:#fff; }
+
+  /* ---- Disclaimer / risk ---- */
+  .disclaimer-block{
+    padding:14px 20px; border-bottom:1px solid var(--soft-line);
+    display:flex; justify-content:space-between; gap:18px; flex-wrap:wrap;
+  }
+  .disclaimer-text{ font-size:10px; font-weight:600; color:#333; line-height:1.7; max-width:640px; }
+  .disclaimer-text b{ color:var(--ink); }
+  .risk-tag{
+    align-self:flex-start; background:var(--orange); color:#fff; font-weight:900; font-size:11px;
+    letter-spacing:.6px; padding:8px 16px; border-radius:8px; white-space:nowrap;
+  }
+
+  /* ---- Signatures ---- */
+  .signature-row{
+    display:flex; justify-content:space-between; gap:24px; padding:18px 20px 22px; flex-wrap:wrap;
+  }
+  .sig-block{ min-width:220px; }
+  .sig-block .sig-title{ font-size:10.5px; font-weight:700; color:var(--muted); margin-bottom:26px; }
+  .sig-block.right{ text-align:right; }
+  .sig-block .for-line{ font-size:12px; font-weight:800; color:var(--navy); margin-bottom:26px; }
+  .sig-block input{
+    width:100%; border:none; border-bottom:1.5px solid var(--soft-line); background:transparent;
+    font:inherit; font-size:13px; font-weight:600; padding:4px 2px; outline:none; text-align:inherit;
+  }
+  .sig-block input:focus{ border-color:var(--orange); }
+  .sig-block .sig-caption{ font-size:10.5px; font-weight:700; color:var(--muted); margin-top:6px; }
+
+  /* ---- Cut line between the two printed copies ---- */
+  .cut-line{
+    align-items:center; gap:10px; margin:5mm 0; color:#888;
+    font-size:9px; font-weight:700; letter-spacing:1px;
+  }
+  .cut-line .dash{ flex:1; border-top:1.5px dashed #999; }
+
+  /* ===== Responsive ===== */
+  @media (max-width:860px){
+    .meta-strip{
+      grid-template-columns:1fr 1fr 1fr;
+      grid-template-areas:
+        "grno grdate grdate"
+        "from to to"
+        "delivery delivery delivery"
+        "pvt pvt pvt";
+    }
+    .meta-box{ border-right:1px solid var(--soft-line); border-bottom:1px solid var(--soft-line); }
+    .party-grid{ grid-template-columns:1fr; }
+    .party-card + .party-card{ border-left:none; border-top:1px solid var(--soft-line); }
+    .ledger-head, .ledger-body{ grid-template-columns:1fr; }
+    .ledger-head > div{ border-right:none; border-bottom:1px solid rgba(255,255,255,.18); }
+    .ledger-body > div{ border-right:none; border-bottom:1px solid var(--soft-line); }
+    .col-charges{ grid-template-columns:1fr 1fr; }
+    .col-status{ flex-direction:row; justify-content:space-around; }
+    .signature-row{ flex-direction:column; }
+    .sig-block.right{ text-align:left; }
+  }
+  @media (max-width:520px){
+    .meta-strip{
+      grid-template-columns:1fr 1fr;
+      grid-template-areas:
+        "grno grdate"
+        "from to"
+        "delivery delivery"
+        "pvt pvt";
+    }
+  }
+
+  /* ===== Print copy labels & cut line (print only) ===== */
+  .copy-tag{ display:none; }
+  .cut-line{ display:none; }
+  .print-page-slot.slot-copy{ display:none; }
+
+  /* ===== Print — structured two-up (Original + Driver's Copy) on one A4 page ===== */
+  @media print{
+    @page{ size:A4 portrait; margin:8mm; }
+    html, body{ background:#fff; padding:0; margin:0; }
+    .toolbar{ display:none !important; }
+    .toast{ display:none !important; }
+    .gr-status-badge{ display:none !important; }
+
+    /* Force the full desktop grid structure at print time, regardless of the
+       physical page width matching a mobile breakpoint — this is what was
+       collapsing the layout into a single stacked column before. */
+    .meta-strip{
+      grid-template-columns:70px 64px 1fr 1fr 2.2fr 76px !important;
+      grid-template-areas:"grno grdate from to delivery pvt" !important;
+    }
+    .party-grid{ grid-template-columns:1fr 1fr !important; }
+    .ledger-head, .ledger-body{ grid-template-columns:58px 1fr 104px 152px 70px !important; }
+    .col-charges{ grid-template-columns:1fr 1fr !important; }
+    .col-status{ flex-direction:column !important; justify-content:space-evenly !important; }
+    .signature-row{ flex-direction:row !important; }
+    .sig-block.right{ text-align:right !important; }
+    .meta-box:nth-child(n){ border-bottom:none !important; border-right:1px solid var(--soft-line) !important; }
+    .meta-box:last-child{ border-right:none !important; }
+    .party-card + .party-card{ border-left:1px solid var(--soft-line) !important; border-top:none !important; }
+    .ledger-head > div, .ledger-body > div{ border-bottom:none !important; }
+
+    .print-page-slot.slot-copy{ display:block !important; }
+    .cut-line{ display:flex !important; margin:2.5mm 0 !important; }
+    .copy-tag{ display:block !important; }
+
+    .print-page-slot{ page-break-inside:avoid; break-inside:avoid; }
+
+    .sheet{ box-shadow:none; border:1.1px solid #000; border-radius:0; width:100%; max-width:none; margin:0; }
+
+    /* ---- Compact everything so two copies fit comfortably on one A4 page ---- */
+    .letterhead{ padding:5px 9px 4px; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    .devotional{ font-size:7.5px; margin-bottom:2px; line-height:1.2; }
+    .brand-logo{ width:24px; height:24px; border-radius:6px; }
+    .brand-logo svg{ width:14px; height:14px; }
+    .brand-left{ gap:8px; }
+    .brand-text .company-name{ font-size:11.5px; letter-spacing:.2px; line-height:1.1; }
+    .brand-text .company-tag{ font-size:6px; letter-spacing:.4px; margin-top:1px; }
+    .gr-pill{ padding:2px 8px; font-size:7.5px; letter-spacing:.4px; }
+    .jurisdiction{ font-size:6px; margin-top:2px; }
+    .copy-tag{ font-size:6.5px; font-weight:800; letter-spacing:.6px; color:#ffdca3; margin-top:2px; }
+    .contact-row{ margin-top:4px; padding-top:3px; gap:2px 10px; font-size:6.5px; line-height:1.2; }
+    .contact-row svg{ width:8px; height:8px; }
+
+    .meta-box{ padding:2px 6px; }
+    .meta-box label{ font-size:6px; margin-bottom:0; line-height:1.2; }
+    .meta-box input, .meta-box textarea{ font-size:8px; padding-bottom:0; line-height:1.25; min-height:0; }
+
+    .party-card{ padding:3px 8px; }
+    .party-card .ptag{ font-size:6.5px; margin-bottom:1px; }
+    .party-field{ margin-bottom:1px; }
+    .party-field label{ font-size:6px; margin-bottom:0; }
+    .party-field input{ font-size:8.5px; padding:1px 1px; }
+
+    .ledger-head{ font-size:6px; padding:0; }
+    .ledger-head > div{ padding:1.5px 3px; }
+    .col-pkgs{ padding:2px 3px; }
+    .col-pkgs textarea{ font-size:8px; }
+    .col-desc textarea{ min-height:22px; font-size:8px; padding:3px 6px; line-height:1.25; }
+    .desc-extra{ padding:2px 6px; gap:0; }
+    .desc-extra .row label{ font-size:6px; width:56px; }
+    .desc-extra .row input{ font-size:7.5px; }
+    .weight-block .wlabel{ font-size:5.5px; padding:1px 2px 0; }
+    .weight-block input{ font-size:9.5px; }
+    .charge-label{ font-size:6.5px; padding:0 4px; min-height:9px; }
+    .charge-input-wrap input{ font-size:7.5px; padding:1px 4px; }
+    .charge-row-total .charge-input-wrap input{ font-size:8.5px; }
+    .col-status{ padding:2px 3px; gap:1px; }
+    .status-opt input{ width:8px; height:8px; }
+    .status-opt span{ font-size:5.5px; }
+
+    .tax-row{ padding:3px 8px; gap:6px; }
+    .tax-row .tlabel{ font-size:6.5px; }
+    .segmented label{ padding:1px 6px; font-size:6.5px; }
+
+    .disclaimer-block{ padding:3px 8px; gap:6px; }
+    .disclaimer-text{ font-size:5.8px; line-height:1.2; }
+    .risk-tag{ padding:2px 7px; font-size:6.5px; }
+
+    .signature-row{ padding:3px 8px 4px; gap:10px; }
+    .sig-block{ min-width:0; flex:1; }
+    .sig-block .sig-title{ font-size:6.5px; margin-bottom:5px; }
+    .sig-block .for-line{ font-size:7px; margin-bottom:5px; }
+    .sig-block input{ font-size:7px; padding:1px 1px; }
+    .sig-block .sig-caption{ font-size:6px; margin-top:1px; }
+
+    .ledger-head{ -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    .charge-row-total .charge-label, .charge-row-total .charge-input-wrap{ -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    .risk-tag{ -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    .segmented input:checked + label{ -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    .meta-strip, .party-grid, .ledger-head, .ledger-body, .tax-row, .disclaimer-block, .signature-row{
+      page-break-inside:avoid; break-inside:avoid;
+    }
+    .toast{ display:none !important; }
+    .grno-dropdown, .grno-label-trigger .chevron{ display:none !important; }
+  }
+</style>
 </head>
 <body>
 
   <div class="toolbar">
     <button class="btn btn-calc" id="calcBtn">🧮 Auto Calculate</button>
-     <button class="btn btn-save" id="saveBtn">💾 Save</button>
-    <button class="btn btn-primary" id="printBtn">🖨 Print Goods Receipt</button>
+    <button class="btn btn-save" id="saveBtn">💾 Save</button>
+    <button class="btn btn-primary" id="printBtn">🖨 Save &amp; Print</button>
   </div>
-<div class="toast" id="toast"></div>
+
+  <div class="toast" id="toast"></div>
+
   <div class="print-page-slot slot-original">
   <div class="sheet" id="sheet">
 
     <!-- ===== Letterhead ===== -->
     <div class="letterhead">
+      <div class="devotional">|| जय पीर बाबा पक्के पुल वाले की ||</div>
       <div class="brand-row">
         <div class="brand-left">
           <div class="brand-logo">
             <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 3h13v13H1z"/><path d="M14 8h4l3 3v5h-7V8z"/><circle cx="6" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
           </div>
           <div class="brand-text">
-            <div class="company-tag">जय पीर बाबा पक्के पुल वाले की </div>
             <div class="company-name">JAI HARYANA CARGO MOVER</div>
             <div class="company-tag">COMPLETE TRANSPORT &amp; LOGISTICS SOLUTIONS</div>
           </div>
         </div>
         <div class="brand-right">
           <span class="gr-pill">Subject to Karnal Jurisdiction</span>
-          <!--div class="jurisdiction">Subject to Karnal Jurisdiction</div -->
+          <!--div class="jurisdiction">Subject to Karnal Jurisdiction</div-->
           <div class="copy-tag">ORIGINAL FOR RECIPIENT</div>
         </div>
       </div>
@@ -61,12 +514,25 @@
 
     <!-- ===== Meta strip ===== -->
     <div class="meta-strip">
-      <div class="meta-box"><label>G.R. No.</label><input type="text" id="grNo" placeholder="—"></div>
-      <div class="meta-box"><label>G.R. Date</label><input type="text" id="grDate" placeholder="DD/MM/YYYY"></div>
-      <div class="meta-box"><label>From</label><input type="text" id="fromCity" placeholder="Karnal"></div>
-      <div class="meta-box"><label>To</label><input type="text" id="toCity" placeholder="—"></div>
-      <div class="meta-box"><label>Delivery At</label><input type="text" id="deliveryAt" placeholder="—"></div>
-      <div class="meta-box"><label>Pvt. Mark</label><input type="text" id="pvtMark" placeholder="—"></div>
+      <div class="meta-box mb-grno">
+        <div class="grno-label-wrap">
+          <label class="grno-label-trigger" id="grNoLabelTrigger" tabindex="0">
+            G.R. No. <span class="gr-status-badge" id="grStatusBadge"></span>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+          </label>
+          <div class="grno-dropdown" id="grNoDropdown">
+            <button type="button" class="grno-option" data-mode="new">🆕 Generate New</button>
+            <button type="button" class="grno-option" data-mode="search">🔍 Search / Edit by G.R. No.</button>
+          </div>
+        </div>
+        <input type="text" id="grNo" list="grNoList" placeholder="—">
+        <datalist id="grNoList"></datalist>
+      </div>
+      <div class="meta-box mb-grdate"><label>G.R. Date</label><input type="text" id="grDate" placeholder="DD/MM/YYYY"></div>
+      <div class="meta-box mb-from"><label>From</label><input type="text" id="fromCity" placeholder="Karnal"></div>
+      <div class="meta-box mb-to"><label>To</label><input type="text" id="toCity" placeholder="—"></div>
+      <div class="meta-box mb-delivery"><label>Delivery At</label><textarea id="deliveryAt" placeholder="—" rows="1"></textarea></div>
+      <div class="meta-box mb-pvt"><label>Pvt. Mark</label><input type="text" id="pvtMark" placeholder="—"></div>
     </div>
 
     <!-- ===== Consignor / Consignee (center) ===== -->
@@ -205,6 +671,533 @@
   <div class="print-page-slot slot-copy">
     <div id="sheetCloneContainer"></div>
   </div>
-<script src="../js/builty.js"></script>
+
+<script>
+(function(){
+  function num(v){ const n = parseFloat(v); return isNaN(n) ? 0 : n; }
+  function round2(n){ return Math.round(n * 100) / 100; }
+
+  const actualWeight = document.getElementById('actualWeight');
+  const chargedWeight = document.getElementById('chargedWeight');
+  const rate = document.getElementById('rate');
+  const totalFreight = document.getElementById('totalFreight');
+  const grCharge = document.getElementById('grCharge');
+  const lcCharge = document.getElementById('lcCharge');
+  const labourCharge = document.getElementById('labourCharge');
+  const tollCharge = document.getElementById('tollCharge');
+  const ddCharge = document.getElementById('ddCharge');
+  const grandTotal = document.getElementById('grandTotal');
+
+  const grNoInput = document.getElementById('grNo');
+  const grDateInput = document.getElementById('grDate');
+  const toastEl = document.getElementById('toast');
+
+  // Delivery At can hold a long sentence — grow it as the person types instead of scrolling/clipping.
+  const deliveryAtInput = document.getElementById('deliveryAt');
+  function autoGrow(el){
+    el.style.height = 'auto';
+    el.style.height = el.scrollHeight + 'px';
+  }
+  deliveryAtInput.addEventListener('input', ()=> autoGrow(deliveryAtInput));
+
+  let toastTimer;
+  function showToast(msg){
+    toastEl.textContent = msg;
+    toastEl.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(()=> toastEl.classList.remove('show'), 2800);
+  }
+
+  function sumTotal(){
+    const total = num(totalFreight.value) + num(grCharge.value) + num(lcCharge.value) +
+                  num(labourCharge.value) + num(tollCharge.value) + num(ddCharge.value);
+    grandTotal.value = total ? round2(total) : '';
+  }
+
+  function autoCalculate(){
+    const weight = num(chargedWeight.value) || num(actualWeight.value);
+    const r = num(rate.value);
+    if(weight && r){
+      totalFreight.value = round2(weight * r);
+    }
+    sumTotal();
+  }
+
+  document.getElementById('calcBtn').addEventListener('click', autoCalculate);
+
+  [totalFreight, grCharge, lcCharge, labourCharge, tollCharge, ddCharge].forEach(el=>{
+    el.addEventListener('input', sumTotal);
+  });
+
+  // ===== Auto-generated G.R. No. (starts at 0) + editable save/lookup by G.R. No. =====
+  const GR_COUNTER_KEY = 'jhcmGrCounter';
+  const BILTY_STORE_KEY = 'jhcmBiltyStore'; // keyed by G.R. No. so re-saving the same number updates it in place
+
+  const RESET_TEXT_IDS = [
+    'grDate','fromCity','toCity','deliveryAt','pvtMark',
+    'consignorName','consignorGSTIN','consigneeName','consigneeGSTIN',
+    'pkgs','description','invoiceNo','valueOfBill','ewayBillNo',
+    'driverSign','clerkSign'
+  ];
+  const RESET_CHARGE_FIELDS = [actualWeight, chargedWeight, rate, totalFreight, grCharge, lcCharge, labourCharge, tollCharge, ddCharge, grandTotal];
+
+  const grBadge = document.getElementById('grStatusBadge');
+  const grNoList = document.getElementById('grNoList');
+  let currentIsExisting = false;
+
+  function refreshGrNoList(){
+    const store = loadBiltyStore();
+    grNoList.innerHTML = '';
+    Object.keys(store)
+      .sort((a,b)=> (parseInt(a,10) - parseInt(b,10)) || a.localeCompare(b))
+      .forEach(no=>{
+        const opt = document.createElement('option');
+        opt.value = no;
+        grNoList.appendChild(opt);
+      });
+  }
+
+  function getGrCounter(){
+    const stored = localStorage.getItem(GR_COUNTER_KEY);
+    return stored === null ? 0 : parseInt(stored, 10);
+  }
+  function setGrCounter(n){ localStorage.setItem(GR_COUNTER_KEY, String(n)); }
+
+  function loadBiltyStore(){
+    try{ return JSON.parse(localStorage.getItem(BILTY_STORE_KEY)) || {}; }
+    catch(e){ return {}; }
+  }
+  function saveBiltyStore(store){ localStorage.setItem(BILTY_STORE_KEY, JSON.stringify(store)); }
+
+  function initGrNo(){
+    grNoInput.value = getGrCounter();
+  }
+  initGrNo();
+  refreshGrNoList();
+
+  function collectFormData(){
+    const data = { grNo: grNoInput.value, savedAt: new Date().toISOString() };
+    RESET_TEXT_IDS.forEach(id=>{ data[id] = document.getElementById(id).value; });
+    RESET_CHARGE_FIELDS.forEach(el=>{ data[el.id] = el.value; });
+    const payStatus = document.querySelector('input[name="payStatus"]:checked');
+    const taxPayableBy = document.querySelector('input[name="taxPayableBy"]:checked');
+    data.payStatus = payStatus ? payStatus.value : '';
+    data.taxPayableBy = taxPayableBy ? taxPayableBy.value : '';
+    return data;
+  }
+
+  function populateForm(data){
+    RESET_TEXT_IDS.forEach(id=>{ document.getElementById(id).value = data[id] || ''; });
+    RESET_CHARGE_FIELDS.forEach(el=>{ el.value = data[el.id] || ''; });
+    document.querySelectorAll('input[name="payStatus"]').forEach(r=>{ r.checked = (r.value === data.payStatus); });
+    document.querySelectorAll('input[name="taxPayableBy"]').forEach(r=>{ r.checked = (r.value === data.taxPayableBy); });
+    autoGrow(deliveryAtInput);
+  }
+
+  function updateGrBadge(){
+    if(!grBadge) return;
+    grBadge.textContent = currentIsExisting ? 'editing saved record' : '';
+    grBadge.classList.toggle('existing', currentIsExisting);
+  }
+
+  function advanceGrNo(){
+    const next = getGrCounter() + 1;
+    setGrCounter(next);
+    grNoInput.value = next;
+  }
+
+  function resetForNextBilty(){
+    RESET_TEXT_IDS.forEach(id=>{ document.getElementById(id).value = ''; });
+    RESET_CHARGE_FIELDS.forEach(el=>{ el.value = ''; });
+    document.querySelectorAll('input[name="payStatus"]').forEach(r=> r.checked = false);
+    document.getElementById('taxTransporter').checked = true;
+    currentIsExisting = false;
+    updateGrBadge();
+    autoGrow(deliveryAtInput);
+  }
+
+  const grNoLabelTrigger = document.getElementById('grNoLabelTrigger');
+  const grNoDropdown = document.getElementById('grNoDropdown');
+
+  // Clicking the "G.R. No." label opens a small menu: start a fresh auto-numbered
+  // bilty, or clear the field to type/pick an existing G.R. No. to search & edit.
+  function toggleGrNoDropdown(forceState){
+    const show = forceState !== undefined ? forceState : !grNoDropdown.classList.contains('show');
+    grNoDropdown.classList.toggle('show', show);
+    grNoLabelTrigger.classList.toggle('open', show);
+  }
+  grNoLabelTrigger.addEventListener('click', (e)=>{
+    e.stopPropagation();
+    toggleGrNoDropdown();
+  });
+  grNoLabelTrigger.addEventListener('keydown', (e)=>{
+    if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); toggleGrNoDropdown(); }
+  });
+  document.addEventListener('click', (e)=>{
+    if(!grNoDropdown.contains(e.target) && e.target !== grNoLabelTrigger){
+      toggleGrNoDropdown(false);
+    }
+  });
+
+  function applyGrNoMode(mode){
+    if(mode === 'new'){
+      const next = getGrCounter();
+      resetForNextBilty();
+      grNoInput.value = next;
+      grNoInput.placeholder = '—';
+      showToast('Ready to create G.R. No. ' + next + '.');
+    } else {
+      grNoInput.value = '';
+      grNoInput.placeholder = 'Type or pick a G.R. No....';
+      currentIsExisting = false;
+      updateGrBadge();
+      grNoInput.focus();
+    }
+    toggleGrNoDropdown(false);
+  }
+  grNoDropdown.querySelectorAll('.grno-option').forEach(btn=>{
+    btn.addEventListener('click', ()=> applyGrNoMode(btn.dataset.mode));
+  });
+
+  // Typing/selecting any G.R. No. checks whether it's already saved and, if so,
+  // loads that bilty's full details back into the form for editing.
+  function handleGrNoLookup(){
+    const grNo = grNoInput.value.trim();
+    const store = loadBiltyStore();
+    if(grNo && store[grNo]){
+      populateForm(store[grNo]);
+      currentIsExisting = true;
+      showToast('G.R. No. ' + grNo + ' loaded — edit the details and click Save to update it.');
+    } else {
+      currentIsExisting = false;
+      if(grNo) showToast('No saved bilty found for G.R. No. ' + grNo + '.');
+    }
+    updateGrBadge();
+  }
+  grNoInput.addEventListener('change', handleGrNoLookup);
+
+  function handleSave(){
+    const grNo = grNoInput.value.trim();
+    if(!grNo){ showToast('Enter a G.R. No. before saving.'); return; }
+
+    const store = loadBiltyStore();
+    store[grNo] = collectFormData();
+    saveBiltyStore(store);
+    refreshGrNoList();
+
+    if(currentIsExisting){
+      showToast('G.R. No. ' + grNo + ' updated.');
+    } else {
+      showToast('G.R. No. ' + grNo + ' saved. Moving on to the next G.R. No.');
+      advanceGrNo();
+      resetForNextBilty();
+    }
+  }
+
+  document.getElementById('saveBtn').addEventListener('click', handleSave);
+
+  document.getElementById('printBtn').addEventListener('click', ()=>{
+    const grNo = grNoInput.value.trim();
+    if(!grNo){ showToast('Enter a G.R. No. before printing.'); return; }
+    // Save & Print always saves immediately, so nothing is lost even if the print dialog is cancelled.
+    const store = loadBiltyStore();
+    store[grNo] = collectFormData();
+    saveBiltyStore(store);
+    refreshGrNoList();
+    window.print();
+  });
+
+  // After the print dialog closes we can't tell whether the person actually printed or
+  // hit Cancel — browsers fire this event either way — so we ask. The bilty itself is
+  // already saved at this point either way; a confirmed "yes, I printed it" is what
+  // advances to the next G.R. No. and clears the form. Cancel leaves everything exactly
+  // as it was — same G.R. No., same data, ready to try printing again. Re-printing an
+  // already-saved record never advances or resets anything.
+  window.addEventListener('afterprint', ()=>{
+    if(currentIsExisting) return;
+    const grNo = grNoInput.value.trim();
+    if(!grNo) return;
+    const didPrint = confirm(
+      'Did the Goods Receipt for G.R. No. ' + grNo + ' print successfully?\n\n' +
+      'OK — move on to the next G.R. No.\n' +
+      'Cancel — keep this same bilty open (G.R. No. stays the same).'
+    );
+    if(didPrint){
+      advanceGrNo();
+      resetForNextBilty();
+      showToast('G.R. No. ' + grNo + ' saved. Ready for G.R. No. ' + grNoInput.value + '.');
+    }
+  });
+
+  // ===== Build the Driver's Copy as a live-synced clone of the Original, right before printing =====
+  const CHARGE_FIELD_IDS = ['rate','totalFreight','grCharge','lcCharge','labourCharge','tollCharge','ddCharge','grandTotal'];
+
+  function syncDriverCopy(){
+    const original = document.getElementById('sheet');
+    const clone = original.cloneNode(true);
+
+    // copy the live values (cloneNode only copies default attributes, not typed-in values)
+    const originalFields = original.querySelectorAll('input, textarea, select');
+    const cloneFields = clone.querySelectorAll('input, textarea, select');
+    originalFields.forEach((el, i)=>{
+      const c = cloneFields[i];
+      if(!c) return;
+      if(el.type === 'radio' || el.type === 'checkbox'){ c.checked = el.checked; }
+      else { c.value = el.value; }
+    });
+
+    // If the bill is already Paid or T.B.B., the driver isn't collecting any money —
+    // zero out the whole charges section on the Driver's Copy so no amount is shown.
+    const checkedStatus = original.querySelector('input[name="payStatus"]:checked');
+    const statusValue = checkedStatus ? checkedStatus.value : '';
+    if(statusValue === 'T.B.B.'){
+      CHARGE_FIELD_IDS.forEach(id=>{
+        const field = clone.querySelector('#' + id);
+        if(field) field.value = '0';
+      });
+    }
+
+    // strip every id from the clone so we never end up with duplicate DOM ids
+    if(clone.id) clone.removeAttribute('id');
+    clone.querySelectorAll('[id]').forEach(el => el.removeAttribute('id'));
+
+    // give the clone's radio groups their own name so they never interact with the original's
+    clone.querySelectorAll('input[type=radio]').forEach(r=>{ r.name = r.name + '-copy'; });
+
+    // relabel this copy
+    const tag = clone.querySelector('.copy-tag');
+    if(tag) tag.textContent = "DRIVER'S COPY";
+
+    const container = document.getElementById('sheetCloneContainer');
+    container.innerHTML = '';
+    container.appendChild(clone);
+  }
+
+  window.addEventListener('beforeprint', syncDriverCopy);
+})();
+</script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+<!----
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jai Haryana Cargo Mover - Goods Receipt</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/builty.css">
+</head>
+<body>
+
+  <div class="toolbar">
+    <button class="btn btn-calc" id="calcBtn">🧮 Auto Calculate</button>
+     <button class="btn btn-save" id="saveBtn">💾 Save</button>
+    <button class="btn btn-primary" id="printBtn">🖨 Print Goods Receipt</button>
+  </div>
+<div class="toast" id="toast"></div>
+  <div class="print-page-slot slot-original">
+  <div class="sheet" id="sheet">
+
+    <- ===== Letterhead ===== --
+    <div class="letterhead">
+      <div class="brand-row">
+        <div class="brand-left">
+          <div class="brand-logo">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 3h13v13H1z"/><path d="M14 8h4l3 3v5h-7V8z"/><circle cx="6" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
+          </div>
+          <div class="brand-text">
+            <div class="company-tag">जय पीर बाबा पक्के पुल वाले की </div>
+            <div class="company-name">JAI HARYANA CARGO MOVER</div>
+            <div class="company-tag">COMPLETE TRANSPORT &amp; LOGISTICS SOLUTIONS</div>
+          </div>
+        </div>
+        <div class="brand-right">
+          <span class="gr-pill">Subject to Karnal Jurisdiction</span>
+          <-div class="jurisdiction">Subject to Karnal Jurisdiction</div -
+          <div class="copy-tag">ORIGINAL FOR RECIPIENT</div>
+        </div>
+      </div>
+
+      <div class="contact-row">
+        <div class="item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 22s8-4.5 8-11.8A8 8 0 0 0 4 10.2C4 17.5 12 22 12 22z"/></svg>
+          <span>Opp. Gali No. 2, Mangal Colony, Part-2, Karnal (Haryana)</span>
+        </div>
+        <div class="item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.5.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.6 21 3 13.4 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.2.2 2.4.6 3.5.1.4 0 .8-.2 1.1L6.6 10.8z"/></svg>
+          <span>+91 81687-47069</span>
+        </div>
+        <div class="item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 6 10 7 10-7"/></svg>
+          <span>jaiharyanacargomover@gmail.com</span>
+        </div>
+        <div class="item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+          <span><b>TPT ID:</b> 06KTPRK7769F1Z7</span>
+        </div>
+      </div>
+    </div>
+
+  
+    <div class="meta-strip">
+      <div class="meta-box"><label>G.R. No.</label><input type="text" id="grNo" placeholder="—"></div>
+      <div class="meta-box"><label>G.R. Date</label><input type="text" id="grDate" placeholder="DD/MM/YYYY"></div>
+      <div class="meta-box"><label>From</label><input type="text" id="fromCity" placeholder="Karnal"></div>
+      <div class="meta-box"><label>To</label><input type="text" id="toCity" placeholder="—"></div>
+      <div class="meta-box"><label>Delivery At</label><input type="text" id="deliveryAt" placeholder="—"></div>
+      <div class="meta-box"><label>Pvt. Mark</label><input type="text" id="pvtMark" placeholder="—"></div>
+    </div>
+
+    <!n-- ===== Consignor / Consignee (center) ===== -n->
+    <div class="party-grid">
+      <div class="party-card">
+  
+        <div class="party-field">
+          <label>Consignor's Name</label>
+          <input type="text" id="consignorName" placeholder="Enter consignor's name...">
+        </div>
+        <div class="party-field gst">
+          <label>GSTIN</label>
+          <input type="text" id="consignorGSTIN" maxlength="15" placeholder="e.g. 06AAAPT1234C1Z9">
+        </div>
+      </div>
+      <div class="party-card">
+       
+        <div class="party-field">
+          <label>Consignee's Name</label>
+          <input type="text" id="consigneeName" placeholder="Enter consignee's name...">
+        </div>
+        <div class="party-field gst">
+          <label>GSTIN</label>
+          <input type="text" id="consigneeGSTIN" maxlength="15" placeholder="e.g. 06AAAPT1234C1Z9">
+        </div>
+      </div>
+    </div>
+
+   
+    <div class="ledger-head">
+      <div>No. of Pkgs</div>
+      <div>Description (Said to contain)</div>
+      <div>Weight</div>
+      <div>Charges</div>
+      <div>Status</div>
+    </div>
+
+    <div class="ledger-body">
+      <div class="col-pkgs"><textarea id="pkgs" placeholder="Qty"></textarea></div>
+
+      <div class="col-desc">
+        <textarea id="description" placeholder="Description of goods (said to contain)..."></textarea>
+        <div class="desc-extra">
+          <div class="row"><label>Invoice No.</label><input type="text" id="invoiceNo"></div>
+          <div class="row"><label>Value of Bill</label><input type="text" id="valueOfBill"></div>
+          <div class="row"><label>E-Way Bill No.</label><input type="text" id="ewayBillNo"></div>
+        </div>
+      </div>
+
+      <div class="col-weight">
+        <div class="weight-block">
+          <div class="wlabel">Actual Weight</div>
+          <input type="number" id="actualWeight" placeholder="0">
+        </div>
+        <div class="weight-block">
+          <div class="wlabel">Charged Weight</div>
+          <input type="number" id="chargedWeight" placeholder="0">
+        </div>
+      </div>
+
+      <div class="col-charges">
+        <div class="charge-label">Rate</div>
+        <div class="charge-input-wrap"><input type="number" id="rate" placeholder="0"></div>
+
+        <div class="charge-label">Total Freight</div>
+        <div class="charge-input-wrap"><input type="number" id="totalFreight" placeholder="0"></div>
+
+        <div class="charge-label">G.R.</div>
+        <div class="charge-input-wrap"><input type="number" id="grCharge" placeholder="0"></div>
+
+        <div class="charge-label">L/C</div>
+        <div class="charge-input-wrap"><input type="number" id="lcCharge" placeholder="0"></div>
+
+        <div class="charge-label">Labour</div>
+        <div class="charge-input-wrap"><input type="number" id="labourCharge" placeholder="0"></div>
+
+        <div class="charge-label">Toll</div>
+        <div class="charge-input-wrap"><input type="number" id="tollCharge" placeholder="0"></div>
+
+        <div class="charge-label">D.D.</div>
+        <div class="charge-input-wrap"><input type="number" id="ddCharge" placeholder="0"></div>
+
+        <div class="charge-label charge-row-total">Total</div>
+        <div class="charge-input-wrap charge-row-total"><input type="number" id="grandTotal" placeholder="0" readonly></div>
+      </div>
+
+      <div class="col-status">
+        <label class="status-opt"><input type="radio" name="payStatus" value="Paid"><span>PAID</span></label>
+        <label class="status-opt"><input type="radio" name="payStatus" value="To Pay"><span>TO PAY</span></label>
+        <label class="status-opt"><input type="radio" name="payStatus" value="T.B.B."><span>T.B.B.</span></label>
+      </div>
+    </div>
+
+   
+    <div class="tax-row">
+      <span class="tlabel">Service Tax Payable By :</span>
+      <div class="segmented">
+        <input type="radio" name="taxPayableBy" id="taxConsignor" value="Consignor">
+        <label for="taxConsignor">Consignor</label>
+        <input type="radio" name="taxPayableBy" id="taxConsignee" value="Consignee">
+        <label for="taxConsignee">Consignee</label>
+        <input type="radio" name="taxPayableBy" id="taxTransporter" value="Transporter" checked>
+        <label for="taxTransporter">Transporter</label>
+      </div>
+    </div>
+
+  
+    <div class="disclaimer-block">
+      <div class="disclaimer-text">
+        <b>Note :</b> Company is not responsible for illegal goods &amp; octroi.<br>
+        Company is not responsible for Breaking, Damage, Leakage, Shortage, Fire and Accident.
+      </div>
+      <div class="risk-tag">AT OWNER'S RISK</div>
+    </div>
+
+ 
+    <div class="signature-row">
+      <div class="sig-block">
+        <div class="sig-title">Signature of Driver</div>
+        <input type="text" id="driverSign">
+      </div>
+      <div class="sig-block right">
+        <div class="for-line">For JAI HARYANA CARGO MOVER</div>
+        <input type="text" id="clerkSign">
+        <div class="sig-caption">Sign Booking Clerk / Transporter</div>
+      </div>
+    </div>
+
+  </div>
+  </div>
+
+  <div class="cut-line no-print-onscreen">
+    <span class="dash"></span>✂ CUT HERE<span class="dash"></span>
+  </div>
+
+  <div class="print-page-slot slot-copy">
+    <div id="sheetCloneContainer"></div>
+  </div>
+<script src="../js/builty.js"></script>
+</body>
+</html> -->
