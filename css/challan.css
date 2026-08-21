@@ -156,7 +156,7 @@ body{
 
 .company-details h1{
 
-    font-size:46px;
+    font-size:clamp(22px, 5vw, 46px);
 
     font-weight:800;
 
@@ -164,25 +164,57 @@ body{
 
     color:#111;
 
+    line-height:1.15;
+
 }
 
 .company-details h3{
 
-    font-size:24px;
+    font-size:clamp(14px, 2.6vw, 24px);
 
     margin-bottom:10px;
 
     color:#555;
 
+    font-weight:600;
+
 }
 
 .company-details p{
 
-    font-size:17px;
+    font-size:clamp(12px, 1.8vw, 17px);
 
     color:#666;
 
     margin-top:5px;
+
+}
+
+/*==================================================
+        HEADER — RESPONSIVE
+==================================================*/
+
+@media (max-width:768px){
+
+    .company-header{
+
+        grid-template-columns:1fr;
+
+        gap:14px;
+
+        padding:20px 16px;
+
+    }
+
+    .logo-box{
+
+        width:90px;
+
+        height:90px;
+
+        margin:0 auto;
+
+    }
 
 }
 
@@ -227,6 +259,12 @@ body{
     color:#fff;
 
     transition:.3s;
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
 
 }
 
@@ -275,6 +313,32 @@ body{
 }
 
 /*==================================================
+        TOOLBAR — RESPONSIVE
+==================================================*/
+
+@media (max-width:600px){
+
+    .toolbar{
+
+        padding:14px 16px;
+
+        gap:10px;
+
+    }
+
+    .toolbar button{
+
+        flex:1 1 calc(50% - 10px);
+
+        padding:11px 12px;
+
+        font-size:13.5px;
+
+    }
+
+}
+
+/*==================================================
                 CHALLAN FORM
 ==================================================*/
 
@@ -284,7 +348,7 @@ body{
 
     grid-template-columns:
 
-        repeat(auto-fit,minmax(260px,1fr));
+        repeat(auto-fit,minmax(220px,1fr));
 
     gap:18px;
 
@@ -377,7 +441,48 @@ body{
 }
 
 /*==================================================
-                REMARKS
+        CHALLAN FORM — RESPONSIVE
+==================================================*/
+
+@media (max-width:900px){
+
+    .challan-info{
+
+        grid-template-columns:repeat(2,1fr);
+
+        padding:20px 16px;
+
+    }
+
+}
+
+@media (max-width:520px){
+
+    .challan-info{
+
+        grid-template-columns:1fr;
+
+        gap:14px;
+
+        padding:16px;
+
+    }
+
+    .field input,
+    .field select{
+
+        height:44px;
+
+        font-size:14px;
+
+    }
+
+}
+
+/*==================================================
+                REMARKS (legacy single-field variant —
+                kept only in case it's reused elsewhere;
+                the live remarks block is .remarks-box)
 ==================================================*/
 
 .remarks{
@@ -434,13 +539,41 @@ footer{
 
     font-size:17px;
 
-}/*==================================================
+}
+
+@media (max-width:480px){
+
+    footer{
+
+        flex-direction:column;
+
+        gap:16px;
+
+        padding:26px 20px;
+
+        text-align:center;
+
+        font-size:14px;
+
+    }
+
+}
+
+/*==================================================
                 TABLE
 ==================================================*/
 
 .table-wrapper{
     padding:25px;
     overflow-x:auto;
+}
+
+@media (max-width:600px){
+
+    .table-wrapper{
+        padding:16px;
+    }
+
 }
 
 #goodsTable{
@@ -1183,16 +1316,7 @@ footer{
     }
 
 }
-/* =========================================================
-   PRINT VERSION
-   TRANSPORT CHALLAN
-   A4 LANDSCAPE
-========================================================= */
 
-@page {
-    size: A4 landscape;
-    margin: 5mm;
-}
 /* =========================================================
    REMARKS + DRIVER PAYMENT
 ========================================================= */
@@ -1471,10 +1595,6 @@ footer{
 
 
 /* =========================================================
-   FINAL PAY TO DRIVER
-========================================================= */
-
-/* =========================================================
    PAY TO DRIVER
 ========================================================= */
 
@@ -1723,6 +1843,17 @@ footer{
 
 }
 
+/* =========================================================
+   PRINT VERSION
+   TRANSPORT CHALLAN
+   A4 LANDSCAPE
+========================================================= */
+
+@page {
+    size: A4 landscape;
+    margin: 5mm;
+}
+
 @media print {
 
     /* =====================================================
@@ -1927,6 +2058,8 @@ footer{
 
     /* =====================================================
        CHALLAN INFORMATION
+       10 fields total (incl. Period From / Period To) —
+       5 columns × 2 rows keeps every row even.
     ===================================================== */
 
     .challan-info {
@@ -1934,7 +2067,7 @@ footer{
         display: grid !important;
 
         grid-template-columns:
-            repeat(4, 1fr) !important;
+            repeat(5, 1fr) !important;
 
         gap: 0 !important;
 
@@ -1960,7 +2093,7 @@ footer{
     }
 
 
-    .field:nth-child(4n) {
+    .field:nth-child(5n) {
 
         border-right: none !important;
 
@@ -1979,11 +2112,17 @@ footer{
 
         border-bottom: 1px solid #000 !important;
 
-        font-size: 10px !important;
+        font-size: 9px !important;
 
-        line-height: 12px !important;
+        line-height: 11px !important;
 
         font-weight: 700 !important;
+
+        white-space: nowrap !important;
+
+        overflow: hidden !important;
+
+        text-overflow: ellipsis !important;
 
     }
 
@@ -2010,7 +2149,7 @@ footer{
 
         color: #000 !important;
 
-        font-size: 10px !important;
+        font-size: 9.5px !important;
 
         line-height: 12px !important;
 
@@ -2202,9 +2341,9 @@ footer{
 
     /* =====================================================
        UPDATED COLUMN WIDTHS
-       
+
        CURRENT PRINT STRUCTURE:
-       
+
        1  #
        2  GR No.       <-- if present
        3  Consignor
@@ -2344,31 +2483,55 @@ footer{
 
 
     /* =====================================================
-       REMARKS
+       REMARKS + DRIVER PAYMENT SUMMARY
+
+       (The previous print rules here targeted a class
+       called ".remarks" which no longer exists in the
+       markup — the real elements are ".remarks-payment-
+       section", ".remarks-box" and ".driver-payment-box".
+       That mismatch is why this whole block used to fall
+       back to its screen styling — rounded corners, box
+       shadows, a fixed 360px column — instead of a clean
+       print layout. Fixed below.)
     ===================================================== */
 
-    .remarks {
+    .remarks-payment-section {
 
-        display: flex !important;
+        display: grid !important;
 
-        align-items: center !important;
+        grid-template-columns: 1fr 230px !important;
 
-        gap: 8px !important;
-
-        padding: 5px 8px !important;
+        gap: 0 !important;
 
         border-top: 1px solid #000 !important;
 
         border-bottom: 1px solid #000 !important;
 
+        background: #fff !important;
+
+        page-break-inside: avoid !important;
+
+        break-inside: avoid !important;
+
     }
 
 
-    .remarks label {
+    .remarks-box {
 
-        flex: 0 0 auto !important;
+        padding: 5px 8px !important;
 
-        margin: 0 !important;
+        border-right: 1px solid #000 !important;
+
+        display: flex !important;
+
+        flex-direction: column !important;
+
+    }
+
+
+    .remarks-box label {
+
+        margin: 0 0 3px !important;
 
         color: #000 !important;
 
@@ -2381,31 +2544,169 @@ footer{
     }
 
 
-    .remarks textarea {
+    .remarks-box textarea {
 
-        flex: 1 1 auto !important;
+        min-height: 46px !important;
 
-        width: auto !important;
+        padding: 4px 5px !important;
 
-        height: 30px !important;
+        border: 1px solid #ccc !important;
 
-        min-height: 30px !important;
-
-        padding: 3px !important;
-
-        border: none !important;
+        border-radius: 0 !important;
 
         outline: none !important;
 
         resize: none !important;
 
-        background: transparent !important;
+        background: #fff !important;
 
         color: #000 !important;
 
-        font-size: 10px !important;
+        font-size: 9px !important;
 
-        line-height: 12px !important;
+        line-height: 11px !important;
+
+        box-shadow: none !important;
+
+    }
+
+
+    .driver-payment-box {
+
+        background: #fff !important;
+
+    }
+
+
+    .payment-row {
+
+        min-height: 0 !important;
+
+        padding: 3px 8px !important;
+
+        border-bottom: 1px solid #ddd !important;
+
+        font-size: 9px !important;
+
+        gap: 8px !important;
+
+    }
+
+
+    .payment-row > span,
+    .payment-row > label {
+
+        color: #000 !important;
+
+        font-size: 9px !important;
+
+        font-weight: 600 !important;
+
+    }
+
+
+    .payment-row strong {
+
+        color: #000 !important;
+
+        font-size: 9px !important;
+
+        font-weight: 700 !important;
+
+    }
+
+
+    .less-row strong {
+
+        color: #000 !important;
+
+    }
+
+
+    .settlement-input {
+
+        width: 82px !important;
+
+        height: 20px !important;
+
+        border: 1px solid #999 !important;
+
+        border-radius: 0 !important;
+
+    }
+
+
+    .settlement-input span {
+
+        font-size: 9px !important;
+
+        color: #000 !important;
+
+    }
+
+
+    .settlement-input input {
+
+        font-size: 9px !important;
+
+        color: #000 !important;
+
+    }
+
+
+    .pay-driver-row {
+
+        min-height: 0 !important;
+
+        padding: 5px 8px !important;
+
+        background: #f0fdf4 !important;
+
+        border-top: 2px solid #000 !important;
+
+        -webkit-print-color-adjust: exact;
+
+        print-color-adjust: exact;
+
+    }
+
+
+    .pay-driver-row > span {
+
+        color: #000 !important;
+
+        font-size: 10.5px !important;
+
+    }
+
+
+    .pay-driver-input {
+
+        width: 96px !important;
+
+        height: 24px !important;
+
+        border: 1.5px solid #15803d !important;
+
+        border-radius: 4px !important;
+
+    }
+
+
+    .pay-driver-input > span {
+
+        color: #15803d !important;
+
+        font-size: 11px !important;
+
+    }
+
+
+    .pay-driver-input input {
+
+        color: #15803d !important;
+
+        font-size: 13px !important;
 
     }
 
@@ -2466,13 +2767,16 @@ footer{
 
     /* =====================================================
        PREVENT BAD PAGE BREAKS
+
+       (Also fixed here: ".remarks" → ".remarks-payment-
+       section" to match the real markup.)
     ===================================================== */
 
     .page,
     .company-header,
     .challan-info,
     .table-wrapper,
-    .remarks,
+    .remarks-payment-section,
     footer {
 
         page-break-inside: avoid !important;
