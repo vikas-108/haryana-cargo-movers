@@ -3,456 +3,376 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Balaji Transport Company - Bill</title>
+<title> Transport Company - Bill</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
+    --navy:#0b2a4a;
+    --navy-2:#123a63;
+    --accent:#0e6ba8;
+    --accent-2:#1a93d8;
     --ink:#111;
-    --line:#000;
-    --muted:#555;
-    --accent:#0b4f8a;
+    --muted:#5c6b85;
+    --soft-line:#d7dce6;
     --paper:#ffffff;
     --bg:#e9edf1;
-    --shadow: 0 10px 34px rgba(0,0,0,.14);
-    --head-bg:#eef0f2;
-    --zebra:#fafafa;
+    --zebra:#f7f9fc;
+    --shadow:0 10px 34px rgba(11,42,74,.16);
   }
-
   *{box-sizing:border-box;}
   body{
     margin:0;
-    font-family:"Segoe UI", Arial, Helvetica, sans-serif;
+    font-family:'Inter',Arial,Helvetica,sans-serif;
     background:var(--bg);
     color:var(--ink);
     padding:30px 12px 60px;
   }
+  h1,h2,h3{font-family:'Poppins',sans-serif;}
 
   /* ===== Toolbar (screen only) ===== */
   .toolbar{
-    max-width:1050px;
-    margin:0 auto 18px;
-    display:flex;
-    gap:10px;
-    justify-content:flex-end;
-    flex-wrap:wrap;
+    max-width:1080px; margin:0 auto 18px;
+    display:flex; gap:10px; justify-content:flex-end; flex-wrap:wrap;
   }
   .btn{
-    border:none;
-    padding:10px 18px;
-    border-radius:8px;
-    font-size:14px;
-    font-weight:600;
-    cursor:pointer;
-    display:inline-flex;
-    align-items:center;
-    gap:8px;
+    border:none; padding:10px 18px; border-radius:8px; font-size:14px; font-weight:700;
+    cursor:pointer; display:inline-flex; align-items:center; gap:8px;
     transition:transform .12s ease, box-shadow .12s ease;
-    box-shadow:0 2px 6px rgba(0,0,0,.15);
-    white-space:nowrap;
+    box-shadow:0 2px 6px rgba(0,0,0,.15); white-space:nowrap; font-family:inherit;
   }
-  .btn:hover{transform:translateY(-1px);}
-  .btn:active{transform:translateY(0);}
-  .btn-primary{background:var(--accent); color:#fff;}
-  .btn-add{background:#1a9e5c; color:#fff;}
-  .btn-ghost{background:#fff; color:#333; border:1px solid #ccc;}
+  .btn:hover{ transform:translateY(-1px); }
+  .btn-new{ background:#1a9e5c; color:#fff; }
+  .btn-search{ background:var(--accent); color:#fff; }
+  .btn-save{ background:#0e8f6f; color:#fff; }
+  .btn-primary{ background:var(--navy); color:#fff; }
+  .btn-ghost{ background:#fff; color:#333; border:1px solid #ccc; }
 
-  /* ===== Sheet — flexible on screen, exact A4 only when printed ===== */
+  /* ===== Sheet ===== */
   .sheet{
-    width:100%;
-    max-width:1050px;
-    margin:0 auto;
-    background:var(--paper);
-    box-shadow:var(--shadow);
-    border:1px solid #000;
-    padding:22px 22px 26px;
+    width:100%; max-width:1080px; margin:0 auto;
+    background:var(--paper); box-shadow:var(--shadow);
+    border:1px solid #000; border-radius:14px; overflow:hidden;
     position:relative;
-  }
-  .orig-tag{
-    position:absolute;
-    top:12px; right:16px;
-    font-size:9.5px;
-    font-weight:600;
-    color:#333;
   }
 
   /* ---- Letterhead ---- */
-  .head{
-    text-align:center;
-    border-bottom:2px solid var(--line);
-    padding-bottom:6px;
-    margin-bottom:4px;
+  .letterhead{
+    background:linear-gradient(120deg,var(--navy),var(--navy-2) 70%);
+    color:#fff; padding:20px 24px 16px;
   }
-  .company-name{
-    font-size:16px;
-    font-weight:800;
-    letter-spacing:1.2px;
-    color:#111;
-    margin:2px 0 3px;
-    text-transform:uppercase;
+  .brand-row{ display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+  .brand-left{ display:flex; align-items:center; gap:14px; }
+  .brand-logo{
+    width:52px; height:52px; border-radius:12px; flex-shrink:0;
+    background:linear-gradient(135deg,var(--accent-2),var(--accent));
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 8px 18px -6px rgba(14,107,168,.7);
   }
-  .company-sub{
-    font-size:12px;
-    font-weight:700;
-    margin:2px 0;
-    letter-spacing:.3px;
+  .brand-logo svg{ width:28px; height:28px; }
+  .brand-text .company-name{ font-size:19px; font-weight:800; letter-spacing:.6px; line-height:1.15; }
+  .brand-text .company-sub{ font-size:11px; font-weight:600; letter-spacing:.6px; color:#c7d3ec; margin-top:2px; }
+  .brand-right{ text-align:right; }
+  .bill-pill{
+    display:inline-block; background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.35);
+    padding:6px 16px; border-radius:20px; font-size:12px; font-weight:800; letter-spacing:1px;
   }
-  .company-contact{
-    font-size:12px;
-    margin:2px 0 3px;
-    color:#222;
-  }
-  .head [contenteditable]{ display:inline-block; }
+  .orig-tag{ font-size:10.5px; color:#b9c5de; margin-top:6px; }
 
-  .reg-row{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    font-size:12px;
-    font-weight:700;
-    padding:5px 0;
-    border-bottom:1px solid var(--line);
-    gap:8px;
-    flex-wrap:wrap;
+  .contact-row{
+    margin-top:16px; padding-top:12px; border-top:1px solid rgba(255,255,255,.18);
+    display:flex; flex-wrap:wrap; gap:10px 24px; font-size:11.5px; color:#e3e9f7;
   }
-  .reg-row .center-tag{
-    background:#dcdcdc;
-    padding:3px 14px;
-    font-weight:800;
-    letter-spacing:.5px;
-    font-size:12px;
-    border:1px solid #999;
-  }
+  .contact-row .item{ display:flex; align-items:center; gap:7px; }
+  .contact-row svg{ width:14px; height:14px; color:var(--accent-2); flex-shrink:0; }
+  .contact-row b{ color:#fff; font-weight:700; }
 
-  /* ---- Party / bill meta ---- */
-  .party-block{
-    padding:6px 0 5px;
-    border-bottom:1px solid var(--line);
-    font-size:12px;
-    position:relative;
+  /* ---- Meta strip ---- */
+  .meta-strip{
+    display:grid; grid-template-columns:1fr 1fr; gap:0;
+    border-bottom:2px solid #000;
   }
-  .party-block .bill-meta{
-    position:absolute;
-    right:0; top:5px;
-    text-align:right;
-    font-size:12px;
-    font-weight:700;
-    line-height:1.7;
+  .meta-box{ padding:9px 16px; border-right:1px solid var(--soft-line); }
+  .meta-box:last-child{ border-right:none; }
+  .meta-box label{
+    display:flex; align-items:center; gap:5px; font-size:9.5px; font-weight:800; letter-spacing:.6px;
+    text-transform:uppercase; color:var(--muted); margin-bottom:4px;
   }
-  .party-line{ margin:2.5px 0; max-width:66%; line-height:1.45; }
-  .party-line b{ margin-right:4px; }
-
-  [contenteditable]:hover{ background:#f4f8fc; outline:1px dashed #cfe0ee; }
-  [contenteditable]:focus{ outline:1px dashed var(--accent); background:#f4f8fc; }
-
-  /* Party-block form controls styled to look like the surrounding text */
-  .party-line input,
-  .bill-meta input,
-  .inline-select{
-    border:none;
-    background:transparent;
-    font:inherit;
-    color:inherit;
-    padding:1px 2px;
-    border-radius:2px;
+  .meta-box input{
+    width:100%; border:none; background:transparent; font:inherit; font-size:13px; font-weight:700;
+    color:var(--ink); border-bottom:1px dotted #aab3c4; padding-bottom:2px; outline:none;
   }
-  .party-line input{ width:60%; min-width:180px; }
-  .bill-meta input{ width:120px; text-align:left; }
-  .party-line input:hover, .bill-meta input:hover, .inline-select:hover{ background:#f4f8fc; outline:1px dashed #cfe0ee; }
-  .party-line input:focus, .bill-meta input:focus, .inline-select:focus{ outline:1px dashed var(--accent); background:#f4f8fc; }
-  .inline-select{ appearance:none; -webkit-appearance:none; cursor:pointer; }
+  .meta-box input:focus{ border-color:var(--accent); }
+  .bill-status-badge{
+    display:inline-block; font-size:7.5px; font-weight:800; text-transform:none; letter-spacing:0;
+    padding:1px 7px; border-radius:8px; background:#eef2f8; color:var(--muted);
+  }
+  .bill-status-badge.existing{ background:#e7f0fa; color:var(--accent); }
+  .bill-status-badge:empty{ display:none; }
+  .format-toggle{ display:inline-flex; margin-left:auto; border:1px solid var(--soft-line); border-radius:6px; overflow:hidden; }
+  .fmt-btn{
+    border:none; background:#fff; color:var(--muted); font-size:8.5px; font-weight:800; letter-spacing:.3px;
+    padding:2px 7px; cursor:pointer; font-family:inherit;
+  }
+  .fmt-btn + .fmt-btn{ border-left:1px solid var(--soft-line); }
+  .fmt-btn.active{ background:var(--accent); color:#fff; }
 
+  /* ---- Party section (center) ---- */
+  .party-card{
+    padding:14px 20px; border-bottom:2px solid #000;
+    display:grid; grid-template-columns:1.4fr 1fr .8fr; gap:14px 20px;
+  }
+  .party-field label{
+    display:block; font-size:9.5px; font-weight:700; color:var(--muted); text-transform:uppercase;
+    letter-spacing:.4px; margin-bottom:3px;
+  }
+  .party-field input, .party-field select{
+    width:100%; border:none; border-bottom:1.5px solid var(--soft-line); background:transparent;
+    font:inherit; font-size:13.5px; font-weight:700; color:var(--ink); padding:4px 2px; outline:none;
+    appearance:none; -webkit-appearance:none; cursor:pointer;
+  }
+  .party-field input[type=text]{ cursor:text; }
+  .party-field input:focus, .party-field select:focus{ border-color:var(--accent); }
+  .party-field.full{ grid-column:1 / -1; }
   .history-badge{
-    display:inline-block;
-    margin-left:8px;
-    font-size:10.5px;
-    font-weight:700;
-    color:var(--accent);
-    background:#e7f0fa;
-    border:1px solid #cfe0ee;
-    padding:2px 9px;
-    border-radius:20px;
-    vertical-align:middle;
+    display:inline-block; margin-left:8px; font-size:10px; font-weight:700; color:var(--accent);
+    background:#e7f0fa; border:1px solid #cfe0ee; padding:2px 9px; border-radius:20px; vertical-align:middle;
   }
   .history-badge:empty{ display:none; }
 
   /* ===== Bill table ===== */
-  .table-scroll{
-    width:100%;
-    overflow-x:auto;
-    -webkit-overflow-scrolling:touch;
-    margin-top:8px;
-    border:1px solid #d8d8d8;
-  }
+  .table-scroll{ width:100%; overflow-x:auto; -webkit-overflow-scrolling:touch; border-top:none; }
   table.bill-table{
-    width:100%;
-    min-width:900px;
-    table-layout:fixed;
-    border-collapse:collapse;
-    font-variant-numeric:tabular-nums;
+    width:100%; min-width:960px; table-layout:fixed; border-collapse:collapse; font-variant-numeric:tabular-nums;
   }
   table.bill-table th, table.bill-table td{
-    border:1px solid #333;
-    padding:4px 4px;
-    font-size:10px;
-    line-height:1.25;
-    overflow-wrap:break-word;
-    word-break:break-word;
-    vertical-align:middle;
+    border:1px solid #333; padding:5px 5px; font-size:10.5px; line-height:1.3;
+    overflow-wrap:break-word; word-break:break-word; vertical-align:middle;
   }
   table.bill-table thead th{
-    background:var(--head-bg);
-    font-weight:700;
-    font-size:9.5px;
-    text-transform:uppercase;
-    letter-spacing:.2px;
-    text-align:center;
-    position:sticky;
-    top:0;
+    background:var(--navy); color:#fff; font-weight:700; font-size:9.5px; text-transform:uppercase;
+    letter-spacing:.3px; text-align:center;
   }
   table.bill-table tbody tr:nth-child(even){ background:var(--zebra); }
   table.bill-table tbody td{ text-align:right; }
   table.bill-table tbody td.al-left{ text-align:left; }
   table.bill-table tbody td.al-center{ text-align:center; }
-  table.bill-table tfoot td{
-    font-weight:800;
-    background:#eef0f2;
-    font-size:10px;
-    text-align:right;
-  }
+  table.bill-table tfoot td{ font-weight:800; background:#eef2f8; font-size:10.5px; text-align:right; }
   table.bill-table tfoot td.al-left{ text-align:left; }
 
-  /* Editable cell content — a wrapping contenteditable block instead of a single-line input,
-     so long destination names / addresses stay fully visible on screen AND in print. */
   table.bill-table tbody td .cell-input{
-    width:100%;
-    min-height:14px;
-    outline:none;
-    white-space:normal;
-    overflow-wrap:break-word;
-    word-break:break-word;
-    font-size:10px;
-    line-height:1.3;
-    padding:1px 2px;
-    border-radius:2px;
-    text-align:inherit;
+    width:100%; min-height:15px; outline:none; white-space:normal; overflow-wrap:break-word;
+    word-break:break-word; font-size:10.5px; line-height:1.3; padding:1px 2px; border-radius:2px; text-align:inherit;
   }
-  table.bill-table tbody td .cell-input:hover{ background:#f4f8fc; }
-  table.bill-table tbody td .cell-input:focus{ background:#f4f8fc; outline:1px dashed var(--accent); }
+  table.bill-table tbody td .cell-input:hover{ background:#eef5fb; }
+  table.bill-table tbody td .cell-input:focus{ background:#eef5fb; outline:1px dashed var(--accent); }
 
   .row-actions{ white-space:nowrap; text-align:center !important; }
-  .icon-btn{
-    border:none;
-    background:none;
-    cursor:pointer;
-    color:#c0392b;
-    font-size:14px;
-    padding:2px 4px;
-  }
+  .icon-btn{ border:none; background:none; cursor:pointer; color:#c0392b; font-size:14px; padding:2px 4px; }
 
   /* ===== Amount summary ===== */
-  .below-table{
-    margin-top:9px;
-    font-size:12px;
-  }
-  .below-table .row{
-    margin:3px 0;
-    display:flex;
-    gap:6px;
-    align-items:baseline;
-    flex-wrap:wrap;
-  }
-  .below-table b{ min-width:130px; display:inline-block; }
-  .below-table .amt{ font-weight:800; }
+  .below-table{ padding:12px 20px 4px; font-size:13px; }
+  .below-table .row{ margin:4px 0; display:flex; gap:8px; align-items:baseline; flex-wrap:wrap; }
+  .below-table b{ min-width:130px; display:inline-block; color:var(--navy); }
+  .below-table .amt{ font-weight:800; font-size:16px; color:var(--navy); }
 
   /* ===== Footer ===== */
-  .footer-grid{
-    display:flex;
-    justify-content:space-between;
-    margin-top:14px;
-    gap:20px;
-    flex-wrap:wrap;
-  }
-  .bank-block{ font-size:12px; line-height:1.6; }
-  .bank-block .heading{ font-weight:700; margin-bottom:4px; }
+  .footer-grid{ display:flex; justify-content:space-between; padding:16px 20px 6px; gap:20px; flex-wrap:wrap; }
+  .bank-block{ font-size:12px; line-height:1.7; }
+  .bank-block .heading{ font-weight:700; margin-bottom:4px; color:var(--navy); }
   .bank-block .row{ display:flex; gap:6px; flex-wrap:wrap; }
-  .bank-block b{ min-width:120px; display:inline-block; }
+  .bank-block b{ min-width:110px; display:inline-block; }
+  .bank-block span[contenteditable]{ display:inline-block; }
+  [contenteditable]:hover{ background:#eef5fb; outline:1px dashed #cfe0ee; }
+  [contenteditable]:focus{ outline:1px dashed var(--accent); background:#eef5fb; }
 
-  .sign-block{
-    text-align:right;
-    font-size:12px;
-    min-width:200px;
-  }
-  .sign-block .for-line{
-    margin-top:30px;
-    font-weight:700;
-  }
-  .sign-block .sign-line{
-    margin-top:22px;
-  }
+  .sign-block{ text-align:right; font-size:12px; min-width:220px; }
+  .sign-block .for-line{ margin-top:26px; font-weight:700; color:var(--navy); }
+  .sign-block .sign-line{ margin-top:22px; }
 
-  .note{
-    margin-top:12px;
-    font-size:10px;
-    font-weight:700;
-    border-top:1px solid #ccc;
-    padding-top:6px;
-  }
-
-  .page-no{
-    text-align:right;
-    font-size:10px;
-    margin-top:14px;
-    color:#333;
-  }
+  .note{ margin:0 20px 8px; font-size:10px; font-weight:600; color:#333; border-top:1px solid #ccc; padding-top:8px; }
+  .page-no{ text-align:right; font-size:10px; margin:0 20px 16px; color:#333; }
 
   /* ===== Toast ===== */
   .toast{
-    position:fixed;
-    bottom:22px; left:50%;
-    transform:translateX(-50%) translateY(16px);
-    background:#111; color:#fff;
-    padding:12px 22px;
-    border-radius:8px;
-    font-size:13.5px;
-    font-weight:600;
-    opacity:0;
-    pointer-events:none;
-    transition:opacity .25s ease, transform .25s ease;
-    z-index:300;
-    box-shadow:0 10px 30px rgba(0,0,0,.3);
-    max-width:90vw;
-    text-align:center;
+    position:fixed; bottom:22px; left:50%; transform:translateX(-50%) translateY(16px);
+    background:#111; color:#fff; padding:12px 22px; border-radius:8px; font-size:13.5px; font-weight:600;
+    opacity:0; pointer-events:none; transition:opacity .25s ease, transform .25s ease; z-index:300;
+    box-shadow:0 10px 30px rgba(0,0,0,.3); max-width:90vw; text-align:center;
   }
   .toast.error{ background:#c0392b; }
   .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
 
   /* ===== Modal ===== */
   .modal-overlay{
-    display:none;
-    position:fixed; inset:0;
-    background:rgba(0,0,0,.5);
-    align-items:center; justify-content:center;
-    z-index:100;
-    padding:16px;
+    display:none; position:fixed; inset:0; background:rgba(0,0,0,.5);
+    align-items:center; justify-content:center; z-index:100; padding:16px;
   }
   .modal-overlay.active{ display:flex; }
   .modal{
-    background:#fff;
-    width:100%; max-width:640px;
-    border-radius:12px;
-    padding:22px 26px 20px;
-    box-shadow:0 20px 60px rgba(0,0,0,.35);
-    max-height:90vh;
-    overflow-y:auto;
+    background:#fff; width:100%; max-width:520px; border-radius:12px; padding:22px 26px 20px;
+    box-shadow:0 20px 60px rgba(0,0,0,.35); max-height:90vh; overflow-y:auto;
   }
   .modal h2{ margin:0 0 4px; font-size:19px; color:var(--accent); }
   .modal p.hint{ margin:0 0 16px; font-size:12.5px; color:var(--muted); }
-  .form-grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px 16px; }
-  .form-grid .full{ grid-column:1 / -1; }
+  .field{ margin-bottom:14px; }
   .field label{ display:block; font-size:12px; font-weight:700; margin-bottom:4px; color:#333; }
   .field input{
-    width:100%; padding:8px 10px; border:1px solid #ccc; border-radius:6px;
-    font-size:13.5px; font-family:inherit;
+    width:100%; padding:8px 10px; border:1px solid #ccc; border-radius:6px; font-size:13.5px; font-family:inherit;
   }
-  .field input:focus{ outline:none; border-color:var(--accent); box-shadow:0 0 0 3px rgba(11,79,138,.15); }
-  .modal-actions{ display:flex; justify-content:flex-end; gap:10px; margin-top:20px; }
-  .auto-hint{ font-size:11px; color:var(--accent); font-weight:600; margin-top:14px; }
+  .field input:focus{ outline:none; border-color:var(--accent); box-shadow:0 0 0 3px rgba(14,107,168,.15); }
+  .date-range-row{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .modal-actions{ display:flex; justify-content:flex-end; gap:10px; margin-top:6px; }
+  .auto-hint{ font-size:11px; color:var(--accent); font-weight:600; margin-top:4px; margin-bottom:10px; }
 
-  @media (max-width:900px){
-    .sheet{ padding:16px; }
-    .party-block .bill-meta{ position:static; text-align:left; margin-top:8px; }
-    .party-line{ max-width:100%; }
-    .party-line input{ width:100%; }
-    .form-grid{ grid-template-columns:1fr; }
+  @media (max-width:820px){
+    .party-card{ grid-template-columns:1fr 1fr; }
+    .party-field.full{ grid-column:1 / -1; }
+    .meta-strip{ grid-template-columns:1fr; }
+    .meta-box{ border-right:none; border-bottom:1px solid var(--soft-line); }
+    .date-range-row{ grid-template-columns:1fr; }
+  }
+  @media (max-width:520px){
+    .party-card{ grid-template-columns:1fr; }
   }
 
-  /* ===== Print — exact A4 output, table always fully visible, no scrollbars ===== */
+  /* ===== Print — clean single A4 page ===== */
   @media print{
     @page{ size:A4 portrait; margin:8mm; }
     html, body{ background:#fff; padding:0; margin:0; }
-    .toolbar, .modal-overlay, .row-actions, .no-print, .toast, .history-badge{ display:none !important; }
+    .toolbar, .modal-overlay, .row-actions, .no-print, .toast, .history-badge, .bill-status-badge, .format-toggle{ display:none !important; }
 
-    .sheet{
-      box-shadow:none;
-      border:1px solid #000;
-      width:210mm;
-      min-height:0;
-      max-width:none;
-      margin:0;
-      padding:10mm 9mm;
-    }
+    .sheet{ box-shadow:none; border:1.2px solid #000; border-radius:0; width:100%; max-width:none; margin:0; }
+    .letterhead{ -webkit-print-color-adjust:exact; print-color-adjust:exact; padding:10px 14px 8px; }
+    .brand-logo{ width:38px; height:38px; }
+    .brand-text .company-name{ font-size:15px; }
+    .brand-text .company-sub{ font-size:9px; }
+    .contact-row{ font-size:9px; gap:5px 16px; margin-top:8px; padding-top:6px; }
+    .bill-pill{ font-size:9.5px; padding:4px 12px; }
 
-    .table-scroll{ overflow:visible !important; border:none; }
+    .meta-strip{ grid-template-columns:1fr 1fr !important; }
+    .meta-box{ padding:5px 12px; }
+    .meta-box label{ font-size:8px; }
+    .meta-box input{ font-size:10.5px; }
+
+    .party-card{ grid-template-columns:1.4fr 1fr .8fr !important; padding:8px 14px; gap:6px 16px; }
+    .party-field label{ font-size:8px; }
+    .party-field input, .party-field select{ font-size:10.5px; padding:2px 1px; }
+
     table.bill-table{ min-width:0 !important; width:100% !important; }
+    table.bill-table th, table.bill-table td{ font-size:9pt; padding:3px 4px; }
+    table.bill-table thead th{ font-size:8pt; }
+    .cell-input{ font-size:9pt; }
+    table.bill-table th:last-child, table.bill-table td:last-child{ width:0 !important; padding:0 !important; border:none !important; }
 
-    table.bill-table th:last-child,
-    table.bill-table td:last-child{
-      width:0 !important; padding:0 !important; border:none !important;
-    }
-
-    /* Repeat the header row on every printed page if the bill runs long */
     table.bill-table thead{ display:table-header-group; }
     table.bill-table tfoot{ display:table-row-group; }
-
-    /* Never split a single row, or a key block, across two pages */
     table.bill-table tr{ page-break-inside:avoid; break-inside:avoid; }
-    .head, .reg-row, .party-block, .below-table, .footer-grid, .note, .page-no{
+    .letterhead, .meta-strip, .party-card, .below-table, .footer-grid, .note, .page-no{
       page-break-inside:avoid; break-inside:avoid;
     }
 
-    /* Slightly larger, clearer type for print than the compact screen size */
-    table.bill-table th, table.bill-table td{ font-size:9.5pt; padding:3px 4px; }
-    table.bill-table thead th{ font-size:8.5pt; }
-    .cell-input{ font-size:9.5pt; }
-
     table.bill-table tbody tr:nth-child(even){ background:#fafafa !important; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
-    table.bill-table thead th{ background:#eef0f2 !important; -webkit-print-color-adjust:exact; print-color-adjust:exact; position:static; }
-    .reg-row .center-tag{ background:#dcdcdc !important; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    table.bill-table thead th{ background:var(--navy) !important; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    table.bill-table tfoot td{ background:#eef2f8 !important; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
 
     input, select{ border:none !important; background:transparent !important; }
     .cell-input{ outline:none !important; background:transparent !important; }
+    .below-table{ padding:8px 14px 2px; font-size:10.5px; }
+    .below-table .amt{ font-size:13px; }
+    .footer-grid{ padding:10px 14px 4px; font-size:10px; }
+    .note{ margin:0 14px 6px; font-size:8.5px; }
+    .page-no{ margin:0 14px 10px; font-size:8.5px; }
   }
 </style>
 </head>
 <body>
 
   <div class="toolbar no-print">
-    <button class="btn btn-add" id="addBtn">＋ Add Entry</button>
-    <button class="btn btn-primary" id="printBtn">🖨 Print Bill</button>
+    <button class="btn btn-new" id="newBillBtn">🆕 New Bill</button>
+    <button class="btn btn-search" id="searchBtn">🔍 Search by Party</button>
+    <button class="btn btn-save" id="saveBtn">💾 Save</button>
+    <button class="btn btn-primary" id="printBtn">🖨 Save &amp; Print</button>
   </div>
 
   <div class="sheet" id="sheet">
-    <div class="orig-tag">Original For Recipient</div>
 
-    <div class="head">
-      <div class="company-name" contenteditable="true">BALAJI TRANSPORT COMPANY</div>
-      <div class="company-sub" contenteditable="true">PYARE LAL BUILDING, NEAR NAMASTEY CHOWK</div>
-      <div class="company-contact" contenteditable="true">Ph. No. : 9728075443 &nbsp;&nbsp;|&nbsp;&nbsp; email : KARNAL@BALAJITRANSPORT.ORG</div>
-    </div>
-
-    <div class="reg-row">
-      <div>GSTIN : <span contenteditable="true">06BHFPR0032L1ZF</span></div>
-      <div class="center-tag">TRANSPORTATION BILL</div>
-      <div>PAN : <span contenteditable="true">BHFPR0032L</span></div>
-    </div>
-
-    <div class="party-block">
-      <div class="bill-meta">
-        <div>Bill No. : <input type="text" id="billNo" value="1021338"></div>
-        <div>Bill Date : <input type="text" id="billDate" value="02/06/2026"></div>
+    <!-- ===== Letterhead ===== -->
+    <div class="letterhead">
+      <div class="brand-row">
+        <div class="brand-left">
+          <div class="brand-logo">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 3h13v13H1z"/><path d="M14 8h4l3 3v5h-7V8z"/><circle cx="6" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
+          </div>
+          <div class="brand-text">
+            <div class="company-name" contenteditable="true">JAI HARYANA CARGO MOVER</div>
+            <div class="company-sub" contenteditable="true">Opp. Gali No. 2, Mangal Colony, Part-2, Karnal (Haryana)</div>
+          </div>
+        </div>
+        <div class="brand-right">
+          <span class="bill-pill">TRANSPORTATION BILL</span>
+          <div class="orig-tag">Original For Recipient</div>
+        </div>
       </div>
 
-      <div class="party-line">
-        <b>Party Name :</b>
+      <div class="contact-row">
+        <div class="item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.5.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.6 21 3 13.4 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.2.2 2.4.6 3.5.1.4 0 .8-.2 1.1L6.6 10.8z"/></svg>
+          <span contenteditable="true">+91 81687-47069</span>
+        </div>
+        <div class="item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 6 10 7 10-7"/></svg>
+          <span contenteditable="true">jaiharyanacargomover@gmail.com</span>
+        </div>
+        <div class="item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+          <span><b>TPT:</b> <span contenteditable="true">06KKTPK7769F1Z7 </span></span>
+        </div>
+        <div class="item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+          <span><b>PAN:</b> <span contenteditable="true">KKTPK7769F</span></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== Meta strip ===== -->
+    <div class="meta-strip">
+      <div class="meta-box">
+        <label>Bill No. <span class="bill-status-badge" id="billStatusBadge"></span>
+          <span class="format-toggle" id="billFormatToggle">
+            <button type="button" class="fmt-btn" data-mode="alphanumeric">ABC</button>
+            <button type="button" class="fmt-btn" data-mode="numeric">123</button>
+          </span>
+        </label>
+        <input type="text" id="billNo" list="billNoList" placeholder="—">
+        <datalist id="billNoList"></datalist>
+      </div>
+      <div class="meta-box">
+        <label>Bill Date</label>
+        <input type="text" id="billDate" placeholder="DD/MM/YYYY" value="02/06/2026">
+      </div>
+    </div>
+
+    <!-- ===== Party (center) ===== -->
+    <div class="party-card">
+      <div class="party-field full">
+        <label>Party Name</label>
         <input type="text" id="partyName" list="partyNamesList" value="RALLISON PAINTS PRIVATE LIMITED" placeholder="Type or select party name...">
         <span class="history-badge no-print" id="historyBadge"></span>
       </div>
       <datalist id="partyNamesList"></datalist>
 
-      <div class="party-line"><b>Address :</b><span contenteditable="true" id="partyAddress">MUGHAL MAZRA ROAD, VILLAGE KUNJPURA, KARNAL 132001, UDYAM REGISTRATION NUMBER-HR-10</span></div>
-      <div class="party-line"><b>GSTIN :</b><input type="text" id="partyGSTIN" value="06AALCR4716J1Z4"></div>
-      <div class="party-line">
-        <b>Taxes Paid By :</b>
-        <select id="taxesPaidBy" class="inline-select">
+      <div class="party-field full">
+        <label>Address</label>
+        <input type="text" id="partyAddress" value="MUGHAL MAZRA ROAD, VILLAGE KUNJPURA, KARNAL 132001, UDYAM REGISTRATION NUMBER-HR-10">
+      </div>
+      <div class="party-field">
+        <label>GSTIN</label>
+        <input type="text" id="partyGSTIN" value="06AALCR4716J1Z4">
+      </div>
+      <div class="party-field">
+        <label>Taxes Paid By</label>
+        <select id="taxesPaidBy">
           <option>Transporter</option>
           <option>Consignor</option>
           <option>Consignee</option>
@@ -463,21 +383,19 @@
     <div class="table-scroll">
       <table class="bill-table" id="billTable">
         <colgroup>
-          <col style="width:6%">
-          <col style="width:6.5%">
-          <col style="width:14%">
-          <col style="width:6%">
-          <col style="width:4%">
-          <col style="width:5%">
-          <col style="width:5%">
           <col style="width:7%">
-          <col style="width:4.5%">
-          <col style="width:4.5%">
-          <col style="width:4.5%">
-          <col style="width:6.5%">
-          <col style="width:5.5%">
-          <col style="width:6.5%">
-          <col style="width:13.5%">
+          <col style="width:7%">
+          <col style="width:16%">
+          <col style="width:8%">
+          <col style="width:5%">
+          <col style="width:6%">
+          <col style="width:6%">
+          <col style="width:8%">
+          <col style="width:5%">
+          <col style="width:5%">
+          <col style="width:6%">
+          <col style="width:7%">
+          <col style="width:8%">
           <col class="no-print" style="width:6%">
         </colgroup>
         <thead>
@@ -486,17 +404,15 @@
             <th>GR No</th>
             <th>Destination</th>
             <th>Item</th>
-            <th>Qty</th>
+            <th>NAG</th>
             <th>Wgt.</th>
             <th>Rate</th>
             <th>Freight</th>
             <th>B.C.</th>
             <th>D.D.</th>
-            <th>L.C.</th>
-            <th>Total</th>
-            <th>PF/O.CH.</th>
+            <th>LABOUR</th>
+            <th>TOLL</th>
             <th>G.Total</th>
-            <th>Inv No</th>
             <th class="no-print">Action</th>
           </tr>
         </thead>
@@ -506,17 +422,15 @@
         <tfoot>
           <tr>
             <td colspan="4" class="al-left">Grand Total :</td>
-            <td id="sumQty">0</td>
+            <td id="sumNag">0</td>
             <td id="sumWgt">0</td>
             <td class="al-center">-</td>
             <td id="sumFreight">0</td>
             <td id="sumBC">0</td>
             <td id="sumDD">0</td>
-            <td id="sumLC">0</td>
-            <td id="sumTotal">0</td>
-            <td id="sumPF">0</td>
+            <td id="sumLabour">0</td>
+            <td id="sumToll">0</td>
             <td id="sumGTotal">0</td>
-            <td class="al-center">-</td>
             <td class="no-print"></td>
           </tr>
         </tfoot>
@@ -532,13 +446,13 @@
       <div class="bank-block">
         <div class="heading">Company Bank Account Detail :</div>
         <div class="row"><b>Bank Name :</b><span contenteditable="true">IDFC FIRST BANK LTD</span></div>
-        <div class="row"><b>A/C No :</b><span contenteditable="true">82954960056</span></div>
-        <div class="row"><b>IFSC Code :</b><span contenteditable="true">IDFB0021472</span></div>
+        <div class="row"><b>A/C No :</b><span contenteditable="true">-------</span></div>
+        <div class="row"><b>IFSC Code :</b><span contenteditable="true">------</span></div>
         <div class="row"><b>Branch Name :</b><span contenteditable="true">&nbsp;</span></div>
       </div>
       <div class="sign-block">
         <div class="for-line">For BALAJI TRANSPORT COMPANY</div>
-        <div class="sign-line">Sign ______________________</div>
+        <div class="sign-line" >Sign: <span contenteditable="true">ASHOK DARLING</span></div>
       </div>
     </div>
 
@@ -549,20 +463,30 @@
     <div class="page-no">Page 1 of 1</div>
   </div>
 
-  <!-- ===== Modal ===== -->
+  <!-- ===== Search Modal ===== -->
   <div class="modal-overlay" id="modalOverlay">
     <div class="modal">
       <h2>Search Party Bills</h2>
-      <p class="hint">Enter a party name and hit Search — every saved bill entry for that party will be pulled straight into the table below.</p>
+      <p class="hint">Pick a party and, optionally, a date range — every matching bill's entries load straight into the table.</p>
       <form id="entryForm">
         <div class="field">
           <label>Party Name</label>
           <input type="text" id="modalPartyName" list="partyNamesList" placeholder="Type or select a saved party name..." required>
         </div>
-        <div class="auto-hint">Try one of the sample parties from the dropdown to see it in action.</div>
+        <div class="date-range-row">
+          <div class="field">
+            <label>From Date</label>
+            <input type="date" id="modalFromDate">
+          </div>
+          <div class="field">
+            <label>To Date</label>
+            <input type="date" id="modalToDate">
+          </div>
+        </div>
+        <div class="auto-hint">Leave both dates blank to pull in every bill on file for that party.</div>
         <div class="modal-actions">
           <button type="button" class="btn btn-ghost" id="cancelBtn">Cancel</button>
-          <button type="submit" class="btn btn-primary">🔍 Search</button>
+          <button type="submit" class="btn btn-search">🔍 Search</button>
         </div>
       </form>
     </div>
@@ -573,14 +497,21 @@
 <script>
 (function(){
   const tableBody = document.getElementById('tableBody');
-  const addBtn = document.getElementById('addBtn');
+  const newBillBtn = document.getElementById('newBillBtn');
+  const searchBtn = document.getElementById('searchBtn');
+  const saveBtn = document.getElementById('saveBtn');
   const printBtn = document.getElementById('printBtn');
   const modalOverlay = document.getElementById('modalOverlay');
   const cancelBtn = document.getElementById('cancelBtn');
   const entryForm = document.getElementById('entryForm');
 
+  const billNoInput = document.getElementById('billNo');
+  const billNoList = document.getElementById('billNoList');
+  const billStatusBadge = document.getElementById('billStatusBadge');
+  const billDateInput = document.getElementById('billDate');
+
   const partyNameInput = document.getElementById('partyName');
-  const partyAddressEl = document.getElementById('partyAddress');
+  const partyAddressInput = document.getElementById('partyAddress');
   const partyGSTINInput = document.getElementById('partyGSTIN');
   const taxesPaidByInput = document.getElementById('taxesPaidBy');
   const historyBadge = document.getElementById('historyBadge');
@@ -589,14 +520,20 @@
 
   let rows = [];
   let rowIdCounter = 0;
+  let currentIsExisting = false;
 
   function num(v){ const n=parseFloat(v); return isNaN(n)?0:n; }
+  function fmt(n){ return Number.isInteger(n) ? String(n) : (Math.round(n*100)/100).toString(); }
+  function escHtml(v){
+    if(v===undefined||v===null) return '';
+    return String(v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
   function withTotals(d){
-    const total = num(d.freight)+num(d.bc)+num(d.dd)+num(d.lc);
-    return {...d, total, gtotal: total};
+    const gtotal = num(d.freight)+num(d.bc)+num(d.dd)+num(d.labour);
+    return {...d, gtotal};
   }
 
-  // ===== Dummy party database — several distinct parties, each with their own saved bill(s) =====
+  // ===== Dummy party database — used by "Search by Party" (separate from your own saved bills) =====
   const PARTY_DB = {
     "rallison paints private limited": {
       displayName: "RALLISON PAINTS PRIVATE LIMITED",
@@ -605,16 +542,16 @@
       taxesPaidBy: "Transporter",
       bills: [
         { billNo:"1021338", billDate:"02/06/2026", rows:[
-          withTotals({grdate:"08/05/26", grno:"10224306", destination:"BHARATPUR", item:"PAINT", qty:11, wgt:165, rate:3.5, freight:577.5, bc:50, dd:0, lc:44, pf:20, invno:"PNT/26-27/0061"}),
-          withTotals({grdate:"14/05/26", grno:"10224529", destination:"SIKAR", item:"PAINT", qty:66, wgt:1335, rate:3, freight:4005, bc:50, dd:1000, lc:264, pf:20, invno:"PNT/26-27/0088"}),
-          withTotals({grdate:"14/05/26", grno:"10224531", destination:"LUNKARANSAR", item:"PAINT", qty:1, wgt:20, rate:4, freight:80, bc:50, dd:0, lc:4, pf:20, invno:"PNT/26-27/0110"}),
-          withTotals({grdate:"18/05/26", grno:"10224680", destination:"RAWATSAR", item:"PAINT", qty:5, wgt:62, rate:4.5, freight:279, bc:50, dd:0, lc:20, pf:20, invno:"PNT/26-27/0158"}),
-          withTotals({grdate:"27/05/26", grno:"10224977", destination:"HANUMANGARH", item:"PAINT", qty:8, wgt:123, rate:3.5, freight:430.5, bc:50, dd:0, lc:32, pf:20, invno:"PNT/26-27/0201"}),
-          withTotals({grdate:"28/05/26", grno:"10224999", destination:"SARDARSHAHAR", item:"PAINT", qty:10, wgt:220, rate:3.5, freight:770, bc:50, dd:0, lc:40, pf:20, invno:"PNT/26-27/0280"}),
+          withTotals({grdate:"08/05/26", grno:"10224306", destination:"BHARATPUR", item:"PAINT", nag:11, wgt:165, rate:3.5, freight:577.5, bc:50, dd:0, labour:44, toll:20}),
+          withTotals({grdate:"14/05/26", grno:"10224529", destination:"SIKAR", item:"PAINT", nag:66, wgt:1335, rate:3, freight:4005, bc:50, dd:1000, labour:264, toll:20}),
+          withTotals({grdate:"14/05/26", grno:"10224531", destination:"LUNKARANSAR", item:"PAINT", nag:1, wgt:20, rate:4, freight:80, bc:50, dd:0, labour:4, toll:20}),
+          withTotals({grdate:"18/05/26", grno:"10224680", destination:"RAWATSAR", item:"PAINT", nag:5, wgt:62, rate:4.5, freight:279, bc:50, dd:0, labour:20, toll:20}),
+          withTotals({grdate:"27/05/26", grno:"10224977", destination:"HANUMANGARH", item:"PAINT", nag:8, wgt:123, rate:3.5, freight:430.5, bc:50, dd:0, labour:32, toll:20}),
+          withTotals({grdate:"28/05/26", grno:"10224999", destination:"SARDARSHAHAR", item:"PAINT", nag:10, wgt:220, rate:3.5, freight:770, bc:50, dd:0, labour:40, toll:20}),
         ]},
         { billNo:"1021512", billDate:"13/06/2026", rows:[
-          withTotals({grdate:"12/06/26", grno:"10225102", destination:"ALWAR", item:"PAINT", qty:6, wgt:95, rate:4, freight:380, bc:50, dd:0, lc:24, pf:20, invno:"PNT/26-27/0301"}),
-          withTotals({grdate:"13/06/26", grno:"10225144", destination:"JAIPUR", item:"PAINT", qty:14, wgt:210, rate:3.5, freight:735, bc:50, dd:0, lc:56, pf:20, invno:"PNT/26-27/0302"}),
+          withTotals({grdate:"12/06/26", grno:"10225102", destination:"ALWAR", item:"PAINT", nag:6, wgt:95, rate:4, freight:380, bc:50, dd:0, labour:24, toll:20}),
+          withTotals({grdate:"13/06/26", grno:"10225144", destination:"JAIPUR", item:"PAINT", nag:14, wgt:210, rate:3.5, freight:735, bc:50, dd:0, labour:56, toll:20}),
         ]},
       ]
     },
@@ -625,9 +562,9 @@
       taxesPaidBy: "Consignor",
       bills: [
         { billNo:"1021401", billDate:"05/06/2026", rows:[
-          withTotals({grdate:"01/06/26", grno:"20334101", destination:"AMBALA", item:"CEMENT", qty:40, wgt:2000, rate:2.5, freight:5000, bc:50, dd:0, lc:200, pf:20, invno:"CEM/26-27/0011"}),
-          withTotals({grdate:"03/06/26", grno:"20334145", destination:"HISAR", item:"CEMENT", qty:20, wgt:1000, rate:2.5, freight:2500, bc:50, dd:0, lc:100, pf:20, invno:"CEM/26-27/0012"}),
-          withTotals({grdate:"04/06/26", grno:"20334190", destination:"ROHTAK", item:"CEMENT", qty:15, wgt:750, rate:2.75, freight:2062.5, bc:50, dd:0, lc:75, pf:20, invno:"CEM/26-27/0013"}),
+          withTotals({grdate:"01/06/26", grno:"20334101", destination:"AMBALA", item:"CEMENT", nag:40, wgt:2000, rate:2.5, freight:5000, bc:50, dd:0, labour:200, toll:20}),
+          withTotals({grdate:"03/06/26", grno:"20334145", destination:"HISAR", item:"CEMENT", nag:20, wgt:1000, rate:2.5, freight:2500, bc:50, dd:0, labour:100, toll:20}),
+          withTotals({grdate:"04/06/26", grno:"20334190", destination:"ROHTAK", item:"CEMENT", nag:15, wgt:750, rate:2.75, freight:2062.5, bc:50, dd:0, labour:75, toll:20}),
         ]},
       ]
     },
@@ -638,8 +575,8 @@
       taxesPaidBy: "Consignee",
       bills: [
         { billNo:"1021455", billDate:"09/06/2026", rows:[
-          withTotals({grdate:"06/06/26", grno:"30556210", destination:"PANIPAT", item:"FERTILIZER", qty:30, wgt:1500, rate:3, freight:4500, bc:50, dd:0, lc:150, pf:20, invno:"FRT/26-27/0027"}),
-          withTotals({grdate:"07/06/26", grno:"30556255", destination:"SONEPAT", item:"FERTILIZER", qty:25, wgt:1250, rate:3, freight:3750, bc:50, dd:0, lc:125, pf:20, invno:"FRT/26-27/0028"}),
+          withTotals({grdate:"06/06/26", grno:"30556210", destination:"PANIPAT", item:"FERTILIZER", nag:30, wgt:1500, rate:3, freight:4500, bc:50, dd:0, labour:150, toll:20}),
+          withTotals({grdate:"07/06/26", grno:"30556255", destination:"SONEPAT", item:"FERTILIZER", nag:25, wgt:1250, rate:3, freight:3750, bc:50, dd:0, labour:125, toll:20}),
         ]},
       ]
     },
@@ -650,8 +587,8 @@
       taxesPaidBy: "Transporter",
       bills: [
         { billNo:"1021488", billDate:"11/06/2026", rows:[
-          withTotals({grdate:"09/06/26", grno:"40778312", destination:"CHANDIGARH", item:"STEEL PIPES", qty:12, wgt:3200, rate:1.8, freight:5760, bc:50, dd:500, lc:230, pf:20, invno:"STL/26-27/0044"}),
-          withTotals({grdate:"10/06/26", grno:"40778355", destination:"JALANDHAR", item:"STEEL PIPES", qty:8, wgt:2100, rate:1.8, freight:3780, bc:50, dd:0, lc:150, pf:20, invno:"STL/26-27/0045"}),
+          withTotals({grdate:"09/06/26", grno:"40778312", destination:"CHANDIGARH", item:"STEEL PIPES", nag:12, wgt:3200, rate:1.8, freight:5760, bc:50, dd:500, labour:230, toll:20}),
+          withTotals({grdate:"10/06/26", grno:"40778355", destination:"JALANDHAR", item:"STEEL PIPES", nag:8, wgt:2100, rate:1.8, freight:3780, bc:50, dd:0, labour:150, toll:20}),
         ]},
       ]
     }
@@ -659,24 +596,12 @@
 
   // seed the table with the first party's most recent bill, so the layout looks right immediately
   PARTY_DB["rallison paints private limited"].bills[0].rows.forEach(r=> addRow({...r}));
-  function fmt(n){
-    if (Number.isInteger(n)) return String(n);
-    return (Math.round(n*100)/100).toString();
-  }
-  function escHtml(v){
-    if (v===undefined||v===null) return '';
-    return String(v)
-      .replace(/&/g,'&amp;')
-      .replace(/</g,'&lt;')
-      .replace(/>/g,'&gt;');
-  }
 
   function addRow(data){
     const id = 'r' + (++rowIdCounter);
     rows.push({id, ...data});
     renderTable();
   }
-
   function removeRow(id){
     rows = rows.filter(r=>r.id!==id);
     renderTable();
@@ -692,30 +617,25 @@
         <td class="al-left"><div class="cell-input" contenteditable="true" data-field="grno">${escHtml(r.grno)}</div></td>
         <td class="al-left"><div class="cell-input" contenteditable="true" data-field="destination">${escHtml(r.destination)}</div></td>
         <td class="al-left"><div class="cell-input" contenteditable="true" data-field="item">${escHtml(r.item)}</div></td>
-        <td><div class="cell-input" contenteditable="true" data-field="qty">${escHtml(r.qty)}</div></td>
+        <td><div class="cell-input" contenteditable="true" data-field="nag">${escHtml(r.nag)}</div></td>
         <td><div class="cell-input" contenteditable="true" data-field="wgt">${escHtml(r.wgt)}</div></td>
         <td><div class="cell-input" contenteditable="true" data-field="rate">${escHtml(r.rate)}</div></td>
         <td><div class="cell-input" contenteditable="true" data-field="freight">${escHtml(r.freight)}</div></td>
         <td><div class="cell-input" contenteditable="true" data-field="bc">${escHtml(r.bc)}</div></td>
         <td><div class="cell-input" contenteditable="true" data-field="dd">${escHtml(r.dd)}</div></td>
-        <td><div class="cell-input" contenteditable="true" data-field="lc">${escHtml(r.lc)}</div></td>
-        <td><div class="cell-input" contenteditable="true" data-field="total">${escHtml(r.total)}</div></td>
-        <td><div class="cell-input" contenteditable="true" data-field="pf">${escHtml(r.pf)}</div></td>
+        <td><div class="cell-input" contenteditable="true" data-field="labour">${escHtml(r.labour)}</div></td>
+        <td><div class="cell-input" contenteditable="true" data-field="toll">${escHtml(r.toll)}</div></td>
         <td><div class="cell-input" contenteditable="true" data-field="gtotal">${escHtml(r.gtotal)}</div></td>
-        <td class="al-left"><div class="cell-input" contenteditable="true" data-field="invno">${escHtml(r.invno)}</div></td>
         <td class="row-actions no-print"><button class="icon-btn" title="Delete row">✕</button></td>
       `;
       tr.querySelector('.icon-btn').addEventListener('click', ()=>removeRow(r.id));
       tr.querySelectorAll('.cell-input').forEach(el=>{
         el.addEventListener('input', ()=>{
           const row = rows.find(x=>x.id===r.id);
-          const field = el.dataset.field;
-          row[field] = el.textContent;
+          row[el.dataset.field] = el.textContent;
           recalcTotals();
         });
-        el.addEventListener('keydown', (e)=>{
-          if (e.key === 'Enter'){ e.preventDefault(); el.blur(); }
-        });
+        el.addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ e.preventDefault(); el.blur(); } });
       });
       tableBody.appendChild(tr);
     });
@@ -723,31 +643,41 @@
   }
 
   function recalcTotals(){
-    let sumQty=0, sumWgt=0, sumFreight=0, sumBC=0, sumDD=0, sumLC=0, sumTotal=0, sumPF=0, sumGTotal=0;
+    let sumNag=0, sumWgt=0, sumFreight=0, sumBC=0, sumDD=0, sumLabour=0, sumToll=0, sumGTotal=0;
     rows.forEach(r=>{
-      sumQty+=num(r.qty); sumWgt+=num(r.wgt); sumFreight+=num(r.freight);
-      sumBC+=num(r.bc); sumDD+=num(r.dd); sumLC+=num(r.lc);
-      sumTotal+=num(r.total); sumPF+=num(r.pf); sumGTotal+=num(r.gtotal);
+      sumNag+=num(r.nag); sumWgt+=num(r.wgt); sumFreight+=num(r.freight);
+      sumBC+=num(r.bc); sumDD+=num(r.dd); sumLabour+=num(r.labour); sumToll+=num(r.toll); sumGTotal+=num(r.gtotal);
     });
-    document.getElementById('sumQty').textContent = fmt(sumQty);
+    document.getElementById('sumNag').textContent = fmt(sumNag);
     document.getElementById('sumWgt').textContent = fmt(sumWgt);
     document.getElementById('sumFreight').textContent = fmt(sumFreight);
     document.getElementById('sumBC').textContent = fmt(sumBC);
     document.getElementById('sumDD').textContent = fmt(sumDD);
-    document.getElementById('sumLC').textContent = fmt(sumLC);
-    document.getElementById('sumTotal').textContent = fmt(sumTotal);
-    document.getElementById('sumPF').textContent = fmt(sumPF);
+    document.getElementById('sumLabour').textContent = fmt(sumLabour);
+    document.getElementById('sumToll').textContent = fmt(sumToll);
     document.getElementById('sumGTotal').textContent = fmt(sumGTotal);
 
-    const billAmount = sumGTotal + sumPF; // Grand total = G.Total column + PF/O.CH as on original bill
+    const billAmount = sumGTotal + sumToll;
     document.getElementById('billAmountDisplay').textContent = fmt(billAmount);
     document.getElementById('amountInWords').textContent = 'Rupees ' + numberToWords(Math.round(billAmount)) + ' Only /-';
   }
 
-  // ===== Modal handling =====
-  const modalPartyName = document.getElementById('modalPartyName');
+  // ===== Toast =====
+  let toastTimer;
+  function showToast(msg, isError){
+    toastEl.textContent = msg;
+    toastEl.classList.toggle('error', !!isError);
+    toastEl.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(()=> toastEl.classList.remove('show'), 2800);
+  }
 
-  addBtn.addEventListener('click', ()=>{
+  // ===== Search-by-party modal (with optional date range) =====
+  const modalPartyName = document.getElementById('modalPartyName');
+  const modalFromDate = document.getElementById('modalFromDate');
+  const modalToDate = document.getElementById('modalToDate');
+
+  searchBtn.addEventListener('click', ()=>{
     entryForm.reset();
     modalOverlay.classList.add('active');
     modalPartyName.focus();
@@ -760,23 +690,10 @@
     e.preventDefault();
     const partyName = modalPartyName.value.trim();
     if(!partyName) return;
-    const ok = searchPartyBills(partyName);
+    const ok = searchPartyBills(partyName, modalFromDate.value, modalToDate.value);
     if(ok) closeModal();
   });
 
-  printBtn.addEventListener('click', ()=>{ window.print(); });
-
-  // ===== Toast =====
-  let toastTimer;
-  function showToast(msg, isError){
-    toastEl.textContent = msg;
-    toastEl.classList.toggle('error', !!isError);
-    toastEl.classList.add('show');
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(()=> toastEl.classList.remove('show'), 2800);
-  }
-
-  // ===== Party lookup: datalist + header auto-fill + Search-triggered table fetch =====
   function normalizeName(name){ return (name||'').trim().toLowerCase(); }
   function getPartyData(name){ return PARTY_DB[normalizeName(name)] || null; }
 
@@ -795,12 +712,11 @@
       : '';
   }
 
-  // Typing/selecting a known party in the header just auto-fills their details — it does not touch the table.
   function handlePartyNameCheck(){
     const partyData = getPartyData(partyNameInput.value);
     setHistoryBadge(partyData);
     if(partyData){
-      if(partyData.address) partyAddressEl.textContent = partyData.address;
+      if(partyData.address) partyAddressInput.value = partyData.address;
       if(partyData.gstin) partyGSTINInput.value = partyData.gstin;
       if(partyData.taxesPaidBy) taxesPaidByInput.value = partyData.taxesPaidBy;
     }
@@ -811,62 +727,239 @@
     partyNameInput._t = setTimeout(handlePartyNameCheck, 400);
   });
 
-  // The explicit Search action: looks the party up and replaces the table with every bill on file for them.
-  function searchPartyBills(partyName){
+  // Bill dates are stored as DD/MM/YYYY; the date pickers give YYYY-MM-DD — normalise both to compare.
+  function parseBillDate(str){
+    const parts = (str||'').split('/');
+    if(parts.length!==3) return null;
+    const [d,m,y] = parts.map(Number);
+    if(!d||!m||!y) return null;
+    return new Date(y, m-1, d);
+  }
+
+  function searchPartyBills(partyName, fromStr, toStr){
     const partyData = getPartyData(partyName);
     if(!partyData){
       showToast('No bills found for "' + partyName + '".', true);
       return false;
     }
 
+    const fromDate = fromStr ? new Date(fromStr + 'T00:00:00') : null;
+    const toDate = toStr ? new Date(toStr + 'T23:59:59') : null;
+
+    const matchingBills = partyData.bills.filter(b=>{
+      if(!fromDate && !toDate) return true;
+      const bd = parseBillDate(b.billDate);
+      if(!bd) return true;
+      if(fromDate && bd < fromDate) return false;
+      if(toDate && bd > toDate) return false;
+      return true;
+    });
+
+    if(matchingBills.length === 0){
+      showToast('No bills for "' + partyData.displayName + '" in that date range.', true);
+      return false;
+    }
+
     partyNameInput.value = partyData.displayName;
-    if(partyData.address) partyAddressEl.textContent = partyData.address;
+    if(partyData.address) partyAddressInput.value = partyData.address;
     if(partyData.gstin) partyGSTINInput.value = partyData.gstin;
     if(partyData.taxesPaidBy) taxesPaidByInput.value = partyData.taxesPaidBy;
     setHistoryBadge(partyData);
 
     rows = [];
     let count = 0;
-    partyData.bills.forEach(b=>{
-      b.rows.forEach(r=>{ addRow({...r}); count++; });
-    });
+    matchingBills.forEach(b=>{ b.rows.forEach(r=>{ addRow({...r}); count++; }); });
     if(count === 0) renderTable();
 
-    showToast('Found ' + count + ' entrie(s) across ' + partyData.bills.length +
-      (partyData.bills.length===1 ? ' bill' : ' bills') + ' for ' + partyData.displayName + '.');
+    const rangeNote = (fromStr || toStr)
+      ? ' (' + (fromStr || '…') + ' to ' + (toStr || '…') + ')'
+      : '';
+    showToast('Found ' + count + ' entrie(s) across ' + matchingBills.length +
+      (matchingBills.length===1 ? ' bill' : ' bills') + ' for ' + partyData.displayName + rangeNote + '.');
     return true;
   }
 
   refreshPartyDatalist();
   handlePartyNameCheck();
 
+  // ===== Your own saved bills: auto-numbered Bill No., New Bill, Save, Search/Edit by Bill No. =====
+  const BILL_STORE_KEY = 'balajiBillsByNo';
+  const BILL_COUNTER_KEY = 'balajiNextBillNo';
+  const BILL_MODE_KEY = 'balajiBillNoMode';
+  const BILL_PREFIX = 'BTC';        // used for the alphanumeric format, e.g. BTC1000
+  const BILL_START = 1000;           // both formats start counting from this 4-digit number
+
+  const billFormatToggle = document.getElementById('billFormatToggle');
+
+  function loadBillStore(){
+    try{ return JSON.parse(localStorage.getItem(BILL_STORE_KEY)) || {}; }
+    catch(e){ return {}; }
+  }
+  function saveBillStore(data){ localStorage.setItem(BILL_STORE_KEY, JSON.stringify(data)); }
+
+  function getBillCounter(){
+    const v = localStorage.getItem(BILL_COUNTER_KEY);
+    return v === null ? BILL_START : parseInt(v, 10);
+  }
+  function setBillCounter(n){ localStorage.setItem(BILL_COUNTER_KEY, String(n)); }
+
+  function getBillMode(){ return localStorage.getItem(BILL_MODE_KEY) || 'alphanumeric'; }
+  function setBillMode(mode){ localStorage.setItem(BILL_MODE_KEY, mode); }
+
+  // Numeric code:      1000, 1001, 1002, ...
+  // Alphanumeric code: BTC1000, BTC1001, BTC1002, ...
+  function formatBillNo(counter, mode){
+    return mode === 'numeric' ? String(counter) : (BILL_PREFIX + counter);
+  }
+  // Pulls the numeric part back out of either format so the counter always advances correctly,
+  // whichever style was used (or typed in by hand) — "BTC1042" and "1042" both read as 1042.
+  function extractNumericPart(billNo){
+    const match = String(billNo).match(/(\d+)/);
+    return match ? parseInt(match[1], 10) : NaN;
+  }
+
+  function updateFormatToggleUI(){
+    billFormatToggle.querySelectorAll('.fmt-btn').forEach(b=>{
+      b.classList.toggle('active', b.dataset.mode === getBillMode());
+    });
+  }
+  billFormatToggle.querySelectorAll('.fmt-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      setBillMode(btn.dataset.mode);
+      updateFormatToggleUI();
+      // re-format the number currently showing, unless it belongs to an already-saved bill
+      if(!currentIsExisting){
+        const n = extractNumericPart(billNoInput.value);
+        billNoInput.value = formatBillNo(isNaN(n) ? getBillCounter() : n, getBillMode());
+      }
+    });
+  });
+
+  function refreshBillNoList(){
+    const store = loadBillStore();
+    billNoList.innerHTML = '';
+    Object.keys(store).forEach(no=>{
+      const opt = document.createElement('option');
+      opt.value = no;
+      billNoList.appendChild(opt);
+    });
+  }
+
+  function updateBillBadge(){
+    billStatusBadge.textContent = currentIsExisting ? 'editing saved bill' : '';
+    billStatusBadge.classList.toggle('existing', currentIsExisting);
+  }
+
+  function collectBillData(){
+    return {
+      billDate: billDateInput.value,
+      partyName: partyNameInput.value,
+      partyAddress: partyAddressInput.value,
+      partyGSTIN: partyGSTINInput.value,
+      taxesPaidBy: taxesPaidByInput.value,
+      rows: rows.map(r=>{ const {id, ...rest} = r; return rest; })
+    };
+  }
+
+  function populateBillForm(data){
+    billDateInput.value = data.billDate || '';
+    partyNameInput.value = data.partyName || '';
+    partyAddressInput.value = data.partyAddress || '';
+    partyGSTINInput.value = data.partyGSTIN || '';
+    taxesPaidByInput.value = data.taxesPaidBy || 'Transporter';
+    rows = [];
+    (data.rows || []).forEach(r=> addRow({...r}));
+    if((data.rows || []).length === 0) renderTable();
+  }
+
+  function resetBillForm(){
+    billDateInput.value = '';
+    partyNameInput.value = '';
+    partyAddressInput.value = '';
+    partyGSTINInput.value = '';
+    taxesPaidByInput.value = 'Transporter';
+    historyBadge.textContent = '';
+    rows = [];
+    renderTable();
+  }
+
+  newBillBtn.addEventListener('click', ()=>{
+    const next = formatBillNo(getBillCounter(), getBillMode());
+    resetBillForm();
+    billNoInput.value = next;
+    currentIsExisting = false;
+    updateBillBadge();
+    showToast('Ready to create Bill No. ' + next + '.');
+    billNoInput.focus();
+  });
+
+  function handleBillNoLookup(){
+    const billNo = billNoInput.value.trim();
+    const store = loadBillStore();
+    if(billNo && store[billNo]){
+      populateBillForm(store[billNo]);
+      currentIsExisting = true;
+      showToast('Bill No. ' + billNo + ' loaded — edit the details and click Save to update it.');
+    } else {
+      currentIsExisting = false;
+    }
+    updateBillBadge();
+  }
+  billNoInput.addEventListener('change', handleBillNoLookup);
+
+  function handleSave(){
+    const billNo = billNoInput.value.trim();
+    if(!billNo){ showToast('Enter a Bill No. before saving.', true); return; }
+
+    const store = loadBillStore();
+    store[billNo] = collectBillData();
+    saveBillStore(store);
+    refreshBillNoList();
+
+    const counter = getBillCounter();
+    const asNum = extractNumericPart(billNo);
+    if(!isNaN(asNum) && asNum >= counter) setBillCounter(asNum + 1);
+
+    currentIsExisting = true;
+    updateBillBadge();
+    showToast('Bill No. ' + billNo + ' saved.');
+  }
+  saveBtn.addEventListener('click', handleSave);
+
+  printBtn.addEventListener('click', ()=>{
+    const billNo = billNoInput.value.trim();
+    if(billNo){
+      const store = loadBillStore();
+      store[billNo] = collectBillData();
+      saveBillStore(store);
+      refreshBillNoList();
+    }
+    window.print();
+  });
+
+  // init
+  billNoInput.value = formatBillNo(getBillCounter(), getBillMode());
+  refreshBillNoList();
+  updateBillBadge();
+  updateFormatToggleUI();
+
   // ===== Number to words (Indian numbering system) =====
   function numberToWords(num){
-    if (num===0) return 'Zero';
+    if(num===0) return 'Zero';
     const a = ['','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten',
       'Eleven','Twelve','Thirteen','Fourteen','Fifteen','Sixteen','Seventeen','Eighteen','Nineteen'];
     const b = ['','','Twenty','Thirty','Forty','Fifty','Sixty','Seventy','Eighty','Ninety'];
-
-    function two(n){
-      if(n<20) return a[n];
-      return b[Math.floor(n/10)] + (n%10? ' ' + a[n%10] : '');
-    }
-    function three(n){
-      if(n>99) return a[Math.floor(n/100)] + ' Hundred' + (n%100? ' ' + two(n%100) : '');
-      return two(n);
-    }
-
+    function two(n){ if(n<20) return a[n]; return b[Math.floor(n/10)] + (n%10? ' ' + a[n%10] : ''); }
+    function three(n){ if(n>99) return a[Math.floor(n/100)] + ' Hundred' + (n%100? ' ' + two(n%100) : ''); return two(n); }
     let str = '';
     const crore = Math.floor(num / 10000000); num %= 10000000;
     const lakh = Math.floor(num / 100000); num %= 100000;
     const thousand = Math.floor(num / 1000); num %= 1000;
     const hundred = num;
-
     if(crore) str += three(crore) + ' Crore ';
     if(lakh) str += three(lakh) + ' Lakh ';
     if(thousand) str += three(thousand) + ' Thousand ';
     if(hundred) str += three(hundred);
-
     return str.trim();
   }
 })();
