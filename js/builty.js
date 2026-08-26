@@ -17,6 +17,14 @@
   const grDateInput = document.getElementById('grDate');
   const toastEl = document.getElementById('toast');
 
+  // Delivery At can hold a long sentence — grow it as the person types instead of scrolling/clipping.
+  const deliveryAtInput = document.getElementById('deliveryAt');
+  function autoGrow(el){
+    el.style.height = 'auto';
+    el.style.height = el.scrollHeight + 'px';
+  }
+  deliveryAtInput.addEventListener('input', ()=> autoGrow(deliveryAtInput));
+
   let toastTimer;
   function showToast(msg){
     toastEl.textContent = msg;
@@ -59,7 +67,20 @@
   const RESET_CHARGE_FIELDS = [actualWeight, chargedWeight, rate, totalFreight, grCharge, lcCharge, labourCharge, tollCharge, ddCharge, grandTotal];
 
   const grBadge = document.getElementById('grStatusBadge');
+  const grNoList = document.getElementById('grNoList');
   let currentIsExisting = false;
+
+  function refreshGrNoList(){
+    const store = loadBiltyStore();
+    grNoList.innerHTML = '';
+    Object.keys(store)
+      .sort((a,b)=> (parseInt(a,10) - parseInt(b,10)) || a.localeCompare(b))
+      .forEach(no=>{
+        const opt = document.createElement('option');
+        opt.value = no;
+        grNoList.appendChild(opt);
+      });
+  }
 
   function getGrCounter(){
     const stored = localStorage.getItem(GR_COUNTER_KEY);
@@ -77,6 +98,7 @@
     grNoInput.value = getGrCounter();
   }
   initGrNo();
+  refreshGrNoList();
 
   function collectFormData(){
     const data = { grNo: grNoInput.value, savedAt: new Date().toISOString() };
@@ -94,6 +116,7 @@
     RESET_CHARGE_FIELDS.forEach(el=>{ el.value = data[el.id] || ''; });
     document.querySelectorAll('input[name="payStatus"]').forEach(r=>{ r.checked = (r.value === data.payStatus); });
     document.querySelectorAll('input[name="taxPayableBy"]').forEach(r=>{ r.checked = (r.value === data.taxPayableBy); });
+    autoGrow(deliveryAtInput);
   }
 
   function updateGrBadge(){
@@ -115,9 +138,54 @@
     document.getElementById('taxTransporter').checked = true;
     currentIsExisting = false;
     updateGrBadge();
+    autoGrow(deliveryAtInput);
   }
 
-  // Typing/selecting an already-saved G.R. No. loads that bilty's full details back into the form.
+  const grNoLabelTrigger = document.getElementById('grNoLabelTrigger');
+  const grNoDropdown = document.getElementById('grNoDropdown');
+
+  // Clicking the "G.R. No." label opens a small menu: start a fresh auto-numbered
+  // bilty, or clear the field to type/pick an existing G.R. No. to search & edit.
+  function toggleGrNoDropdown(forceState){
+    const show = forceState !== undefined ? forceState : !grNoDropdown.classList.contains('show');
+    grNoDropdown.classList.toggle('show', show);
+    grNoLabelTrigger.classList.toggle('open', show);
+  }
+  grNoLabelTrigger.addEventListener('click', (e)=>{
+    e.stopPropagation();
+    toggleGrNoDropdown();
+  });
+  grNoLabelTrigger.addEventListener('keydown', (e)=>{
+    if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); toggleGrNoDropdown(); }
+  });
+  document.addEventListener('click', (e)=>{
+    if(!grNoDropdown.contains(e.target) && e.target !== grNoLabelTrigger){
+      toggleGrNoDropdown(false);
+    }
+  });
+
+  function applyGrNoMode(mode){
+    if(mode === 'new'){
+      const next = getGrCounter();
+      resetForNextBilty();
+      grNoInput.value = next;
+      grNoInput.placeholder = '—';
+      showToast('Ready to create G.R. No. ' + next + '.');
+    } else {
+      grNoInput.value = '';
+      grNoInput.placeholder = 'Type or pick a G.R. No....';
+      currentIsExisting = false;
+      updateGrBadge();
+      grNoInput.focus();
+    }
+    toggleGrNoDropdown(false);
+  }
+  grNoDropdown.querySelectorAll('.grno-option').forEach(btn=>{
+    btn.addEventListener('click', ()=> applyGrNoMode(btn.dataset.mode));
+  });
+
+  // Typing/selecting any G.R. No. checks whether it's already saved and, if so,
+  // loads that bilty's full details back into the form for editing.
   function handleGrNoLookup(){
     const grNo = grNoInput.value.trim();
     const store = loadBiltyStore();
@@ -127,6 +195,7 @@
       showToast('G.R. No. ' + grNo + ' loaded — edit the details and click Save to update it.');
     } else {
       currentIsExisting = false;
+      if(grNo) showToast('No saved bilty found for G.R. No. ' + grNo + '.');
     }
     updateGrBadge();
   }
@@ -139,6 +208,7 @@
     const store = loadBiltyStore();
     store[grNo] = collectFormData();
     saveBiltyStore(store);
+    refreshGrNoList();
 
     if(currentIsExisting){
       showToast('G.R. No. ' + grNo + ' updated.');
@@ -158,6 +228,7 @@
     const store = loadBiltyStore();
     store[grNo] = collectFormData();
     saveBiltyStore(store);
+    refreshGrNoList();
     window.print();
   });
 
@@ -204,7 +275,7 @@
     // zero out the whole charges section on the Driver's Copy so no amount is shown.
     const checkedStatus = original.querySelector('input[name="payStatus"]:checked');
     const statusValue = checkedStatus ? checkedStatus.value : '';
-    if(statusValue === 'T.B.B.'){
+    if(statusValue === 'Paid' || statusValue === 'T.B.B.'){
       CHARGE_FIELD_IDS.forEach(id=>{
         const field = clone.querySelector('#' + id);
         if(field) field.value = '0';
