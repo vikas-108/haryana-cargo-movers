@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jai Haryana Cargo Mover - Cash Receipt</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0a1e3d;
+    --navy-2:#123163;
+    --orange:#f5900f;
+    --orange-2:#ff9f1c;
+    --ink:#111;
+    --muted:#5c6b85;
+    --soft-line:#d7dce6;
+    --paper:#ffffff;
+    --bg:#e9edf1;
+    --shadow:0 10px 34px rgba(10,30,61,.16);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:'Inter',Arial,Helvetica,sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    padding:26px 12px 60px;
+  }
+  h1,h2,h3{font-family:'Poppins',sans-serif;}
+
+  /* ===== Toolbar ===== */
+  .toolbar{
+    max-width:1040px; margin:0 auto 16px;
+    display:flex; gap:10px; justify-content:flex-end; flex-wrap:wrap;
+  }
+  .btn{
+    border:none; padding:10px 18px; border-radius:8px; font-size:14px; font-weight:700;
+    cursor:pointer; display:inline-flex; align-items:center; gap:8px;
+    transition:transform .12s ease; box-shadow:0 2px 6px rgba(0,0,0,.15);
+    white-space:nowrap; font-family:inherit;
+  }
+  .btn:hover{ transform:translateY(-1px); }
+  .btn-new{ background:#1a9e5c; color:#fff; }
+  .btn-save{ background:#0e8f6f; color:#fff; }
+  .btn-primary{ background:var(--navy); color:#fff; }
+
+  /* ===== Sheet ===== */
+  .sheet{
+    width:100%; max-width:1040px; margin:0 auto;
+    background:var(--paper); box-shadow:var(--shadow);
+    border:1px solid #000; border-radius:14px; overflow:hidden;
+  }
+  .receipts-row{
+    display:grid; grid-template-columns:1fr 1fr;
+    position:relative;
+  }
+  .cut-line-v{
+    position:absolute; top:0; bottom:0; left:50%;
+    border-left:1.5px dashed #b9c2d1;
+  }
+
+  .receipt-half{ padding:16px 18px 18px; }
+  .receipt-half.payment{ }
+
+  .receipt-tag{
+    text-align:center; font-size:12px; font-weight:800; letter-spacing:1.4px;
+    color:var(--navy); text-transform:uppercase; margin-bottom:10px;
+  }
+
+  .brand-row{ display:flex; align-items:center; gap:10px; margin-bottom:6px; }
+  .brand-logo{
+    width:38px; height:38px; border-radius:9px; flex-shrink:0;
+    background:linear-gradient(135deg,var(--orange-2),var(--orange));
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 6px 14px -6px rgba(245,144,15,.7);
+  }
+  .brand-logo svg{ width:21px; height:21px; }
+  .brand-text .company-name{ font-size:16.5px; font-weight:800; color:var(--navy); letter-spacing:.3px; line-height:1.15; }
+  .brand-meta{ font-size:9.5px; color:var(--muted); line-height:1.55; margin:5px 0 10px; padding-bottom:8px; border-bottom:2px solid #000; }
+  .brand-meta b{ color:var(--ink); }
+
+  .row-line{
+    display:flex; align-items:center; gap:6px; font-size:12px; margin:4px 0; flex-wrap:wrap;
+  }
+  .row-line .lbl{ font-weight:700; color:var(--muted); white-space:nowrap; }
+  .row-line .two{ display:flex; gap:6px; flex:1; }
+  .row-line .two > div{ flex:1; display:flex; align-items:center; gap:6px; }
+
+  input.rv, select.rv{
+    border:none; border-bottom:1px dotted #aab3c4; background:transparent;
+    font:inherit; font-size:12px; font-weight:700; color:var(--ink);
+    padding:1px 2px; outline:none; width:100%; min-width:0;
+  }
+  input.rv:focus, select.rv:focus{ border-color:var(--orange); background:#fff8ef; }
+  .mirror{
+    font-size:12px; font-weight:700; color:var(--ink);
+    border-bottom:1px solid transparent; padding:1px 2px; min-height:15px;
+    overflow-wrap:break-word;
+  }
+  .mirror:empty::after{ content:"—"; color:#c7cede; font-weight:400; }
+
+  .divider-line{ border-top:1.5px solid #000; margin:8px 0; }
+
+  .goods-grid{
+    display:grid; grid-template-columns:1fr 1fr; gap:2px 14px; margin-top:6px;
+  }
+  .goods-grid .row-line .lbl{ width:62px; }
+
+  .amount-block{ margin-top:12px; }
+  .amount-block .row-line{ justify-content:space-between; }
+  .amount-block .row-line .lbl{ font-size:13px; }
+  .amount-block .row-line.total .lbl,
+  .amount-block .row-line.total .mirror,
+  .amount-block .row-line.total input{ font-size:14.5px; font-weight:900; color:var(--navy); }
+  .amount-block .row-line.balance .lbl,
+  .amount-block .row-line.balance .mirror{ font-size:13.5px; font-weight:800; color:var(--orange); }
+  input.amt-input, .mirror.amt{ text-align:right; max-width:110px; }
+
+  .note-row{ margin-top:12px; font-size:11.5px; }
+  .note-row .lbl{ font-weight:700; color:var(--muted); }
+
+  .footer-row{
+    display:flex; justify-content:space-between; align-items:flex-end;
+    margin-top:16px; gap:10px; font-size:10.5px; color:var(--muted); line-height:1.6;
+  }
+  .footer-row .for-line{ text-align:right; font-size:11.5px; font-weight:800; color:var(--navy); }
+  .footer-row .sign-caption{ font-size:10px; font-weight:700; color:var(--muted); margin-top:20px; }
+  .bank-block b{ color:var(--ink); }
+  [contenteditable]{ display:inline-block; }
+  [contenteditable]:hover{ background:#f4f8fc; outline:1px dashed #cfe0ee; }
+  [contenteditable]:focus{ outline:1px dashed var(--orange); background:#fff8ef; }
+
+  .receipt-status-badge{
+    display:inline-block; margin-left:6px; font-size:8.5px; font-weight:800;
+    padding:1px 7px; border-radius:8px; background:#eef2f8; color:var(--muted); vertical-align:middle;
+  }
+  .receipt-status-badge.existing{ background:#e7f0fa; color:var(--orange); }
+  .receipt-status-badge:empty{ display:none; }
+
+  /* ===== Toast ===== */
+  .toast{
+    position:fixed; bottom:22px; left:50%; transform:translateX(-50%) translateY(16px);
+    background:#111; color:#fff; padding:12px 22px; border-radius:8px; font-size:13.5px; font-weight:600;
+    opacity:0; pointer-events:none; transition:opacity .25s ease, transform .25s ease; z-index:300;
+    box-shadow:0 10px 30px rgba(0,0,0,.3); max-width:90vw; text-align:center;
+  }
+  .toast.error{ background:#c0392b; }
+  .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+
+  @media (max-width:760px){
+    .receipts-row{ grid-template-columns:1fr; }
+    .cut-line-v{ display:none; }
+    .receipt-half{ border-bottom:1.5px dashed #b9c2d1; }
+    .receipt-half.payment{ border-bottom:none; }
+    .goods-grid{ grid-template-columns:1fr; }
+  }
+
+  /* ===== Print — clean single A4 page, side-by-side receipts ===== */
+  @media print{
+    @page{ size:A4 portrait; margin:10mm; }
+    html, body{ background:#fff; padding:0; margin:0; }
+    .toolbar, .toast, .receipt-status-badge{ display:none !important; }
+
+    .sheet{ box-shadow:none; border:1.2px solid #000; border-radius:0; width:100%; max-width:none; margin:0; }
+    .receipts-row{ grid-template-columns:1fr 1fr !important; }
+    .cut-line-v{ display:block !important; border-left:1.5px dashed #999; }
+    .receipt-half{ padding:12px 14px 14px; }
+
+    .brand-logo{ -webkit-print-color-adjust:exact; print-color-adjust:exact; width:32px; height:32px; }
+    .brand-text .company-name{ font-size:14px; }
+    .brand-meta{ font-size:8.5px; }
+    .receipt-tag{ font-size:11px; }
+    .row-line, .mirror, input.rv, select.rv{ font-size:11px; }
+    .goods-grid .row-line .lbl{ width:56px; }
+    input.rv, select.rv{ border-bottom:1px dotted #aab3c4 !important; background:transparent !important; }
+    .amount-block .row-line.total .lbl, .amount-block .row-line.total .mirror, .amount-block .row-line.total input{ font-size:13px; }
+    .amount-block .row-line.balance .lbl, .amount-block .row-line.balance .mirror{ font-size:12px; }
+    .footer-row{ font-size:9.5px; }
+    .footer-row .for-line{ font-size:10.5px; }
+
+    .receipt-half{ page-break-inside:avoid; break-inside:avoid; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="toolbar">
+    <button class="btn btn-new" id="newBtn">🆕 New Receipt</button>
+    <button class="btn btn-save" id="saveBtn">💾 Save</button>
+    <button class="btn btn-primary" id="printBtn">🖨 Save &amp; Print</button>
+  </div>
+
+  <div class="sheet">
+    <div class="receipts-row">
+      <div class="cut-line-v"></div>
+
+      <!-- ============ LEFT: DELIVERY RECEIPT (editable / source of truth) ============ -->
+      <div class="receipt-half delivery">
+        <div class="receipt-tag">Delivery Receipt</div>
+
+        <div class="brand-row">
+          <div class="brand-logo">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 3h13v13H1z"/><path d="M14 8h4l3 3v5h-7V8z"/><circle cx="6" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
+          </div>
+          <div class="brand-text">
+            <div class="company-name">JAI HARYANA CARGO MOVER</div>
+          </div>
+        </div>
+        <div class="brand-meta">
+          Head Office : Opp. Gali No. 2, Mangal Colony, Part-2, Karnal (Haryana)<br>
+          <b>GSTIN :</b> 06KTPRK7769F1Z7 &nbsp;&nbsp; <b>Ph :</b> 81687-47069
+        </div>
+
+        <div class="row-line">
+          <span class="lbl">Receipt No. :</span>
+          <input class="rv" id="receiptNo" style="max-width:90px;">
+          <span>/</span>
+          <select class="rv" id="paymentMode" style="max-width:80px;">
+            <option>Cash</option>
+            <option>Cheque</option>
+            <option>Online</option>
+            <option>UPI</option>
+          </select>
+          <span class="receipt-status-badge" id="receiptStatusBadge"></span>
+        </div>
+        <div class="row-line">
+          <span class="lbl">Date :</span>
+          <input class="rv" type="date" id="receiptDate" style="max-width:130px;">
+          <input class="rv" type="time" id="receiptTime" style="max-width:90px;">
+        </div>
+        <div class="row-line">
+          <span class="lbl">Transport :</span>
+          <span class="mirror" id="transportName">Jai Haryana Cargo Mover</span>
+        </div>
+
+        <div class="row-line">
+          <span class="lbl">GR No. :</span>
+          <input class="rv" id="grNo" style="max-width:80px;">
+          <span class="lbl" style="margin-left:10px;">From :</span>
+          <input class="rv" id="fromCity" placeholder="e.g. DELHI">
+        </div>
+        <div class="row-line">
+          <span class="lbl" style="width:78px;">Consigner :</span>
+          <input class="rv" id="consignorName" placeholder="Consigner name">
+        </div>
+        <div class="row-line">
+          <span class="lbl" style="width:78px;">Consignee :</span>
+          <input class="rv" id="consigneeName" placeholder="Consignee name">
+        </div>
+        <div class="row-line">
+          <span class="lbl" style="width:78px;">Rece. by :</span>
+          <input class="rv" id="receivedBy">
+        </div>
+        <div class="row-line">
+          <span class="lbl" style="width:78px;">GSTIN :</span>
+          <input class="rv" id="gstin">
+        </div>
+        <div class="row-line">
+          <span class="lbl" style="width:78px;">Through :</span>
+          <input class="rv" id="throughPerson">
+        </div>
+
+        <div class="divider-line"></div>
+
+        <div class="goods-grid">
+          <div>
+            <div class="row-line"><span class="lbl">Item :</span><input class="rv" id="item"></div>
+            <div class="row-line"><span class="lbl">Bundle :</span><input class="rv" id="bundle" type="number"></div>
+            <div class="row-line"><span class="lbl">Weight :</span><input class="rv" id="weight" type="number"></div>
+            <div class="row-line"><span class="lbl">P.M. :</span><input class="rv" id="pm"></div>
+          </div>
+          <div>
+            <div class="row-line"><span class="lbl">Freight :</span><input class="rv amt-input" id="freight" type="number"></div>
+            <div class="row-line"><span class="lbl">Deliv.Ch. :</span><input class="rv amt-input" id="deliveryCharge" type="number" value="0"></div>
+            <div class="row-line"><span class="lbl">Gd./Ud.Ch. :</span><input class="rv amt-input" id="gdUdCharge" type="number" value="0"></div>
+            <div class="row-line"><span class="lbl">Lb. Amt. :</span><input class="rv amt-input" id="lbAmount" type="number" value="0"></div>
+            <div class="row-line"><span class="lbl">Local Ch. :</span><input class="rv amt-input" id="localCharge" type="number" value="0"></div>
+          </div>
+        </div>
+
+        <div class="amount-block">
+          <div class="row-line total">
+            <span class="lbl">Total Amt. :</span>
+            <input class="rv amt-input" id="totalAmt" readonly>
+          </div>
+          <div class="row-line">
+            <span class="lbl">Cash Paid :</span>
+            <input class="rv amt-input" id="cashPaid" type="number" value="0">
+          </div>
+          <div class="row-line balance">
+            <span class="lbl">Balance :</span>
+            <input class="rv amt-input" id="balance" readonly>
+          </div>
+        </div>
+
+        <div class="note-row">
+          <span class="lbl">Note :</span>
+          <input class="rv" id="noteText" style="width:70%;">
+        </div>
+
+        <div class="footer-row">
+          <div class="bank-block">
+            <b>A/c Detail :</b><br>
+            <span contenteditable="true">FEDERAL BANK - 00490200002017 IFSC - FDRL0001649</span><br>
+            <span contenteditable="true">ICICI A/C - 017305002745 IFSC CODE - ICIC0000173</span>
+          </div>
+          <div>
+            <div class="for-line">For JAI HARYANA CARGO MOVER</div>
+            <div class="sign-caption">Auth. Sign.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ RIGHT: PAYMENT RECEIPT (live-mirrored copy) ============ -->
+      <div class="receipt-half payment">
+        <div class="receipt-tag">Payment Receipt</div>
+
+        <div class="brand-row">
+          <div class="brand-logo">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 3h13v13H1z"/><path d="M14 8h4l3 3v5h-7V8z"/><circle cx="6" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
+          </div>
+          <div class="brand-text">
+            <div class="company-name">JAI HARYANA CARGO MOVER</div>
+          </div>
+        </div>
+        <div class="brand-meta">
+          Head Office : Opp. Gali No. 2, Mangal Colony, Part-2, Karnal (Haryana)<br>
+          <b>GSTIN :</b> 06KTPRK7769F1Z7 &nbsp;&nbsp; <b>Ph :</b> 81687-47069
+        </div>
+
+        <div class="row-line">
+          <span class="lbl">Receipt No. :</span>
+          <span class="mirror" id="m_receiptNo"></span>
+          <span>/</span>
+          <span class="mirror" id="m_paymentMode"></span>
+        </div>
+        <div class="row-line">
+          <span class="lbl">Date :</span>
+          <span class="mirror" id="m_receiptDate"></span>
+          <span class="mirror" id="m_receiptTime"></span>
+        </div>
+        <div class="row-line">
+          <span class="lbl">Transport :</span>
+          <span class="mirror">Jai Haryana Cargo Mover</span>
+        </div>
+
+        <div class="row-line">
+          <span class="lbl">GR No. :</span>
+          <span class="mirror" id="m_grNo"></span>
+          <span class="lbl" style="margin-left:10px;">From :</span>
+          <span class="mirror" id="m_fromCity"></span>
+        </div>
+        <div class="row-line">
+          <span class="lbl" style="width:78px;">Consigner :</span>
+          <span class="mirror" id="m_consignorName"></span>
+        </div>
+        <div class="row-line">
+          <span class="lbl" style="width:78px;">Consignee :</span>
+          <span class="mirror" id="m_consigneeName"></span>
+        </div>
+        <div class="row-line">
+          <span class="lbl" style="width:78px;">Rece. by :</span>
+          <span class="mirror" id="m_receivedBy"></span>
+        </div>
+        <div class="row-line">
+          <span class="lbl" style="width:78px;">GSTIN :</span>
+          <span class="mirror" id="m_gstin"></span>
+        </div>
+        <div class="row-line">
+          <span class="lbl" style="width:78px;">Through :</span>
+          <span class="mirror" id="m_throughPerson"></span>
+        </div>
+
+        <div class="divider-line"></div>
+
+        <div class="goods-grid">
+          <div>
+            <div class="row-line"><span class="lbl">Item :</span><span class="mirror" id="m_item"></span></div>
+            <div class="row-line"><span class="lbl">Bundle :</span><span class="mirror" id="m_bundle"></span></div>
+            <div class="row-line"><span class="lbl">Weight :</span><span class="mirror" id="m_weight"></span></div>
+            <div class="row-line"><span class="lbl">P.M. :</span><span class="mirror" id="m_pm"></span></div>
+          </div>
+          <div>
+            <div class="row-line"><span class="lbl">Freight :</span><span class="mirror amt" id="m_freight"></span></div>
+            <div class="row-line"><span class="lbl">Deliv.Ch. :</span><span class="mirror amt" id="m_deliveryCharge"></span></div>
+            <div class="row-line"><span class="lbl">Gd./Ud.Ch. :</span><span class="mirror amt" id="m_gdUdCharge"></span></div>
+            <div class="row-line"><span class="lbl">Lb. Amt. :</span><span class="mirror amt" id="m_lbAmount"></span></div>
+            <div class="row-line"><span class="lbl">Local Ch. :</span><span class="mirror amt" id="m_localCharge"></span></div>
+          </div>
+        </div>
+
+        <div class="amount-block">
+          <div class="row-line total">
+            <span class="lbl">Total Amt. :</span>
+            <span class="mirror amt" id="m_totalAmt"></span>
+          </div>
+          <div class="row-line">
+            <span class="lbl">Cash Paid :</span>
+            <span class="mirror amt" id="m_cashPaid"></span>
+          </div>
+          <div class="row-line balance">
+            <span class="lbl">Balance :</span>
+            <span class="mirror amt" id="m_balance"></span>
+          </div>
+        </div>
+
+        <div class="note-row">
+          <span class="lbl">Note :</span>
+          <span class="mirror" id="m_noteText"></span>
+        </div>
+
+        <div class="footer-row">
+          <div class="bank-block">
+            <b>A/c Detail :</b><br>
+            FEDERAL BANK - 00490200002017 IFSC - FDRL0001649<br>
+            ICICI A/C - 017305002745 IFSC CODE - ICIC0000173
+          </div>
+          <div>
+            <div class="for-line">For JAI HARYANA CARGO MOVER</div>
+            <div class="sign-caption">Auth. Sign.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  const newBtn = document.getElementById('newBtn');
+  const saveBtn = document.getElementById('saveBtn');
+  const printBtn = document.getElementById('printBtn');
+  const toastEl = document.getElementById('toast');
+  const receiptStatusBadge = document.getElementById('receiptStatusBadge');
+  const receiptNoInput = document.getElementById('receiptNo');
+
+  let currentIsExisting = false;
+
+  // Every left-side field id maps to its right-side mirror id ("m_" + id).
+  const FIELD_IDS = [
+    'receiptNo','paymentMode','receiptDate','receiptTime','grNo','fromCity',
+    'consignorName','consigneeName','receivedBy','gstin','throughPerson',
+    'item','bundle','weight','pm','freight','deliveryCharge','gdUdCharge',
+    'lbAmount','localCharge','totalAmt','cashPaid','balance','noteText'
+  ];
+
+  function num(v){ const n = parseFloat(v); return isNaN(n) ? 0 : n; }
+  function fmt(n){ return n.toFixed(2); }
+
+  function syncMirror(id){
+    const src = document.getElementById(id);
+    const dst = document.getElementById('m_' + id);
+    if(!src || !dst) return;
+    dst.textContent = src.value;
+  }
+  function syncAllMirrors(){
+    FIELD_IDS.forEach(syncMirror);
+  }
+
+  function recalc(){
+    const total = num(document.getElementById('freight').value)
+      + num(document.getElementById('deliveryCharge').value)
+      + num(document.getElementById('gdUdCharge').value)
+      + num(document.getElementById('lbAmount').value)
+      + num(document.getElementById('localCharge').value);
+    document.getElementById('totalAmt').value = fmt(total);
+
+    const balance = total - num(document.getElementById('cashPaid').value);
+    document.getElementById('balance').value = fmt(balance);
+
+    syncAllMirrors();
+  }
+
+  FIELD_IDS.forEach(id=>{
+    const el = document.getElementById(id);
+    if(!el) return;
+    el.addEventListener('input', ()=>{
+      if(['freight','deliveryCharge','gdUdCharge','lbAmount','localCharge','cashPaid'].includes(id)){
+        recalc();
+      } else {
+        syncMirror(id);
+      }
+    });
+    el.addEventListener('change', ()=>{ if(id==='paymentMode') syncMirror(id); });
+  });
+
+  // ===== Toast =====
+  let toastTimer;
+  function showToast(msg, isError){
+    toastEl.textContent = msg;
+    toastEl.classList.toggle('error', !!isError);
+    toastEl.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(()=> toastEl.classList.remove('show'), 2800);
+  }
+
+  // ===== Auto-numbered, saved, editable receipts (same pattern as the other JHCM tools) =====
+  const STORE_KEY = 'jhcmReceiptsByNo';
+  const COUNTER_KEY = 'jhcmNextReceiptNo';
+  const PREFIX = 'G-';
+  const START = 2000;
+
+  function loadStore(){
+    try{ return JSON.parse(localStorage.getItem(STORE_KEY)) || {}; }
+    catch(e){ return {}; }
+  }
+  function saveStore(data){ localStorage.setItem(STORE_KEY, JSON.stringify(data)); }
+  function getCounter(){
+    const v = localStorage.getItem(COUNTER_KEY);
+    return v === null ? START : parseInt(v, 10);
+  }
+  function setCounter(n){ localStorage.setItem(COUNTER_KEY, String(n)); }
+  function extractNumericPart(no){
+    const m = String(no).match(/(\d+)/);
+    return m ? parseInt(m[1], 10) : NaN;
+  }
+
+  function updateBadge(){
+    receiptStatusBadge.textContent = currentIsExisting ? 'editing saved receipt' : '';
+    receiptStatusBadge.classList.toggle('existing', currentIsExisting);
+  }
+
+  function collectData(){
+    const data = {};
+    FIELD_IDS.forEach(id=>{ data[id] = document.getElementById(id).value; });
+    return data;
+  }
+  function populateForm(data){
+    FIELD_IDS.forEach(id=>{
+      if(id in data) document.getElementById(id).value = data[id];
+    });
+    recalc();
+  }
+  function resetForm(nextNo){
+    FIELD_IDS.forEach(id=>{ document.getElementById(id).value = ''; });
+    document.getElementById('paymentMode').value = 'Cash';
+    document.getElementById('deliveryCharge').value = '0';
+    document.getElementById('gdUdCharge').value = '0';
+    document.getElementById('lbAmount').value = '0';
+    document.getElementById('localCharge').value = '0';
+    document.getElementById('cashPaid').value = '0';
+    receiptNoInput.value = nextNo;
+    const now = new Date();
+    document.getElementById('receiptDate').value = now.toISOString().slice(0,10);
+    recalc();
+  }
+
+  newBtn.addEventListener('click', ()=>{
+    const next = PREFIX + getCounter();
+    resetForm(next);
+    currentIsExisting = false;
+    updateBadge();
+    showToast('Ready to create Receipt No. ' + next + '.');
+    receiptNoInput.focus();
+  });
+
+  function handleReceiptLookup(){
+    const no = receiptNoInput.value.trim();
+    const store = loadStore();
+    if(no && store[no]){
+      populateForm(store[no]);
+      currentIsExisting = true;
+      showToast('Receipt No. ' + no + ' loaded — edit and click Save to update it.');
+    } else {
+      currentIsExisting = false;
+    }
+    updateBadge();
+  }
+  receiptNoInput.addEventListener('change', handleReceiptLookup);
+
+  function handleSave(){
+    const no = receiptNoInput.value.trim();
+    if(!no){ showToast('Enter a Receipt No. before saving.', true); return; }
+
+    const store = loadStore();
+    store[no] = collectData();
+    saveStore(store);
+
+    const counter = getCounter();
+    const asNum = extractNumericPart(no);
+    if(!isNaN(asNum) && asNum >= counter) setCounter(asNum + 1);
+
+    currentIsExisting = true;
+    updateBadge();
+    showToast('Receipt No. ' + no + ' saved.');
+  }
+  saveBtn.addEventListener('click', handleSave);
+
+  printBtn.addEventListener('click', ()=>{
+    const no = receiptNoInput.value.trim();
+    if(no){
+      const store = loadStore();
+      store[no] = collectData();
+      saveStore(store);
+    }
+    window.print();
+  });
+
+  // init
+  receiptNoInput.value = PREFIX + getCounter();
+  const now = new Date();
+  document.getElementById('receiptDate').value = now.toISOString().slice(0,10);
+  document.getElementById('receiptTime').value = now.toTimeString().slice(0,5);
+  recalc();
+  updateBadge();
+})();
+</script>
+</body>
+</html>
